@@ -1,5 +1,5 @@
 # 3D-Detection-Master
-
+Code to implement 3d code for better understanding and cleaning
 
 
 ## Environment Setup
@@ -15,7 +15,6 @@ pip install fire tensorboardX protobuf opencv-python
 
 ### 2. NuScenes Datasets
 Install [nuscenes-devkit](https://github.com/nutonomy/nuscenes-devkit).
-
 
 
 
