@@ -1,5 +1,5 @@
 # 3D-Detection-Master
-Code to implement 3d code for better understanding and cleaning
+Code to implement 3d object detection code for better understanding and cleaning
 
 
 ## Environment Setup
