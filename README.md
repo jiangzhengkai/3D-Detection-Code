@@ -28,13 +28,13 @@ Download KITTI dataset and create some directories first:
 
 ```plain
 └── KITTI_DATASET_ROOT
-       ├── training    <-- 7481 train data
+       ├── Train    <-- 7481 train data
        |   ├── image_2 <-- for visualization
        |   ├── calib
        |   ├── label_2
        |   ├── velodyne
        |   └── velodyne_reduced <-- empty directory
-       └── testing     <-- 7580 test data
+       └── Test     <-- 7580 test data
            ├── image_2 <-- for visualization
            ├── calib
            ├── velodyne
@@ -50,16 +50,17 @@ python create_data.py kitti_data_preparation --data_path=KITTI_DATASET_ROOT
 
 Download NuScenes dataset:
 ```plain
-└── NUSCENES_TRAINVAL_DATASET_ROOT
-       ├── samples       <-- key frames
-       ├── sweeps        <-- frames without annotation
-       ├── maps          <-- unused
-       └── v1.0-trainval <-- metadata and annotations
-└── NUSCENES_TEST_DATASET_ROOT
-       ├── samples       <-- key frames
-       ├── sweeps        <-- frames without annotation
-       ├── maps          <-- unused
-       └── v1.0-test     <-- metadata
+└── NUSCENES_DATASET_ROOT
+       ├── Train
+       |      ├── samples       <-- key frames
+       |      ├── sweeps        <-- frames without annotation
+       |      ├── maps          <-- unused
+       |      └── v1.0-trainval <-- metadata and annotations
+       ├── Test
+       |      ├── samples       <-- key frames
+       |      ├── sweeps        <-- frames without annotation
+       |      ├── maps          <-- unused
+       |      └── v1.0-test     <-- metadata
 ```
 Since the dataset is really large, you can download parts of the dataset.
 
