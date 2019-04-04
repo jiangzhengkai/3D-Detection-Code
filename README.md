@@ -1,4 +1,4 @@
-# 3D-Detection-Master
+# 3D-Detection-Code
 Code to implement 3d object detection code for better understanding and cleaning
 
 
