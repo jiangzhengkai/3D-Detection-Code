@@ -1,7 +1,14 @@
 #### python package
+<<<<<<< HEAD
 import torch
 import argparse
 import os
+=======
+import pathlib
+import torch
+from 3d-detection.config import cfg
+
+>>>>>>> d3f9414148c8bbc40d59ceef656f3968926f9974
 
 from 3d-detection.config import cfg
 from 3d-detection.dataset.loader import build_loader
@@ -13,16 +20,35 @@ from 3d-detection.models.build_network import build_network
 
 
 
+<<<<<<< HEAD
+=======
+### main function
+def train(config, model_dir, result_path=None, resume=False):
+    ####### load config #######
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
+    ####### build network #######
+    net = build_network(config).to(device)
+    
+    
+
+>>>>>>> d3f9414148c8bbc40d59ceef656f3968926f9974
 
 def train(config, result_path=None, resume=False):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
  
     ####### dataloader #######
+<<<<<<< HEAD
     dataloader = build_dataloader(config, training=True, voxel_generator=voxel_generator, target_assigner=target_assigner, dist=True)
     
     
 
 
+=======
+    dataloader = build_dataloader(config, training=True, voxel_generator, target_assigner)
+>>>>>>> d3f9414148c8bbc40d59ceef656f3968926f9974
 
     ####### build network ###### 
     net = build_network(config).to(device)
@@ -30,11 +56,18 @@ def train(config, result_path=None, resume=False):
 
 
     ####### optimizer #######
+<<<<<<< HEAD
     optimizer = build_optimizer()
+=======
+    optimizer = build_optimizer(config)
+    lr_scheduler = build_scheduler(config)
+>>>>>>> d3f9414148c8bbc40d59ceef656f3968926f9974
 
 
 
     ####### training #######
+    data_iter = iter(dataloader)
+    
 
 
 def evaluate(config, model_dir, result_path=None, model_path=None, measure_time=False, batch_size=None):
