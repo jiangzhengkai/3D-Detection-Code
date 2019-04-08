@@ -1,5 +1,5 @@
 import os
-from yacs.config import cfgNode as CN
+from yacs.config import CfgNode as CN
 
 
 # --------------------------------------------------------------------

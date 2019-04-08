@@ -28,16 +28,15 @@ def build_dataloader(config, training, voxel_generator, target_assigner, dist):
     batch_size = config.TRAIN.batch_size if training else config.TEST.batch_size
     
     if dist:
-    
+        num_workers = batch_size 
     else:
-        num
+        num_workers = batch_size
 
     dataloader = torch.utils.data.Dataloader(dataset,
                                              batch_size=batch_size,
                                              shuffle=True,
                                              num_workers=num_workers,
-                                             pin_memory=False,
-                                             worker_init_fn=)
+                                             pin_memory=False)
 
 
 

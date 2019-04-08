@@ -8,7 +8,7 @@ import torch
 
 from config import cfg
 from dataset.loader import build_loader
-from models.build_network import build_network
+#from models.build_network import build_network
 
 
 
@@ -43,7 +43,7 @@ def train(config, result_path=None, resume=False):
 def evaluate(config, model_dir, result_path=None, model_path=None, measure_time=False, batch_size=None):
 
     ####### load config #######
-
+    return None
 
 
     ####### build network #######
@@ -60,10 +60,13 @@ def main():
     parser = argparse.ArgumentParser(description='3d object detection training')
     parser.add_argument('--config', default="", metavar="FILE", help="path to config file", type=str)
     parser.add_argument('--local_rank', type=int, default=0)
+    parser.add_argument('--gpus', type=int, default=1, help="number of gpus to use")
     args = parser.parse_args()
-    
-    num_gpus = int(os.environ["WORLD_SIZE"] if "WORLD_SIZE" in os.environ else 1)
-    args.distributed = num_gpus > 1    
+
+       
+    cfg.merge_from_file(args.config)
+    cfg.gpus = args.gpus
+    output_dir = cfg.output_dir
 
     if args.distributed:
         torch.cuda.set_device(args.local_rank)
@@ -71,9 +74,6 @@ def main():
             backend="nccl", init_method="env://"
         )
         synchronize()
-    cfg.merge_from_file(args.config)
-    cfg.freeze()
-    output_dir = cfg.output_dir
 
     logger = setup_logger("3d-object-detection", output_dir, get_rank())
     logger.info("Using {} GPUs".format(num_gpus))
@@ -87,4 +87,5 @@ def main():
     train(cfg, output_dir)
 
 
-    
+if __name__ == "__main__":
+    main() 
