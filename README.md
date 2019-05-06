@@ -1,5 +1,5 @@
 # 3D-Detection-Code
-General 3d object detection code for kitti and nuscenes datasets. Code to implement 3d object detection code for better understanding and cleaning
+General 3d object detection code for kitti dataset. Code to implement 3d object detection code for better understanding and cleaning
 
 
 ## Environment Setup
