@@ -2,13 +2,13 @@ import torch
 import pickle
 from pathlib import Path
 import numpy as np
+from torch.utils.data import Dataset
 from lib.core.bbox import box_np_ops
 from lib.datasets import kitti_common as kitti
 from lib.utils.eval import get_coco_eval_result, get_official_eval_result
-from lib.utils.progress_bar import progress_bar_item as prog_bar
+from lib.utils.progress_bar import progress_bar_iter as prog_bar
 
-
-class KittiDataset(torch.utils.data.Dataset):
+class KittiDataset(Dataset):
     def __init__(self, root_path, info_path, class_names=None, prep_func=None, num_point_features=None, **kwargs):
         assert info_path is not None
         with open(info_path, 'rb') as f:
@@ -28,7 +28,7 @@ class KittiDataset(torch.utils.data.Dataset):
 
     @property
     def ground_truth_annotations(self):
-        if "annos" not in self._kitti_infos[0]
+        if "annos" not in self._kitti_infos[0]:
             return None
         gt_annos = [info["annos"] for info in self._kitti_infos]
         return gt_annos
@@ -58,10 +58,10 @@ class KittiDataset(torch.utils.data.Dataset):
                 camera_box_region = [0.5, 1.0, 0.5]
                 box_corners = box_np_ops.center_to_corner_box3d(locs, dims, angles, camera_box_region, axis=1)
                 box_corners_in_image = box_np_ops.project_to_image(box_corners, P2)
-               # box_corners_in_image: [N, 8, 2]
-               minxy = np.min(box_corners_in_image, axis=1)
-               maxxy = np.max(box_corners_in_image, axis=1)
-               bbox = np.concatenate([minxy, maxxy], axis=1)
+                # box_corners_in_image: [N, 8, 2]
+                minxy = np.min(box_corners_in_image, axis=1)
+                maxxy = np.max(box_corners_in_image, axis=1)
+                bbox = np.concatenate([minxy, maxxy], axis=1)
             anno = kitti.get_start_result_anno()
             num_example = 0
             box3d_lidar = final_box_preds
@@ -269,8 +269,7 @@ def _calculate_num_points_in_gt(data_path,
             v_path = str(Path(data_path) / pc_info["velodyne_path"])
         else:
             v_path = pc_info["velodyne_path"]
-        points_v = np.fromfile(
-            v_path, dtype=np.float32, count=-1).reshape([-1, num_features])
+        points_v = np.fromfile(v_path, dtype=np.float32, count=-1).reshape([-1, num_features])
         rect = calib['R0_rect']
         Trv2c = calib['Tr_velo_to_cam']
         P2 = calib['P2']
@@ -297,7 +296,7 @@ def _calculate_num_points_in_gt(data_path,
         annos["num_points_in_gt"] = num_points_in_gt.astype(np.int32)
 
 
-def create_kitti_info_file(data_path, save_path=None, relative_path=True):
+def create_kitti_info_file(data_path, save_path=None, relative_path=False):
     imageset_folder = Path(__file__).resolve().parent / "ImageSets"
     train_img_ids = _read_imageset_file(str(imageset_folder / "train.txt"))
     val_img_ids = _read_imageset_file(str(imageset_folder / "val.txt"))
