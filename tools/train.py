@@ -1,5 +1,9 @@
 import torch
 
+from lib.config import cfg
+
+
+
 def main():
     parser = argparse.ArgumentParser(description='3d object detection train')
     parser.add_argument('--config', default="", metavar="FILE", help="path to config file", type=str)
