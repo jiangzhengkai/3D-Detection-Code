@@ -6,9 +6,10 @@ import os
 import pathlib
 import torch
 
-from dataset.loader import build_dataset
-from models.build_model import build_model
-from utils.build_optimizer import build_optimizer
+from lib.datasets.loader.build_loader import build_dataloader
+from lib.models.build_model import build_model
+from lib.solver.build_optimizer import build_optimizer
+from lib.metrics.build_loss import build_detection_loss
 from utils.build_scheduler import build_scheduler
 
 from config import cfg
@@ -18,22 +19,12 @@ from utils.logging import create_logger
 def train(config):
     logger, _ = create_logger(config.output_path, '', config.dataset.image_set)    
 
-    ####### dataset #######
-    train_dataset = build_dataset(config, training=True)
-    val_dataset = build_dataset(config, training=False)
-    ###### dataloader #######
-    self.train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=config.train.batch_size,
-						    shuffle=True, num_workers=config.train.num_workers,
-						    pin_memory=False, collate_fn=
-						    sampler=train_sampler)
-    self.val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=config.eval.batch_size,
-						  shuffle=True, num_workers=config.train.num_workers,
-						  pin_memory=False, collate_fn=
-						  sampler=train_sampler)
-
+    ####### dataloader #######
+    train_dataset = build_dataloader(config, training=True)
+    val_dataset = build_dataloader(config, training=False)
 
     ####### build network ######
-    net = build_network(config)
+    net = build_model(config)
 
     ####### optimizer #######
     optimizer = build_optimizer(config)
@@ -41,7 +32,7 @@ def train(config):
 
 
     ####### criterions #######
-    self.criterion = DetectionLoss(config)
+    self.criterion = build_detection_loss(config)
 
 
     num_epochs = config.train.num_epochs
