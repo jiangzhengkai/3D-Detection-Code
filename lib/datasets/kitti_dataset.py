@@ -212,8 +212,6 @@ class KittiDataset(Dataset):
         return res
 
 def convert_to_kitti_info(info):
-    """convert kitti info v1 to v2 if possible.
-    """
     if "image" not in info or "calib" not in info or "point_cloud" not in info:
         info["image"] = {
             'image_shape': info["img_shape"],
