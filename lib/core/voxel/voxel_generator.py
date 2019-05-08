@@ -1,4 +1,5 @@
 import numpy as np
+from lib.core.point_cloud.point_cloud_ops import points_to_voxel
 
 class VoxelGenerator:
     def __init__(self, voxel_size, point_cloud_range, max_num_points, max_voxels=20000):
