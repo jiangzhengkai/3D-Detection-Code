@@ -49,9 +49,7 @@ def intersection(boxes1, boxes2, add1=False):
     all_pairs_max_xmin = np.maximum(x_min1, np.transpose(x_min2))
     if add1:
         all_pairs_min_xmax += 1.0
-    intersect_widths = np.maximum(
-        np.zeros(all_pairs_max_xmin.shape),
-        all_pairs_min_xmax - all_pairs_max_xmin)
+    intersect_widths = np.maximum(np.zeros(all_pairs_max_xmin.shape), all_pairs_min_xmax - all_pairs_max_xmin)
     return intersect_heights * intersect_widths
 
 
@@ -541,10 +539,33 @@ def annos_to_kitti_label(annos):
 
 
 
+def annos_to_kitti_label(annos):
+    num_instance = len(annos["name"])
+    result_lines = []
+    for i in range(num_instance):
+        result_dict = {
+            'name': annos["name"][i],
+            'truncated': annos["truncated"][i],
+            'occluded': annos["occluded"][i],
+            'alpha':annos["alpha"][i],
+            'bbox': annos["bbox"][i],
+            'dimensions': annos["dimensions"][i],
+            'location': annos["location"][i],
+            'rotation_y': annos["rotation_y"][i],
+        }
+        line = kitti_result_line(result_dict)
+        result_lines.append(line)
+    return result_lines
+
 def add_difficulty_to_annos(info):
-    min_height = [40, 25, 25]  # minimum height for evaluated groundtruth/detections
-    max_occlusion = [0, 1, 2]  # maximum occlusion level of the groundtruth used for evaluation
-    max_trunc = [0.15, 0.3, 0.5]  # maximum truncation level of the groundtruth used for evaluation
+    min_height = [40, 25,
+                  25]  # minimum height for evaluated groundtruth/detections
+    max_occlusion = [
+        0, 1, 2
+    ]  # maximum occlusion level of the groundtruth used for evaluation
+    max_trunc = [
+        0.15, 0.3, 0.5
+    ]  # maximum truncation level of the groundtruth used for evaluation
     annos = info['annos']
     dims = annos['dimensions']  # lhw format
     bbox = annos['bbox']
@@ -552,12 +573,18 @@ def add_difficulty_to_annos(info):
     occlusion = annos['occluded']
     truncation = annos['truncated']
     diff = []
-    easy_mask = not ((occlusion > max_occlusion[0]) or (height < min_height[0])
-                 or (truncation > max_trunc[0]))
-    moderate_mask = not ((occlusion > max_occlusion[1]) or (height < min_height[1])
-                 or (truncation > max_trunc[1]))
-    hard_mask = not ((occlusion > max_occlusion[2]) or (height < min_height[2])
-                 or (truncation > max_trunc[2]))
+    easy_mask = np.ones((len(dims), ), dtype=np.bool)
+    moderate_mask = np.ones((len(dims), ), dtype=np.bool)
+    hard_mask = np.ones((len(dims), ), dtype=np.bool)
+    i = 0
+    for h, o, t in zip(height, occlusion, truncation):
+        if o > max_occlusion[0] or h <= min_height[0] or t > max_trunc[0]:
+            easy_mask[i] = False
+        if o > max_occlusion[1] or h <= min_height[1] or t > max_trunc[1]:
+            moderate_mask[i] = False
+        if o > max_occlusion[2] or h <= min_height[2] or t > max_trunc[2]:
+            hard_mask[i] = False
+        i += 1
     is_easy = easy_mask
     is_moderate = np.logical_xor(easy_mask, moderate_mask)
     is_hard = np.logical_xor(hard_mask, moderate_mask)

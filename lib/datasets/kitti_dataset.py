@@ -16,7 +16,7 @@ class KittiDataset(Dataset):
         self._root_path = root_path
         self._kitti_infos = infos
         self._num_point_features = 4
-        self._class_name = class_name
+        self._class_names = class_names
         self._prep_func = prep_func
 
     def __len__(self):
@@ -78,7 +78,7 @@ class KittiDataset(Dataset):
                 anno["dimensions"].append(box3d_camera[j, 3:6])
                 anno["location"].append(box3d_camera[j, :3])
                 anno["rotation_y"].append(box3d_camera[j, 6])
-                anno["name"].append(class_name[int(label_preds[j])])
+                anno["name"].append(class_names[int(label_preds[j])])
                 anno["truncated"].append(0.0)
                 anno["occluded"].append(0)
                 anno["score"].append(scores[j])

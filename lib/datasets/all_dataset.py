@@ -54,8 +54,8 @@ def create_groundtruth_database(dataset_class_name,
         # for nsweep, sensor_data in enumerate(sensor_datas):
         if "image_idx" in sensor_data["metadata"]:
             image_idx = sensor_data["metadata"]["image_idx"]
-        # points = sensor_data["lidar"]["points"]
-        points = sensor_data["lidar"]["combined"]
+        points = sensor_data["lidar"]["points"]
+        #points = sensor_data["lidar"]["combined"]
         annos = sensor_data["lidar"]["annotations"]
         gt_boxes = annos["boxes"]
         names = annos["names"]
