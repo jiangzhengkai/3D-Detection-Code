@@ -1,8 +1,6 @@
 import torch
-
+from lib.engine.train import train
 from lib.config import cfg
-
-
 
 def main():
     parser = argparse.ArgumentParser(description='3d object detection train')
@@ -30,12 +28,7 @@ def main():
         config_str = "\n" + cf.read()
         logger.info(config_str)
     logger.info("Running with config:\n{}".format(cfg))
-
-    trainer = Trainer(cfg)
-    for epoch in range(cfg.train.start_epochs, cfg.train.epochs):
-        trainer.training(epoch)
-        trainer.validation(epoch)
-
+    train(config)
 
 if __name__ == "__main__":
     main()
