@@ -1,6 +1,9 @@
 import torch
+import argparse
 from lib.engine.train import train
-from lib.config import cfg
+from lib.utils.dist_common import get_rank
+from lib.config.config import cfg, cfg_from_file
+from lib.utils.logger import setup_logger
 
 def main():
     parser = argparse.ArgumentParser(description='3d object detection train')
@@ -9,7 +12,7 @@ def main():
     parser.add_argument('--gpus', type=int, default=1, help="number of gpus to use")
     args = parser.parse_args()
 
-    cfg.merge_from_file(args.config)
+    cfg_from_file(args.cfg)
     output_dir = cfg.output_dir
     num_gpus = args.gpus
 
@@ -24,11 +27,11 @@ def main():
     logger = setup_logger("3d-object-detection", output_dir, get_rank())
     logger.info("Using {} GPUs".format(num_gpus))
     logger.info(args)
-    with open(args.config, "r") as cf:
+    with open(args.cfg, "r") as cf:
         config_str = "\n" + cf.read()
         logger.info(config_str)
     logger.info("Running with config:\n{}".format(cfg))
-    train(config)
+    train(cfg)
 
 if __name__ == "__main__":
     main()

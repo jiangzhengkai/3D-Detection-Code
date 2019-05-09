@@ -1,3 +1,4 @@
+output_dir: 'output'
 input:
     voxel:
         voxel_size: [0.05, 0.05, 0.1]
@@ -5,25 +6,24 @@ input:
         max_num_points: 5
         max_voxels: 20000
 box_coder:
-    type:
+    type: "ground_box3d_coder"
     value:
-        linear_dim:
-        encode_angle_vector:
+        linear_dim: False
+        encode_angle_vector: False
 
 target_assiginer:
-   - type: anchor_generator_range
-     value:
-        sizes: [1.97, 4.63, 1.74]
-        anchor_ranges: [-51.2, -51.2, -0.92, 51.2, 51.2, -0.92]
-        rotations: [0, 1.57]
-        velocities: [0, 0]
-        matched_threshold: 0.6
-        unmatched_threshold: 0.45
-        class_name: "car"
+    anchor_generators:
+        type: ["anchor_generator_range",]
+        value:
+            sizes: [(1.97, 4.63, 1.74),]
+            anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+            rotations: [(0, 1.57),]
+            velocities: [(0, 0),]
+            matched_threshold: [0.6,]
+            unmatched_threshold: [0.45,]
+            class_names: ["car",]
 tasks:
-    - num_class: 1
-      class_names: ["car"]
-    - num_class: 2
-      class_names: ["truck", "construction_vehicle"] 
+    num_class: [1,]
+    class_names: ["car",]
     
 

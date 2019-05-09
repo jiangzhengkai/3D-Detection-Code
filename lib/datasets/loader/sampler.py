@@ -4,34 +4,35 @@ import math
 import torch
 import numpy as np
 
-
 from torch.distributed import get_world_size, get_rank
 from torch.utils.data.sampler import Sampler
 
 
 class GroupSampler(Sampler):
+
     def __init__(self, dataset, samples_per_gpu=1):
         assert hasattr(dataset, 'flag')
         self.dataset = dataset
-        self.smaplers_per_gpu = samplers_per_gpu
+        self.samples_per_gpu = samples_per_gpu
         self.flag = dataset.flag.astype(np.int64)
         self.group_sizes = np.bincount(self.flag)
         self.num_samples = 0
-        for i, size in enumerate(self.group_size):
+        for i, size in enumerate(self.group_sizes):
             self.num_samples += int(np.ceil(
-		size / self.samples_per_gpu)) * self.samples_per_gpu
+                size / self.samples_per_gpu)) * self.samples_per_gpu
 
     def __iter__(self):
-	indices = []
-	for i, size in enumerate(self.group_size):
+        indices = []
+        for i, size in enumerate(self.group_sizes):
             if size == 0:
                 continue
             indice = np.where(self.flag == i)[0]
             assert len(indice) == size
             np.random.shuffle(indice)
-            num_extra = int(np.ceil(size / self.samplers_per_gpu)) * self.samples_per_gpu - len(indice)
-	    indices = np.concatenate([indice, indice[:num_extra]])
-            indices.append(indices)
+            num_extra = int(np.ceil(size / self.samples_per_gpu)
+                            ) * self.samples_per_gpu - len(indice)
+            indice = np.concatenate([indice, indice[:num_extra]])
+            indices.append(indice)
         indices = np.concatenate(indices)
         indices = [
             indices[i * self.samples_per_gpu:(i + 1) * self.samples_per_gpu]
@@ -45,6 +46,7 @@ class GroupSampler(Sampler):
 
     def __len__(self):
         return self.num_samples
+
 
 class DistributedGroupSampler(Sampler):
     """Sampler that restricts data loading to a subset of the dataset.
@@ -128,4 +130,3 @@ class DistributedGroupSampler(Sampler):
 
     def set_epoch(self, epoch):
         self.epoch = epoch
-
