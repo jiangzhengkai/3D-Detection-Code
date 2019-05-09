@@ -1,21 +1,36 @@
 import os
 from yacs.config import CfgNode as CN
 
-
-# --------------------------------------------------------------------
-# Config defination 
-# --------------------------------------------------------------------
-_C = CN()
-_C.MODEL = CN()
-_C.MODEL.NUM_POINTS_FEATURES = 4 
-
 # --------------------------------------------------------------------
 # Input
 # --------------------------------------------------------------------
-_C.INPUT = CN()
+_C.input = CN()
+
+_C.input.voxel = CN()
+_C.input.voxel.voxel_size = 
+_C.input.voxel.point_cloud_range = 
+_C.input.voxel.max_num_points = 
+_C.input.voxel.max_voxels = 
 
 
+_C.box_coder = CN()
+_C.box_coder.type = 
+_C.box_coder.value = CN()
+_C.box_coder.value.linear_dim = 
+_C.box_coder.value.encode_angle_vector = 
 
+
+_C.target_assiginer = CN()
+_C.target_assiginer.anchor_generators = CN()
+_C.target_assiginer.anchor_generators.type = 
+_C.target_assiginer.anchor_generators.value = CN()
+_C.target_assiginer.anchor_generators.value.sizes = 
+_C.target_assiginer.anchor_generators.value.anchor_ranges = 
+_C.target_assiginer.anchor_generators.value.rotations = 
+_C.target_assiginer.anchor_generators.value.velocities = 
+_C.target_assiginer.anchor_generators.value.matched_threshold = 
+_C.target_assiginer.anchor_generators.value.unmatched_threshold = 
+_C.target_assiginer.anchor_generators.value.class_names = 
 
 # --------------------------------------------------------------------
 # Dataset

@@ -1,0 +1,24 @@
+input:
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+box_coder:
+    type:
+    value:
+        linear_dim:
+        encode_angle_vector:
+
+target_assiginer:
+   - type: anchor_generator_range
+     value:
+        sizes: [1.97, 4.63, 1.74]
+        anchor_ranges: [-51.2, -51.2, -0.92, 51.2, 51.2, -0.92]
+        rotations: [0, 1.57]
+        velocities: [0, 0]
+        matched_threshold: 0.6
+        unmatched_threshold: 0.45
+        class_name: "car"
+
+

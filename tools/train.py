@@ -4,7 +4,7 @@ from lib.config import cfg
 
 def main():
     parser = argparse.ArgumentParser(description='3d object detection train')
-    parser.add_argument('--config', default="", metavar="FILE", help="path to config file", type=str)
+    parser.add_argument('--cfg', default="", metavar="FILE", help="path to config file", type=str)
     parser.add_argument('--local_rank', type=int, default=0)
     parser.add_argument('--gpus', type=int, default=1, help="number of gpus to use")
     args = parser.parse_args()

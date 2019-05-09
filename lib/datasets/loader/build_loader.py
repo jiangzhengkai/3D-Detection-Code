@@ -19,7 +19,7 @@ def build_dataset(config, training):
 
     box_coder = box_coder(config)
     anchor_generators = anchor_generators(config)
-    region_similarity_calculator =
+    region_similarity_calculator = region_similarity_calculator(config)
 
     target_assiginer = TargetAssiginer(
 	box_coder=box_coder,
