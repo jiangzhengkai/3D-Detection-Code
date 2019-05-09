@@ -5,13 +5,16 @@ input:
         point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
         max_num_points: 5
         max_voxels: 20000
+    train:
+        dataset:
+            type: "KittiDataset"
 box_coder:
     type: "ground_box3d_coder"
     value:
         linear_dim: False
         encode_angle_vector: False
 
-target_assiginer:
+target_assigner:
     anchor_generators:
         anchor_types: ["anchor_generator_range",]
         anchor_sizes: [(1.97, 4.63, 1.74),]
@@ -21,11 +24,15 @@ target_assiginer:
         anchor_matched_thresholds: [0.6,]
         anchor_unmatched_thresholds: [0.45,]
         anchor_class_names: ["car",]
+       
+        sample_positive_fraction: -1
+        sample_size: 512
+
         region_similarity_calculator: 
             type: "nearest_iou_similarity"
             value: 0
 tasks:
-    num_class: [1,]
-    class_names: ["car",]
+    num_classes: [1,]
+    class_names: [["car"],]
     
 

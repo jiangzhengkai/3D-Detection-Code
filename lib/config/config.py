@@ -15,6 +15,9 @@ _C.input.voxel.point_cloud_range = [0, -40.0, -3.0, 70.4, 40.0, 1.0]
 _C.input.voxel.max_num_points = 5
 _C.input.voxel.max_voxels = 20000
 
+_C.input.train = edict()
+_C.input.train.dataset = edict()
+_C.input.train.dataset.type = "KittiDataset"
 
 _C.box_coder = edict()
 _C.box_coder.type = "ground_box3d_coder"
@@ -23,25 +26,29 @@ _C.box_coder.value.linear_dim = False
 _C.box_coder.value.encode_angle_vector = False
 
 
-_C.target_assiginer = edict()
-_C.target_assiginer.anchor_generators = edict()
-_C.target_assiginer.anchor_generators.anchor_types = ["anchor_generator_range",]
-_C.target_assiginer.anchor_generators.anchor_sizes = [(1.97, 4.63, 1.74),]
-_C.target_assiginer.anchor_generators.anchor_ranges = [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
-_C.target_assiginer.anchor_generators.anchor_rotations = [(0, 1.57),]
-_C.target_assiginer.anchor_generators.anchor_velocities = [(0, 0),]
-_C.target_assiginer.anchor_generators.anchor_matched_thresholds = [0.6,]
-_C.target_assiginer.anchor_generators.anchor_unmatched_thresholds = [0.45,]
-_C.target_assiginer.anchor_generators.anchor_class_names = ["car",]
+_C.target_assigner = edict()
+_C.target_assigner.anchor_generators = edict()
+_C.target_assigner.anchor_generators.anchor_types = ["anchor_generator_range",]
+_C.target_assigner.anchor_generators.anchor_sizes = [(1.97, 4.63, 1.74),]
+_C.target_assigner.anchor_generators.anchor_ranges = [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+_C.target_assigner.anchor_generators.anchor_rotations = [(0, 1.57),]
+_C.target_assigner.anchor_generators.anchor_velocities = [(0, 0),]
+_C.target_assigner.anchor_generators.anchor_matched_thresholds = [0.6,]
+_C.target_assigner.anchor_generators.anchor_unmatched_thresholds = [0.45,]
+_C.target_assigner.anchor_generators.anchor_class_names = ["car",]
 
-_C.target_assiginer.anchor_generators.region_similarity_calculator = edict()
-_C.target_assiginer.anchor_generators.region_similarity_calculator.type = "nearest_iou_similarity"
-_C.target_assiginer.anchor_generators.region_similarity_calculator.value = 0
+_C.target_assigner.anchor_generators.sample_positive_fraction = -1
+_C.target_assigner.anchor_generators.sample_size = 512
+
+
+_C.target_assigner.anchor_generators.region_similarity_calculator = edict()
+_C.target_assigner.anchor_generators.region_similarity_calculator.type = "nearest_iou_similarity"
+_C.target_assigner.anchor_generators.region_similarity_calculator.value = 0
 
 
 
 _C.tasks = edict()
-_C.tasks.num_class = [1,]
+_C.tasks.num_classes = [1,]
 _C.tasks.class_names = ["car",]
 
 
