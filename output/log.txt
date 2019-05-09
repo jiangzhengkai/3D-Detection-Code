@@ -388,3 +388,674 @@ tasks:
 
 2019-05-09 20:18:07,026 3d-object-detection INFO: Running with config:
 {'output_dir': 'output', 'input': {'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assiginer': {'anchor_generators': {'type': ['anchor_generator_range'], 'value': {'sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'rotations': ['(0', '1.57)'], 'velocities': ['(0', '0)'], 'matched_threshold': [0.6], 'unmatched_threshold': [0.45], 'class_names': ['car']}, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_class': [1], 'class_names': ['car']}}
+2019-05-09 20:21:11,629 3d-object-detection INFO: Using 1 GPUs
+2019-05-09 20:21:11,629 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-09 20:21:11,629 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assiginer:
+    anchor_generators:
+        type: ["anchor_generator_range",]
+        value:
+            sizes: [(1.97, 4.63, 1.74),]
+            anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+            rotations: [(0, 1.57),]
+            velocities: [(0, 0),]
+            matched_threshold: [0.6,]
+            unmatched_threshold: [0.45,]
+            class_names: ["car",]
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_class: [1,]
+    class_names: ["car",]
+    
+
+
+2019-05-09 20:21:11,630 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assiginer': {'anchor_generators': {'type': ['anchor_generator_range'], 'value': {'sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'rotations': ['(0', '1.57)'], 'velocities': ['(0', '0)'], 'matched_threshold': [0.6], 'unmatched_threshold': [0.45], 'class_names': ['car']}, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_class': [1], 'class_names': ['car']}}
+2019-05-09 20:22:40,137 3d-object-detection INFO: Using 1 GPUs
+2019-05-09 20:22:40,137 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-09 20:22:40,137 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assiginer:
+    anchor_generators:
+        type: ["anchor_generator_range",]
+        value:
+            sizes: [(1.97, 4.63, 1.74),]
+            anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+            rotations: [(0, 1.57),]
+            velocities: [(0, 0),]
+            matched_threshold: [0.6,]
+            unmatched_threshold: [0.45,]
+            class_names: ["car",]
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_class: [1,]
+    class_names: ["car",]
+    
+
+
+2019-05-09 20:22:40,137 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assiginer': {'anchor_generators': {'type': ['anchor_generator_range'], 'value': {'sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'rotations': ['(0', '1.57)'], 'velocities': ['(0', '0)'], 'matched_threshold': [0.6], 'unmatched_threshold': [0.45], 'class_names': ['car']}, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_class': [1], 'class_names': ['car']}}
+2019-05-09 20:23:23,834 3d-object-detection INFO: Using 1 GPUs
+2019-05-09 20:23:23,834 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-09 20:23:23,835 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assiginer:
+    anchor_generators:
+        type: ["anchor_generator_range",]
+        value:
+            sizes: [(1.97, 4.63, 1.74),]
+            anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+            rotations: [(0, 1.57),]
+            velocities: [(0, 0),]
+            matched_threshold: [0.6,]
+            unmatched_threshold: [0.45,]
+            class_names: ["car",]
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_class: [1,]
+    class_names: ["car",]
+    
+
+
+2019-05-09 20:23:23,835 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assiginer': {'anchor_generators': {'type': ['anchor_generator_range'], 'value': {'sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'rotations': ['(0', '1.57)'], 'velocities': ['(0', '0)'], 'matched_threshold': [0.6], 'unmatched_threshold': [0.45], 'class_names': ['car']}, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_class': [1], 'class_names': ['car']}}
+2019-05-09 20:25:07,687 3d-object-detection INFO: Using 1 GPUs
+2019-05-09 20:25:07,687 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-09 20:25:07,687 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assiginer:
+    anchor_generators:
+        type: ["anchor_generator_range",]
+        value:
+            sizes: [(1.97, 4.63, 1.74),]
+            anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+            rotations: [(0, 1.57),]
+            velocities: [(0, 0),]
+            matched_threshold: [0.6,]
+            unmatched_threshold: [0.45,]
+            class_names: ["car",]
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_class: [1,]
+    class_names: ["car",]
+    
+
+
+2019-05-09 20:25:07,687 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assiginer': {'anchor_generators': {'type': ['anchor_generator_range'], 'value': {'sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'rotations': ['(0', '1.57)'], 'velocities': ['(0', '0)'], 'matched_threshold': [0.6], 'unmatched_threshold': [0.45], 'class_names': ['car']}, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_class': [1], 'class_names': ['car']}}
+2019-05-09 21:01:05,812 3d-object-detection INFO: Using 1 GPUs
+2019-05-09 21:01:05,813 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-09 21:01:05,813 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assiginer:
+    anchor_generators:
+        type: ["anchor_generator_range",]
+        value:
+            sizes: [(1.97, 4.63, 1.74),]
+            anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+            rotations: [(0, 1.57),]
+            velocities: [(0, 0),]
+            matched_threshold: [0.6,]
+            unmatched_threshold: [0.45,]
+            class_names: ["car",]
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_class: [1,]
+    class_names: ["car",]
+    
+
+
+2019-05-09 21:01:05,813 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assiginer': {'anchor_generators': {'type': ['anchor_generator_range'], 'value': {'sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'rotations': ['(0', '1.57)'], 'velocities': ['(0', '0)'], 'matched_threshold': [0.6], 'unmatched_threshold': [0.45], 'class_names': ['car']}, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_class': [1], 'class_names': ['car']}}
+2019-05-09 21:03:46,974 3d-object-detection INFO: Using 1 GPUs
+2019-05-09 21:03:46,975 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-09 21:03:46,975 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assiginer:
+    anchor_generators:
+        types: ["anchor_generator_range",]
+        sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        rotations: [(0, 1.57),]
+        velocities: [(0, 0),]
+        matched_threshold: [0.6,]
+        unmatched_threshold: [0.45,]
+        class_names: ["car",]
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_class: [1,]
+    class_names: ["car",]
+    
+
+
+2019-05-09 21:03:46,975 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assiginer': {'anchor_generators': {'types': ['anchor_generator_range'], 'sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'rotations': ['(0', '1.57)'], 'velocities': ['(0', '0)'], 'matched_threshold': [0.6], 'unmatched_threshold': [0.45], 'class_names': ['car'], 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_class': [1], 'class_names': ['car']}}
+2019-05-09 21:04:38,110 3d-object-detection INFO: Using 1 GPUs
+2019-05-09 21:04:38,110 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-09 21:04:38,110 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assiginer:
+    anchor_generators:
+        types: ["anchor_generator_range",]
+        sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        rotations: [(0, 1.57),]
+        velocities: [(0, 0),]
+        matched_threshold: [0.6,]
+        unmatched_threshold: [0.45,]
+        class_names: ["car",]
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_class: [1,]
+    class_names: ["car",]
+    
+
+
+2019-05-09 21:04:38,110 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assiginer': {'anchor_generators': {'types': ['anchor_generator_range'], 'sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'rotations': ['(0', '1.57)'], 'velocities': ['(0', '0)'], 'matched_threshold': [0.6], 'unmatched_threshold': [0.45], 'class_names': ['car'], 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_class': [1], 'class_names': ['car']}}
+2019-05-09 21:05:19,918 3d-object-detection INFO: Using 1 GPUs
+2019-05-09 21:05:19,918 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-09 21:05:19,918 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assiginer:
+    anchor_generators:
+        types: ["anchor_generator_range",]
+        sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        rotations: [(0, 1.57),]
+        velocities: [(0, 0),]
+        matched_threshold: [0.6,]
+        unmatched_threshold: [0.45,]
+        class_names: ["car",]
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_class: [1,]
+    class_names: ["car",]
+    
+
+
+2019-05-09 21:05:19,918 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assiginer': {'anchor_generators': {'types': ['anchor_generator_range'], 'sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'rotations': ['(0', '1.57)'], 'velocities': ['(0', '0)'], 'matched_threshold': [0.6], 'unmatched_threshold': [0.45], 'class_names': ['car'], 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_class': [1], 'class_names': ['car']}}
+2019-05-09 21:09:17,859 3d-object-detection INFO: Using 1 GPUs
+2019-05-09 21:09:17,860 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-09 21:09:17,860 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assiginer:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_threshold: [0.6,]
+        anchor_unmatched_threshold: [0.45,]
+        anchor_class_names: ["car",]
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_class: [1,]
+    class_names: ["car",]
+    
+
+
+2019-05-09 21:09:17,860 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assiginer': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_threshold': [0.6], 'anchor_unmatched_threshold': [0.45], 'anchor_class_names': ['car'], 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_class': [1], 'class_names': ['car']}}
+2019-05-09 21:09:45,532 3d-object-detection INFO: Using 1 GPUs
+2019-05-09 21:09:45,532 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-09 21:09:45,533 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assiginer:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_threshold: [0.6,]
+        anchor_unmatched_threshold: [0.45,]
+        anchor_class_names: ["car",]
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_class: [1,]
+    class_names: ["car",]
+    
+
+
+2019-05-09 21:09:45,533 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assiginer': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_threshold': [0.6], 'anchor_unmatched_threshold': [0.45], 'anchor_class_names': ['car'], 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_class': [1], 'class_names': ['car']}}
+2019-05-09 21:10:43,013 3d-object-detection INFO: Using 1 GPUs
+2019-05-09 21:10:43,013 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-09 21:10:43,014 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assiginer:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_class: [1,]
+    class_names: ["car",]
+    
+
+
+2019-05-09 21:10:43,014 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assiginer': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_class': [1], 'class_names': ['car']}}
+2019-05-09 21:11:49,290 3d-object-detection INFO: Using 1 GPUs
+2019-05-09 21:11:49,290 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-09 21:11:49,290 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assiginer:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_class: [1,]
+    class_names: ["car",]
+    
+
+
+2019-05-09 21:11:49,291 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assiginer': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_class': [1], 'class_names': ['car']}}
+2019-05-09 21:24:25,485 3d-object-detection INFO: Using 1 GPUs
+2019-05-09 21:24:25,486 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-09 21:24:25,486 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assiginer:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_class: [1,]
+    class_names: ["car",]
+    
+
+
+2019-05-09 21:24:25,486 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assiginer': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_class': [1], 'class_names': ['car']}}
+2019-05-09 21:25:41,125 3d-object-detection INFO: Using 1 GPUs
+2019-05-09 21:25:41,126 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-09 21:25:41,126 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assiginer:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_class: [1,]
+    class_names: ["car",]
+    
+
+
+2019-05-09 21:25:41,126 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assiginer': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_class': [1], 'class_names': ['car']}}
+2019-05-09 21:29:35,892 3d-object-detection INFO: Using 1 GPUs
+2019-05-09 21:29:35,892 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-09 21:29:35,892 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assiginer:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_class: [1,]
+    class_names: ["car",]
+    
+
+
+2019-05-09 21:29:35,892 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assiginer': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_class': [1], 'class_names': ['car']}}
+2019-05-09 21:30:33,379 3d-object-detection INFO: Using 1 GPUs
+2019-05-09 21:30:33,379 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-09 21:30:33,379 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assiginer:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_class: [1,]
+    class_names: ["car",]
+    
+
+
+2019-05-09 21:30:33,379 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assiginer': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_class': [1], 'class_names': ['car']}}
+2019-05-09 21:31:19,717 3d-object-detection INFO: Using 1 GPUs
+2019-05-09 21:31:19,717 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-09 21:31:19,717 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assiginer:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_class: [1,]
+    class_names: ["car",]
+    
+
+
+2019-05-09 21:31:19,717 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assiginer': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_class': [1], 'class_names': ['car']}}
+2019-05-09 21:32:14,868 3d-object-detection INFO: Using 1 GPUs
+2019-05-09 21:32:14,868 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-09 21:32:14,868 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assiginer:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_class: [1,]
+    class_names: ["car",]
+    
+
+
+2019-05-09 21:32:14,868 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assiginer': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_class': [1], 'class_names': ['car']}}

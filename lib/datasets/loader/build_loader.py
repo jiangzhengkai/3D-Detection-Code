@@ -18,17 +18,16 @@ def build_dataset(config, training):
 	max_voxels=config.input.voxel.max_voxels)
 
     bbox_coder = box_coder(config)
-    region_similarity = region_similarity_calculator(config)
+    region_similarity = region_similarity_calculator(config.target_assiginer.anchor_generators.region_similarity_calculator)
 
-    anchor_generators = []
-    for anchor_cfg in config.anchor_generators:
-        ag = anchor_generator(anchor_cfg)
-        anchor_generators.append(ag)
+
+    anchor_generators_all_class = anchor_generators(config.target_assiginer.anchor_generators)
+
     target_assiginers = []
     for i, task in enumerate(config.tasks):
         target_assiginer = TargetAssiginer(
 	    box_coder=bbox_coder,
-	    anchor_generators=anchor_generators[i],
+	    anchor_generators=anchor_generators_all_class[i],
 	    region_similarity_calculator=region_similarity,
 	    positive_fraction=None,
 	    sample_size=512)

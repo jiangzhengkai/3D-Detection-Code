@@ -25,15 +25,14 @@ _C.box_coder.value.encode_angle_vector = False
 
 _C.target_assiginer = edict()
 _C.target_assiginer.anchor_generators = edict()
-_C.target_assiginer.anchor_generators.type = ["anchor_generator_range",]
-_C.target_assiginer.anchor_generators.value = edict()
-_C.target_assiginer.anchor_generators.value.sizes = [(1.97, 4.63, 1.74),]
-_C.target_assiginer.anchor_generators.value.anchor_ranges = [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
-_C.target_assiginer.anchor_generators.value.rotations = [(0, 1.57),]
-_C.target_assiginer.anchor_generators.value.velocities = [(0, 0),]
-_C.target_assiginer.anchor_generators.value.matched_threshold = [0.6,]
-_C.target_assiginer.anchor_generators.value.unmatched_threshold = [0.45,]
-_C.target_assiginer.anchor_generators.value.class_names = ["car",]
+_C.target_assiginer.anchor_generators.anchor_types = ["anchor_generator_range",]
+_C.target_assiginer.anchor_generators.anchor_sizes = [(1.97, 4.63, 1.74),]
+_C.target_assiginer.anchor_generators.anchor_ranges = [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+_C.target_assiginer.anchor_generators.anchor_rotations = [(0, 1.57),]
+_C.target_assiginer.anchor_generators.anchor_velocities = [(0, 0),]
+_C.target_assiginer.anchor_generators.anchor_matched_thresholds = [0.6,]
+_C.target_assiginer.anchor_generators.anchor_unmatched_thresholds = [0.45,]
+_C.target_assiginer.anchor_generators.anchor_class_names = ["car",]
 
 _C.target_assiginer.anchor_generators.region_similarity_calculator = edict()
 _C.target_assiginer.anchor_generators.region_similarity_calculator.type = "nearest_iou_similarity"
