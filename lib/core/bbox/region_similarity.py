@@ -91,3 +91,30 @@ class DistanceSimilarity(RegionSimilarityCalculator):
         dist_norm=self._distance_norm,
         with_rotation=self._with_rotation,
         rot_alpha=self._rotation_alpha)
+
+
+def region_similarity_calculator(config):
+    """Create optimizer based on config.
+
+    Args:
+        optimizer_config: A Optimizer proto message.
+
+    Returns:
+        An optimizer and a list of variables for summary.
+
+    Raises:
+        ValueError: when using an unsupported input data type.
+    """
+    similarity_type = config.type
+    if similarity_type == 'rotate_iou_similarity':
+        return RotateIouSimilarity()
+    elif similarity_type == 'nearest_iou_similarity':
+        return NearestIouSimilarity()
+    elif similarity_type == 'distance_similarity':
+        cfg = config.distance_similarity
+        return DistanceSimilarity(distance_norm=cfg.distance_norm,
+                                  with_rotation=cfg.with_rotation,
+                                  rotation_alpha=cfg.rotation_alpha)
+    else:
+        raise ValueError("unknown similarity type")
+

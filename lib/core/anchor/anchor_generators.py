@@ -2,6 +2,34 @@ import numpy as np
 from lib.core.bbox import box_np_ops
 
 
+def anchor_generators(config):
+    ag_type = config.type
+    config = config.value
+    if ag_type == 'anchor_generator_stride':
+        ag = AnchorGeneratorStride(
+            sizes=config.sizes,
+            anchor_strides=config.strides,
+            anchor_offsets=config.offsets,
+            rotations=config.rotations,
+            velocities=config.velocities,
+            match_threshold=config.matched_threshold,
+            unmatch_threshold=config.unmatched_threshold,
+            class_name=config.class_name)
+        return ag
+    elif ag_type == 'anchor_generator_range':
+        ag = AnchorGeneratorRange(
+            sizes=config.sizes,
+            anchor_ranges=config.anchor_ranges,
+            rotations=config.rotations,
+            velocities=config.velocities,
+            match_threshold=config.matched_threshold,
+            unmatch_threshold=config.unmatched_threshold,
+            class_name=config.class_name)
+        return ag
+    else:
+        raise ValueError(" unknown anchor generator type")
+
+
 class AnchorGeneratorStride:
     def __init__(self,
                  sizes=[1.6, 3.9, 1.56],

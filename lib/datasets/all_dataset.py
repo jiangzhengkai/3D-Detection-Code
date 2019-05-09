@@ -93,7 +93,6 @@ def create_groundtruth_database(dataset_class_name,
                     "box3d_lidar": gt_boxes[i],
                     "num_points_in_gt": gt_points.shape[0],
                     "difficulty": difficulty[i],
-                    # "group_id": -1,
                     # "bbox": bboxes[i],
                 }
                 local_group_id = group_ids[i]
@@ -109,7 +108,6 @@ def create_groundtruth_database(dataset_class_name,
                 else:
                     all_db_infos[names[i]] = [db_info]
 
-    # print(f"finish {nsweep}'s dbinfos preprocess")
 
     for k, v in all_db_infos.items():
         print(f"load {len(v)} {k} database infos")
