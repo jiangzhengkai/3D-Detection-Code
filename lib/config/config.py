@@ -8,7 +8,6 @@ _C = edict()
 cfg = _C
 
 _C.output_dir = ''
-
 _C.input = edict()
 _C.input.voxel = edict()
 _C.input.voxel.voxel_size = [0.05, 0.05, 0.1]
@@ -35,6 +34,11 @@ _C.target_assiginer.anchor_generators.value.velocities = [(0, 0),]
 _C.target_assiginer.anchor_generators.value.matched_threshold = [0.6,]
 _C.target_assiginer.anchor_generators.value.unmatched_threshold = [0.45,]
 _C.target_assiginer.anchor_generators.value.class_names = ["car",]
+
+_C.target_assiginer.anchor_generators.region_similarity_calculator = edict()
+_C.target_assiginer.anchor_generators.region_similarity_calculator.type = "nearest_iou_similarity"
+_C.target_assiginer.anchor_generators.region_similarity_calculator.value = 0
+
 
 
 _C.tasks = edict()
