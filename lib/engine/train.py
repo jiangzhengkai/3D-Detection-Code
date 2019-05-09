@@ -48,7 +48,4 @@ def train(config):
     arguments['epoch'] = 0
     for epoch in range(num_epochs):
         for iter, batch in enumerate(train_loader):
-             
-
-
-
+             print(1)

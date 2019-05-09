@@ -32,6 +32,12 @@ _C.target_assiginer.anchor_generators.value.matched_threshold =
 _C.target_assiginer.anchor_generators.value.unmatched_threshold = 
 _C.target_assiginer.anchor_generators.value.class_names = 
 
+
+_C.tasks = CN()
+_C.tasks.num_class = 
+_C.tasks.class_names = 
+
+
 # --------------------------------------------------------------------
 # Dataset
 # --------------------------------------------------------------------

@@ -18,39 +18,48 @@ def build_dataset(config, training):
 	max_voxels=config.voxel.max_voxels)
 
     box_coder = box_coder(config)
-    anchor_generators = anchor_generators(config)
     region_similarity_calculator = region_similarity_calculator(config)
 
-    target_assiginer = TargetAssiginer(
-	box_coder=box_coder,
-	anchor_generators=anchor_generators,
-	region_similarity_calculator=region_similarity_calculator,
-	positive_fraction=,
-	sample_size=512)
-
+    anchor_generators = []
+    for anchor_cfg in config.anchor_generators:
+        ag = anchor_generator(anchor_cfg)
+        anchor_generators.append(ag)
+    target_assiginers = []
+    for i, task in enumerate(config.tasks):
+        target_assiginer = TargetAssiginer(
+	    box_coder=box_coder,
+	    anchor_generators=anchor_generators[i],
+	    region_similarity_calculator=region_similarity_calculator,
+	    positive_fraction=None,
+	    sample_size=512)
+        target_assiginers.append(target_assiginer)
     if training:
         db_sampler = DataBaseSampler(config)
     else:
         db_sampler = None
 
-    
+    out_size_factor = 8
+    grid_size = voxel_generator.grid_size
+    feature_map = grid_size[:2] // out_size_factor
+   
+    dataset_class = get_dataset_class(config.dataset.type)    
+
     prep_func = partial(
 	pre_pointcloud,
-	root_paths=,
-	voxel_generator=,
-	target_assiginer=,
-	training=,
-	remove_outsize_points=,
-	db_sampler=,
-	num_point_feature=,
-	out_size_factor=)
+        prep_cfg=config,
+	root_paths=config.dataset.root_paths,
+	voxel_generator=vixel_generators,
+	target_assiginers=target_assiginers,
+	training=training,
+	remove_outsize_points=False,
+	db_sampler=db_sampler,
+	num_point_feature=dataset_class.NumPointsFeatures,
+	out_size_factor=out_size_factor)
 
-    dataset = KittiDataset(
-	info_path=,
-	root_path=,
-        num_point_features,
-	target_assiginer=,
-	feature_map_size=,
+    dataset = dataset_class(
+	info_path=config.dataset.info_path,
+	root_path=config.dataset.root_path,
+	target_assiginer=target_assiginers,
 	prep_func=prep_func)
     return dataset
 
@@ -62,10 +71,9 @@ def build_dataloader(config, training):
     sampler = train_sampler if training else eval_sampler
     distributed = len(config.gpus.split(',')) > 1
     if distributed:
-	sampler = DistributedGroupSampler(dataset)
+        sampler = DistributedGroupSampler(dataset)
     else:
         sampler = GroupSampler(dataset)
-
 
     dataloader = torch.utils.data.Dataloader(dataset,
                                              batch_size=batch_size,

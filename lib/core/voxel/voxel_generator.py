@@ -29,6 +29,6 @@ class VoxelGenerator:
     def point_cloud_range(self):
       return self._point_cloud_range
     
-    @peoperty
+    @property
     def grid_size(self):
        return self._grid_size

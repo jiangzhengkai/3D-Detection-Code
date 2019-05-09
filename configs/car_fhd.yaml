@@ -20,5 +20,10 @@ target_assiginer:
         matched_threshold: 0.6
         unmatched_threshold: 0.45
         class_name: "car"
-
+tasks:
+    - num_class: 1
+      class_names: ["car"]
+    - num_class: 2
+      class_names: ["truck", "construction_vehicle"] 
+    
 
