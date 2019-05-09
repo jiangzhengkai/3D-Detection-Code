@@ -1,6 +1,7 @@
 from functools import partial
 from lib.core.voxel.voxel_generator import VoxelGenerator
 from lib.core.target.target_assigner import TargetAssiginer
+from lib.core.voxel.db_sampler import DataBaseSampler
 from .sampler import GroupSampler, DistributedGroupSampler
 
 
@@ -17,35 +18,22 @@ def build_dataset(config, training):
 				       positive_fraction=,
 				       sample_size=512)
 
+    if training:
+        db_sampler = DataBaseSampler(config)
+    else:
+        db_sampler = None
+
     grid_size = voxel_generator.grid_size
     feature_map_size = grid_size[:2] // 2
     
     prep_func = partial(pre_pointcloud,
 			root_paths=,
-			class_names=,
 			voxel_generator=,
 			target_assiginer=,
 			training=,
-			max_voxels=,
 			remove_outsize_points=,
-			remove_unknow=,
-			create_target=,
-			shuffle_points,
-			gt_rotation_noise=,
-			gt_loc_noise_std=,
-			global_scaling_noise=,
-			global_random_rot_range=,
 			db_sampler=,
-			unlabeled_db_sampler=,
-			generate_bev=,
-			without_reflectivity=,
 			num_point_feature=,
-			anchor_area_threshold=,
-			gt_points_drop=,
-			gt_drop_max_keep,
-			remove_points_after_sampler,
-			remove_revironment=,
-			use_group_id=,
 			out_size_factor=)
 
     dataset = KittiDataset(info_path=,
