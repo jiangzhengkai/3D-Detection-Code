@@ -19,6 +19,38 @@ _C.input.train = edict()
 _C.input.train.dataset = edict()
 _C.input.train.dataset.type = "KittiDataset"
 
+_C.input.train.batch_size = 6
+
+_C.input.train.preprocess = edict()
+_C.input.train.preprocess.max_voxels_num = 40000
+_C.input.train.preprocess.shuffle = False
+_C.input.train.preprocess.num_workers = 0
+
+_C.input.train.preprocess.gt_loc_noise = [0.25, 0.25, 0.25]
+_C.input.train.preprocess.gt_rot_noise = [-0.15707963267, 0.15707963267]
+
+_C.input.train.preprocess.global_rot_noise = [-0.78539816, 0.78539816]    
+_C.input.train.preprocess.global_scale_noise = [0.95, 1.05]
+_C.input.train.preprocess.global_rot_per_object_range = [0, 0]
+_C.input.train.preprocess.global_trans_noise = [0.2, 0.2, 0.2]
+_C.input.train.preprocess.anchor_area_threshold = -1
+_C.input.train.preprocess.remove_points_after_sample =  False
+_C.input.train.preprocess.gt_drop_percentage = 0.0
+_C.input.train.preprocess.gt_drop_max_keep_points = 15
+_C.input.train.preprocess.remove_unknow_examples = False
+_C.input.train.preprocess.remove_environment = False
+
+
+_C.input.eval = edict()
+_C.input.eval.preprocess = edict()
+_C.input.eval.preprocess.max_voxels_num = 40000
+_C.input.eval.preprocess.anchor_area_threshold = -1
+_C.input.eval.preprocess.remove_unknow_examples = False
+_C.input.eval.preprocess.remove_environment = False
+
+
+
+
 _C.box_coder = edict()
 _C.box_coder.type = "ground_box3d_coder"
 _C.box_coder.value = edict()
