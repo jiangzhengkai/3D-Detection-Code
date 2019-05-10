@@ -16,7 +16,7 @@ def main():
 
     cfg_from_file(args.cfg)
     output_dir = cfg.output_dir
-    num_gpus = args.gpus if args.gpus else len(cfg.gpus.split(','))
+    num_gpus = len(cfg.gpus.split(','))
 
     args.distributed = num_gpus > 1
     if args.distributed:
