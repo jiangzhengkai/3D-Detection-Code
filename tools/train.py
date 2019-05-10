@@ -6,7 +6,6 @@ from lib.engine.train import train
 from lib.utils.dist_common import get_rank
 from lib.config.config import cfg, cfg_from_file
 from lib.utils.logger import setup_logger
-from lib.utils.dist_common import synchronize
 
 def main():
     parser = argparse.ArgumentParser(description='3d object detection train')
