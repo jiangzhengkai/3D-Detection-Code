@@ -16,23 +16,26 @@ import torch
 import torch.utils.data
 
 def build_dataset(config, training):
-
+    ######## voxel generator ########
     voxel_generator = VoxelGenerator(
 	voxel_size=config.input.voxel.voxel_size,
 	point_cloud_range=config.input.voxel.point_cloud_range,
 	max_num_points=config.input.voxel.max_num_points,
 	max_voxels=config.input.voxel.max_voxels)
 
+    ######## box coder ########
     bbox_coder = box_coder(config)
+
+    ######## region similarity ########
     region_similarity = region_similarity_calculator(config.target_assigner.anchor_generators.region_similarity_calculator)
 
-
+    ######## anchor generators ########
     anchor_generators_all_class = anchor_generators(config.target_assigner.anchor_generators)
 
+    ######## target assiginers ########
     target_assigners = []
     class_names = []
     flag = 0
-
     for num_class, class_name in zip(config.tasks.num_classes, config.tasks.class_names):
         target_assigner = TargetAssigner(
 	    box_coder=bbox_coder,
@@ -44,6 +47,8 @@ def build_dataset(config, training):
         flag += len(class_name)
         target_assigners.append(target_assigner)
         class_names.append(class_name)
+    
+    ######## database sampler ########
     if training:
         db_sampler = DataBaseSampler(config)
     else:
@@ -52,11 +57,10 @@ def build_dataset(config, training):
     out_size_factor = 8
     grid_size = voxel_generator.grid_size
     feature_map = grid_size[:2] // out_size_factor
-   
     dataset_class = get_dataset_class(config.input.train.dataset.type)    
-
     config_dataset = config.input.train.dataset if training else config.input.eval.dataset
 
+    ######## prep_pointcloud ########
     prep_func = partial(
 	prep_pointcloud,
         cfg=config,
@@ -69,7 +73,7 @@ def build_dataset(config, training):
 	num_point_feature=config.input.num_point_features,
 	out_size_factor=out_size_factor)
 
-
+    ######## dataset ########
     dataset = dataset_class(
 	info_path=config_dataset.info_path,
 	root_path=config_dataset.root_path,
