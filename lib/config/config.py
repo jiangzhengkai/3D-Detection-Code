@@ -109,9 +109,8 @@ _C.target_assigner.anchor_generators.region_similarity_calculator.value = 0
 _C.tasks = edict()
 _C.tasks.num_classes = [1,]
 _C.tasks.class_names = ["car",]
-
 # --------------------------------------------------------------------
-# Dataset
+# functions
 # --------------------------------------------------------------------
 def cfg_from_file(filename):
     """Load a config file and merge it into the default options."""
