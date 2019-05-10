@@ -22,17 +22,17 @@ _C.input.train.dataset.type = "KittiDataset"
 _C.input.train.batch_size = 6
 
 _C.input.train.preprocess = edict()
-_C.input.train.preprocess.max_voxels_num = 40000
+_C.input.train.preprocess.max_num_voxels = 40000
 _C.input.train.preprocess.shuffle = False
 _C.input.train.preprocess.num_workers = 0
 
-_C.input.train.preprocess.gt_loc_noise = [0.25, 0.25, 0.25]
-_C.input.train.preprocess.gt_rot_noise = [-0.15707963267, 0.15707963267]
+_C.input.train.preprocess.gt_location_noise = [0.25, 0.25, 0.25]
+_C.input.train.preprocess.gt_rotation_noise = [-0.15707963267, 0.15707963267]
 
-_C.input.train.preprocess.global_rot_noise = [-0.78539816, 0.78539816]    
+_C.input.train.preprocess.global_rotation_noise = [-0.78539816, 0.78539816]    
 _C.input.train.preprocess.global_scale_noise = [0.95, 1.05]
-_C.input.train.preprocess.global_rot_per_object_range = [0, 0]
-_C.input.train.preprocess.global_trans_noise = [0.2, 0.2, 0.2]
+_C.input.train.preprocess.global_rotation_per_object_range = [0, 0]
+_C.input.train.preprocess.global_translation_noise = [0.2, 0.2, 0.2]
 _C.input.train.preprocess.anchor_area_threshold = -1
 _C.input.train.preprocess.remove_points_after_sample =  False
 _C.input.train.preprocess.gt_drop_percentage = 0.0

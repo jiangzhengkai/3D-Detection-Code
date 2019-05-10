@@ -8,6 +8,25 @@ input:
     train:
         dataset:
             type: "KittiDataset"
+
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            gt_location_noise: [0.25, 0.25, 0.25]
+            gt_rotation_noise: [-0.15707963267, 0.15707963267]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0.2, 0.2, 0.2]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unkonw_examples: False
+            remove_environment: False
+
+
 box_coder:
     type: "ground_box3d_coder"
     value:

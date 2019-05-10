@@ -82,4 +82,188 @@ def prep_pointcloud(config,
         points = box_np_ops.remove_outside_points(points, calib["rect"],
                                                   calib["Trv2c"], calib["P2"],
                                                   image_shape)
-    
+    if remove_environmnet is True and training:
+        selected = kitti.keep_arrays_by_name(gt_names, target_assigner.classes)
+        _dict_select(gt_dict, selected)
+        masks = box_np_ops.points_in_rbbox(points, gt_dict["gt_boxes"])
+        points = points[masks.any(-1)]
+
+    if training:
+        selected = kitti.drop_arrays_by_name(gt_dict["gt_names"], ["DontCare", "ignore"])
+        _dict_select(gt_dict, selected)
+        if remove_unknown:
+            remove_mask = gt_dict["difficulty"] == -1
+            keep_mask = np.logical_not(remove_mask)
+            _dict_select(gt_dict, keep_mask)
+        gt_dict.pop("difficulty")
+        gt_boxes_mask = np.array([n in class_names for n in gt_dict["gt_names"]], dtype=np.bool_)
+
+        if db_sampler is not None:
+            group_ids = None
+            sampled_dict = db_sampler.sample_all(
+                root_path,
+                gt_dict["gt_boxes"],
+                gt_dict["gt_names"],
+                num_point_features,
+                random_crop,
+                gt_group_ids=group_ids,
+                calib=calib,
+            )
+
+            if sampled_dict is not None:
+                sampled_gt_names = sampled_dict["gt_names"]
+                sampled_gt_boxes = sampled_dict["gt_boxes"]
+                sampled_points = sampled_dict["points"]
+                sampled_gt_masks = sampled_dict["gt_masks"]
+                gt_dict["gt_names"] = np.concatenate(
+                    [gt_dict["gt_names"], sampled_gt_names], axis=0)
+                gt_dict["gt_boxes"] = np.concatenate(
+                    [gt_dict["gt_boxes"], sampled_gt_boxes])
+                gt_boxes_mask = np.concatenate(
+                    [gt_boxes_mask, sampled_gt_masks], axis=0)
+            
+            if remove_points_after_sample:
+                masks = box_np_ops.points_in_rbbox(points, sampled_gt_boxes)
+                points = points[np.logical_not(masks.any(-1))]
+
+            points = np.concatenate([sampled_points, points], axis=0)
+
+        pc_range = voxel_generator.point_cloud_range
+
+        _dict_select(gt_dict, gt_boxes_mask)
+
+        gt_classes = np.array([class_names.index(n) + 1 for n in gt_dict["gt_names"]], dtype=np.int32)
+        gt_dict["gt_classes"] = gt_classes
+
+        gt_dict["gt_boxes"], points = prep.random_flip(gt_dict["gt_boxes"], points)
+        gt_dict["gt_boxes"], points = prep.global_rotation(gt_dict["gt_boxes"], points, rotation=global_rotation_noise)
+        gt_dict["gt_boxes"], points = prep.global_scaling_v2(gt_dict["gt_boxes"], points, *global_scaling_noise)
+        prep.global_translate_(gt_dict["gt_boxes"], points, global_translate_noise_std)
+
+        bv_range = voxel_generator.point_cloud_range[[0, 1, 3, 4]]
+        mask = prep.filter_gt_box_outside_range(gt_dict["gt_boxes"], bv_range)
+        _dict_select(gt_dict, mask)
+
+        task_masks = []
+        flag = 0
+        for class_name in task_class_names:
+            task_masks.append([np.where(gt_dict['gt_classes'] == class_name.index(i) + 1 + flag) for i in class_name])
+            flag += len(class_name)
+ 
+            task_boxes = []
+            task_classes = []
+            task_names = []
+            flag2 = 0
+            for idx, mask in enumerate(task_masks):
+                task_box = []
+                task_class = []
+                task_name = []
+                for m in mask:
+                    task_box.append(gt_dict['gt_boxes'][m])
+                    task_class.append(gt_dict['gt_classes'][m] - flag2)
+                    task_name.append(gt_dict['gt_names'][m])
+                task_boxes.append(np.concatenate(task_box, axis=0))
+                task_classes.append(np.concatenate(task_class))
+                task_names.append(np.concatenate(task_name))
+                flag2 += len(mask)
+
+            for task_box in task_boxes:
+                # limit rad to [-pi, pi]
+                task_box[:, -1] = box_np_ops.limit_period(task_box[:, -1],
+                                                          offset=0.5,
+                                                           period=2 * np.pi)
+            gt_dict["gt_classes"] = task_classes
+            gt_dict["gt_names"] = task_names
+            gt_dict["gt_boxes"] = task_boxes
+
+    voxel_size = voxel_generator.voxel_size
+    pc_range = voxel_generator.point_cloud_range
+    grid_size = voxel_generator.grid_size
+
+    voxels, coordinates, num_points = voxel_generator.generate(points, max_voxels)
+    num_voxels = np.array([voxels.shape[0]], dtype=np.int64)
+
+    example = {
+        'voxels': voxels,
+        'num_points': num_points,
+        'points': points,
+        'coordinates': coordinates,
+        "num_voxels": num_voxels,
+    }
+    if calib is not None:
+        example["calib"] = calib
+
+    feature_map_size = grid_size[:2] // out_size_factor
+    feature_map_size = [*feature_map_size, 1][::-1]
+
+    if anchor_cache is not None:
+        anchorss = anchor_cache["anchors"]
+        anchors_bvs = anchor_cache["anchors_bv"]
+        anchors_dicts = anchor_cache["anchors_dict"]
+    else:
+        rets = [
+            target_assigner.generate_anchors(feature_map_size)
+            for target_assigner in target_assigners
+        ]
+        anchorss = [ret["anchors"].reshape([-1, 7]) for ret in rets]
+        anchors_dicts = [
+            target_assigner.generate_anchors_dict(feature_map_size)
+            for target_assigner in target_assigners
+        ]
+        anchors_bvs = [
+            box_np_ops.rbbox2d_to_near_bbox(anchors[:, [0, 1, 3, 4, 6]])
+            for anchors in anchorss
+        ]
+
+    example["anchors"] = anchorss
+
+    if anchor_area_threshold >= 0:
+        example["anchors_mask"] = []
+        for idx, anchors_bv in enumerate(anchors_bvs):
+            anchors_mask = None
+            # slow with high resolution. recommend disable this forever.
+            coors = coordinates
+            dense_voxel_map = box_np_ops.sparse_sum_for_anchors_mask(
+                coors, tuple(grid_size[::-1][1:]))
+            dense_voxel_map = dense_voxel_map.cumsum(0)
+            dense_voxel_map = dense_voxel_map.cumsum(1)
+            anchors_area = box_np_ops.fused_get_anchors_area(
+                dense_voxel_map, anchors_bv, voxel_size, pc_range, grid_size)
+            anchors_mask = anchors_area > anchor_area_threshold
+            # example['anchors_mask'] = anchors_mask.astype(np.uint8)
+            example['anchors_mask'].append(anchors_mask)
+
+    if not training:
+        return example
+
+    if create_targets:
+        targets_dicts = []
+        for idx, target_assigner in enumerate(target_assigners):
+            if "anchors_mask" in example:
+                anchors_mask = example["anchors_mask"][idx]
+            else:
+                anchors_mask = None
+            targets_dict = target_assigner.assign_v2(
+                anchors_dicts[idx],
+                gt_dict["gt_boxes"][idx],
+                anchors_mask,
+                gt_classes=gt_dict["gt_classes"][idx],
+                gt_names=gt_dict["gt_names"][idx])
+            targets_dicts.append(targets_dict)
+
+        example.update({
+            'labels':
+            [targets_dict['labels'] for targets_dict in targets_dicts],
+            'reg_targets':
+            [targets_dict['bbox_targets'] for targets_dict in targets_dicts],
+            'reg_weights': [
+                targets_dict['bbox_outside_weights']
+                for targets_dict in targets_dicts
+            ],
+        })
+
+    return example
+
+
+
+
