@@ -30,6 +30,16 @@ input:
             gt_drop_max_keep_points: 15
             remove_unknow_examples: False
             remove_environment: False
+            db_sampler:
+                enable: True
+                db_info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/dbinfos_train.pkl"
+		sample_group_names: ["car",]
+		sample_group_values: [5, ]
+                database_preprocess_steps:
+                    type: ["car",]
+                    value: [5,]
+		    
+          
     eval:
         dataset:
             type: "KittiDataset"

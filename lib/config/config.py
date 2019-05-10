@@ -49,6 +49,17 @@ _C.input.train.preprocess.remove_unknow_examples = False
 _C.input.train.preprocess.remove_environment = False
 
 
+_C.input.train.preprocess.db_sampler = edict()
+_C.input.train.preprocess.db_sampler.enable = True
+_C.input.train.preprocess.db_sampler.db_info_path = " "
+_C.input.train.preprocess.db_sampler.sample_group_names = ["car",]
+_C.input.train.preprocess.db_Sampler.sample_group_values = [2,]
+_C.input.train.preprocess.db_sampler.database_preprocess_steps = edict()
+_C.input.train.preprocess.db_sampler.database_preprocess_steps.type = ["car",]
+_C.input.train.preprocess.db_sampler.database_preprocess_steps.value = [5, ]
+
+
+
 _C.input.eval = edict()
 _C.input.eval.batch_size = 6
 
