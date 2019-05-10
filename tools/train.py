@@ -1,4 +1,6 @@
+import os
 import torch
+import torch.distributed as dist
 import argparse
 from lib.engine.train import train
 from lib.utils.dist_common import get_rank
@@ -20,12 +22,8 @@ def main():
     args.distributed = num_gpus > 1
     if args.distributed:
         torch.cuda.set_device(args.local_rank)
-        torch.distributed.init_process_group(
-        	backend="nccl", init_method="tcp://127.0.0.1:23456",
-		rank=0, world_size=1
-        )
-        synchronize()
-
+        dist.init_process_group(backend="nccl", init_method="env://")
+        dist.barrier()
     logger = setup_logger("3d-object-detection", output_dir, get_rank())
     logger.info("Using {} GPUs".format(num_gpus))
     logger.info(args)

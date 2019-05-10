@@ -9,7 +9,7 @@ cfg = _C
 
 _C.output_dir = ''
 _C.gpus = '0'
-
+_C.devices = [0, 1]
 
 _C.input = edict()
 _C.input.num_point_features = 4
