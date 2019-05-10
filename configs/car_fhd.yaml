@@ -35,7 +35,7 @@ input:
                 db_info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/dbinfos_train.pkl"
 		sample_group_names: ["car",]
 		sample_group_values: [5, ]
-                database_preprocess_steps:
+                db_preprocess_steps:
                     type: ["car",]
                     value: [5,]
 		    
