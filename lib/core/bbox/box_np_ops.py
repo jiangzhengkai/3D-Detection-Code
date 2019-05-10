@@ -203,3 +203,84 @@ def change_box3d_center_(box3d, src, dst):
     dst = np.array(dst, dtype=box3d.dtype)
     src = np.array(src, dtype=box3d.dtype)
     box3d[..., :3] += box3d[..., 3:6] * (dst - src)
+
+def limit_period(val, offset=0.5, period=np.pi):
+    return val - np.floor(val / period + offset) * period
+
+def rbbox2d_to_near_bbox(rbboxes):
+    """convert rotated bbox to nearest 'standing' or 'lying' bbox.
+    Args:
+        rbboxes: [N, 5(x, y, xdim, ydim, rad)] rotated bboxes
+    Returns:
+        bboxes: [N, 4(xmin, ymin, xmax, ymax)] bboxes
+    """
+    rots = rbboxes[..., -1]
+    rots_0_pi_div_2 = np.abs(limit_period(rots, 0.5, np.pi))
+    cond = (rots_0_pi_div_2 > np.pi / 4)[..., np.newaxis]
+    bboxes_center = np.where(cond, rbboxes[:, [0, 1, 3, 2]], rbboxes[:, :4])
+    bboxes = center_to_minmax_2d(bboxes_center[:, :2], bboxes_center[:, 2:])
+    return bboxes
+
+def center_to_minmax_2d_0_5(centers, dims):
+    return np.concatenate([centers - dims / 2, centers + dims / 2], axis=-1)
+
+
+def center_to_minmax_2d(centers, dims, origin=0.5):
+    if origin == 0.5:
+        return center_to_minmax_2d_0_5(centers, dims)
+    corners = center_to_corner_box2d(centers, dims, origin=origin)
+    return corners[:, [0, 2]].reshape([-1, 4])
+
+def center_to_corner_box2d(centers, dims, angles=None, origin=0.5):
+    """convert kitti locations, dimensions and angles to corners.
+    format: center(xy), dims(xy), angles(clockwise when positive)
+    
+    Args:
+        centers (float array, shape=[N, 2]): locations in kitti label file.
+        dims (float array, shape=[N, 2]): dimensions in kitti label file.
+        angles (float array, shape=[N]): rotation_y in kitti label file.
+    
+    Returns:
+        [type]: [description]
+    """
+    # 'length' in kitti format is in x axis.
+    # xyz(hwl)(kitti label file)<->xyz(lhw)(camera)<->z(-x)(-y)(wlh)(lidar)
+    # center in kitti format is [0.5, 1.0, 0.5] in xyz.
+    corners = corners_nd(dims, origin=origin)
+    # corners: [N, 4, 2]
+    if angles is not None:
+        corners = rotation_2d(corners, angles)
+    corners += centers.reshape([-1, 1, 2])
+    return corners
+
+@numba.jit(nopython=True)
+def iou_jit(boxes, query_boxes, eps=1.0):
+    """calculate box iou. note that jit version runs 2x faster than cython in 
+    my machine!
+    Parameters
+    ----------
+    boxes: (N, 4) ndarray of float
+    query_boxes: (K, 4) ndarray of float
+    Returns
+    -------
+    overlaps: (N, K) ndarray of overlap between boxes and query_boxes
+    """
+    N = boxes.shape[0]
+    K = query_boxes.shape[0]
+    overlaps = np.zeros((N, K), dtype=boxes.dtype)
+    for k in range(K):
+        box_area = ((query_boxes[k, 2] - query_boxes[k, 0] + eps) *
+                    (query_boxes[k, 3] - query_boxes[k, 1] + eps))
+        for n in range(N):
+            iw = (min(boxes[n, 2], query_boxes[k, 2]) - max(
+                boxes[n, 0], query_boxes[k, 0]) + eps)
+            if iw > 0:
+                ih = (min(boxes[n, 3], query_boxes[k, 3]) - max(
+                    boxes[n, 1], query_boxes[k, 1]) + eps)
+                if ih > 0:
+                    ua = (
+                        (boxes[n, 2] - boxes[n, 0] + eps) *
+                        (boxes[n, 3] - boxes[n, 1] + eps) + box_area - iw * ih)
+                    overlaps[n, k] = iw * ih / ua
+    return overlaps
+

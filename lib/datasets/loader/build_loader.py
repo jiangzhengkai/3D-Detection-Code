@@ -1,6 +1,5 @@
 from functools import partial
 from lib.core.voxel.voxel_generator import VoxelGenerator
-
 from lib.core.bbox.box_coder import box_coder
 from lib.core.anchor.anchor_generators import anchor_generators
 from lib.core.bbox.region_similarity import region_similarity_calculator
