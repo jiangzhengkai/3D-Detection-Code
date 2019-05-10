@@ -8,7 +8,12 @@ _C = edict()
 cfg = _C
 
 _C.output_dir = ''
+_C.gpus = '0'
+
+
 _C.input = edict()
+_C.input.num_point_features = 4
+
 _C.input.voxel = edict()
 _C.input.voxel.voxel_size = [0.05, 0.05, 0.1]
 _C.input.voxel.point_cloud_range = [0, -40.0, -3.0, 70.4, 40.0, 1.0]
@@ -16,10 +21,13 @@ _C.input.voxel.max_num_points = 5
 _C.input.voxel.max_voxels = 20000
 
 _C.input.train = edict()
+_C.input.train.batch_size = 6
 _C.input.train.dataset = edict()
 _C.input.train.dataset.type = "KittiDataset"
+_C.input.train.dataset.root_path = " "
+_C.input.train.dataset.info_path = " "
+_C.input.train.dataset.nsweeps = 1
 
-_C.input.train.batch_size = 6
 
 _C.input.train.preprocess = edict()
 _C.input.train.preprocess.max_num_voxels = 40000
@@ -42,12 +50,21 @@ _C.input.train.preprocess.remove_environment = False
 
 
 _C.input.eval = edict()
+_C.input.eval.batch_size = 6
+
 _C.input.eval.preprocess = edict()
-_C.input.eval.preprocess.max_voxels_num = 40000
+_C.input.eval.preprocess.num_workers = 0
+_C.input.eval.preprocess.shuffle = False
+_C.input.eval.preprocess.max_num_voxels = 40000
 _C.input.eval.preprocess.anchor_area_threshold = -1
-_C.input.eval.preprocess.remove_unknow_examples = False
 _C.input.eval.preprocess.remove_environment = False
 
+
+_C.input.eval.dataset = edict()
+_C.input.eval.dataset.type = "KittiDataset"
+_C.input.eval.dataset.root_path = " "
+_C.input.eval.dataset.info_path = " "
+_C.input.eval.dataset.nsweeps = 1 
 
 
 

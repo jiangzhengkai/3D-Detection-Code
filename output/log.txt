@@ -1382,3 +1382,1789 @@ tasks:
 
 2019-05-09 22:23:07,550 3d-object-detection INFO: Running with config:
 {'output_dir': 'output', 'input': {'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}, 'train': {'dataset': {'type': 'KittiDataset'}}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assigner': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'sample_positive_fraction': -1, 'sample_size': 512, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_classes': [1], 'class_names': [['car']]}}
+2019-05-10 13:24:09,030 3d-object-detection INFO: Using 1 GPUs
+2019-05-10 13:24:09,031 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-10 13:24:09,031 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+    train:
+        dataset:
+            type: "KittiDataset"
+
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            gt_location_noise: [0.25, 0.25, 0.25]
+            gt_rotation_noise: [-0.15707963267, 0.15707963267]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0.2, 0.2, 0.2]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+       
+        sample_positive_fraction: -1
+        sample_size: 512
+
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_classes: [1,]
+    class_names: [["car"],]
+    
+
+
+2019-05-10 13:24:09,031 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}, 'train': {'dataset': {'type': 'KittiDataset'}, 'batch_size': 6, 'preprocess': {'max_num_voxels': 40000, 'shuffle': False, 'num_workers': 0, 'gt_location_noise': [0.25, 0.25, 0.25], 'gt_rotation_noise': [-0.15707963267, 0.15707963267], 'global_rotation_noise': [-0.78539816, 0.78539816], 'global_scale_noise': [0.95, 1.05], 'global_rotation_per_object_range': [0, 0], 'global_translation_noise': [0.2, 0.2, 0.2], 'anchor_area_threshold': -1, 'remove_points_after_sample': False, 'gt_drop_percentage': 0.0, 'gt_drop_max_keep_points': 15, 'remove_unknow_examples': False, 'remove_environment': False}}, 'eval': {'preprocess': {'max_voxels_num': 40000, 'anchor_area_threshold': -1, 'remove_unknow_examples': False, 'remove_environment': False}}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assigner': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'sample_positive_fraction': -1, 'sample_size': 512, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_classes': [1], 'class_names': [['car']]}}
+2019-05-10 13:26:32,172 3d-object-detection INFO: Using 1 GPUs
+2019-05-10 13:26:32,173 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-10 13:26:32,173 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+    train:
+        dataset:
+            type: "KittiDataset"
+
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            gt_location_noise: [0.25, 0.25, 0.25]
+            gt_rotation_noise: [-0.15707963267, 0.15707963267]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0.2, 0.2, 0.2]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+       
+        sample_positive_fraction: -1
+        sample_size: 512
+
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_classes: [1,]
+    class_names: [["car"],]
+    
+
+
+2019-05-10 13:26:32,173 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}, 'train': {'dataset': {'type': 'KittiDataset'}, 'batch_size': 6, 'preprocess': {'max_num_voxels': 40000, 'shuffle': False, 'num_workers': 0, 'gt_location_noise': [0.25, 0.25, 0.25], 'gt_rotation_noise': [-0.15707963267, 0.15707963267], 'global_rotation_noise': [-0.78539816, 0.78539816], 'global_scale_noise': [0.95, 1.05], 'global_rotation_per_object_range': [0, 0], 'global_translation_noise': [0.2, 0.2, 0.2], 'anchor_area_threshold': -1, 'remove_points_after_sample': False, 'gt_drop_percentage': 0.0, 'gt_drop_max_keep_points': 15, 'remove_unknow_examples': False, 'remove_environment': False}}, 'eval': {'preprocess': {'max_voxels_num': 40000, 'anchor_area_threshold': -1, 'remove_unknow_examples': False, 'remove_environment': False}}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assigner': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'sample_positive_fraction': -1, 'sample_size': 512, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_classes': [1], 'class_names': [['car']]}}
+2019-05-10 13:59:03,397 3d-object-detection INFO: Using 1 GPUs
+2019-05-10 13:59:03,397 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-10 13:59:03,397 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+    train:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            gt_location_noise: [0.25, 0.25, 0.25]
+            gt_rotation_noise: [-0.15707963267, 0.15707963267]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0.2, 0.2, 0.2]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_classes: [1,]
+    class_names: [["car"],]
+    
+
+
+2019-05-10 13:59:03,397 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'num_point_features': 4, 'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}, 'train': {'batch_size': 6, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl', 'nsweeps': 1}, 'preprocess': {'max_num_voxels': 40000, 'shuffle': False, 'num_workers': 0, 'gt_location_noise': [0.25, 0.25, 0.25], 'gt_rotation_noise': [-0.15707963267, 0.15707963267], 'global_rotation_noise': [-0.78539816, 0.78539816], 'global_scale_noise': [0.95, 1.05], 'global_rotation_per_object_range': [0, 0], 'global_translation_noise': [0.2, 0.2, 0.2], 'anchor_area_threshold': -1, 'remove_points_after_sample': False, 'gt_drop_percentage': 0.0, 'gt_drop_max_keep_points': 15, 'remove_unknow_examples': False, 'remove_environment': False}}, 'eval': {'batch_size': 6, 'preprocess': {'num_workers': 0, 'shuffle': False, 'max_num_voxels': 40000, 'anchor_area_threshold': -1, 'remove_environment': False}, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl', 'nsweeps': 1}}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assigner': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'sample_positive_fraction': -1, 'sample_size': 512, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_classes': [1], 'class_names': [['car']]}}
+2019-05-10 14:00:12,305 3d-object-detection INFO: Using 1 GPUs
+2019-05-10 14:00:12,305 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-10 14:00:12,306 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+    train:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            gt_location_noise: [0.25, 0.25, 0.25]
+            gt_rotation_noise: [-0.15707963267, 0.15707963267]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0.2, 0.2, 0.2]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_classes: [1,]
+    class_names: [["car"],]
+    
+
+
+2019-05-10 14:00:12,306 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'num_point_features': 4, 'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}, 'train': {'batch_size': 6, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl', 'nsweeps': 1}, 'preprocess': {'max_num_voxels': 40000, 'shuffle': False, 'num_workers': 0, 'gt_location_noise': [0.25, 0.25, 0.25], 'gt_rotation_noise': [-0.15707963267, 0.15707963267], 'global_rotation_noise': [-0.78539816, 0.78539816], 'global_scale_noise': [0.95, 1.05], 'global_rotation_per_object_range': [0, 0], 'global_translation_noise': [0.2, 0.2, 0.2], 'anchor_area_threshold': -1, 'remove_points_after_sample': False, 'gt_drop_percentage': 0.0, 'gt_drop_max_keep_points': 15, 'remove_unknow_examples': False, 'remove_environment': False}}, 'eval': {'batch_size': 6, 'preprocess': {'num_workers': 0, 'shuffle': False, 'max_num_voxels': 40000, 'anchor_area_threshold': -1, 'remove_environment': False}, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl', 'nsweeps': 1}}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assigner': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'sample_positive_fraction': -1, 'sample_size': 512, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_classes': [1], 'class_names': [['car']]}}
+2019-05-10 14:00:38,080 3d-object-detection INFO: Using 1 GPUs
+2019-05-10 14:00:38,080 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-10 14:00:38,081 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+    train:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            gt_location_noise: [0.25, 0.25, 0.25]
+            gt_rotation_noise: [-0.15707963267, 0.15707963267]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0.2, 0.2, 0.2]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_classes: [1,]
+    class_names: [["car"],]
+    
+
+
+2019-05-10 14:00:38,081 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'num_point_features': 4, 'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}, 'train': {'batch_size': 6, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl', 'nsweeps': 1}, 'preprocess': {'max_num_voxels': 40000, 'shuffle': False, 'num_workers': 0, 'gt_location_noise': [0.25, 0.25, 0.25], 'gt_rotation_noise': [-0.15707963267, 0.15707963267], 'global_rotation_noise': [-0.78539816, 0.78539816], 'global_scale_noise': [0.95, 1.05], 'global_rotation_per_object_range': [0, 0], 'global_translation_noise': [0.2, 0.2, 0.2], 'anchor_area_threshold': -1, 'remove_points_after_sample': False, 'gt_drop_percentage': 0.0, 'gt_drop_max_keep_points': 15, 'remove_unknow_examples': False, 'remove_environment': False}}, 'eval': {'batch_size': 6, 'preprocess': {'num_workers': 0, 'shuffle': False, 'max_num_voxels': 40000, 'anchor_area_threshold': -1, 'remove_environment': False}, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl', 'nsweeps': 1}}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assigner': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'sample_positive_fraction': -1, 'sample_size': 512, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_classes': [1], 'class_names': [['car']]}}
+2019-05-10 14:00:58,553 3d-object-detection INFO: Using 1 GPUs
+2019-05-10 14:00:58,554 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-10 14:00:58,554 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+    train:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            gt_location_noise: [0.25, 0.25, 0.25]
+            gt_rotation_noise: [-0.15707963267, 0.15707963267]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0.2, 0.2, 0.2]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_classes: [1,]
+    class_names: [["car"],]
+    
+
+
+2019-05-10 14:00:58,554 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'num_point_features': 4, 'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}, 'train': {'batch_size': 6, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl', 'nsweeps': 1}, 'preprocess': {'max_num_voxels': 40000, 'shuffle': False, 'num_workers': 0, 'gt_location_noise': [0.25, 0.25, 0.25], 'gt_rotation_noise': [-0.15707963267, 0.15707963267], 'global_rotation_noise': [-0.78539816, 0.78539816], 'global_scale_noise': [0.95, 1.05], 'global_rotation_per_object_range': [0, 0], 'global_translation_noise': [0.2, 0.2, 0.2], 'anchor_area_threshold': -1, 'remove_points_after_sample': False, 'gt_drop_percentage': 0.0, 'gt_drop_max_keep_points': 15, 'remove_unknow_examples': False, 'remove_environment': False}}, 'eval': {'batch_size': 6, 'preprocess': {'num_workers': 0, 'shuffle': False, 'max_num_voxels': 40000, 'anchor_area_threshold': -1, 'remove_environment': False}, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl', 'nsweeps': 1}}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assigner': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'sample_positive_fraction': -1, 'sample_size': 512, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_classes': [1], 'class_names': [['car']]}}
+2019-05-10 14:04:12,564 3d-object-detection INFO: Using 1 GPUs
+2019-05-10 14:04:12,564 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-10 14:04:12,564 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+    train:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            gt_location_noise: [0.25, 0.25, 0.25]
+            gt_rotation_noise: [-0.15707963267, 0.15707963267]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0.2, 0.2, 0.2]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_classes: [1,]
+    class_names: [["car"],]
+    
+
+
+2019-05-10 14:04:12,565 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'num_point_features': 4, 'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}, 'train': {'batch_size': 6, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl', 'nsweeps': 1}, 'preprocess': {'max_num_voxels': 40000, 'shuffle': False, 'num_workers': 0, 'gt_location_noise': [0.25, 0.25, 0.25], 'gt_rotation_noise': [-0.15707963267, 0.15707963267], 'global_rotation_noise': [-0.78539816, 0.78539816], 'global_scale_noise': [0.95, 1.05], 'global_rotation_per_object_range': [0, 0], 'global_translation_noise': [0.2, 0.2, 0.2], 'anchor_area_threshold': -1, 'remove_points_after_sample': False, 'gt_drop_percentage': 0.0, 'gt_drop_max_keep_points': 15, 'remove_unknow_examples': False, 'remove_environment': False}}, 'eval': {'batch_size': 6, 'preprocess': {'num_workers': 0, 'shuffle': False, 'max_num_voxels': 40000, 'anchor_area_threshold': -1, 'remove_environment': False}, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl', 'nsweeps': 1}}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assigner': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'sample_positive_fraction': -1, 'sample_size': 512, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_classes': [1], 'class_names': [['car']]}}
+2019-05-10 14:04:53,313 3d-object-detection INFO: Using 1 GPUs
+2019-05-10 14:04:53,313 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-10 14:04:53,313 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+    train:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            gt_location_noise: [0.25, 0.25, 0.25]
+            gt_rotation_noise: [-0.15707963267, 0.15707963267]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0.2, 0.2, 0.2]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_classes: [1,]
+    class_names: [["car"],]
+    
+
+
+2019-05-10 14:04:53,314 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'num_point_features': 4, 'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}, 'train': {'batch_size': 6, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl', 'nsweeps': 1}, 'preprocess': {'max_num_voxels': 40000, 'shuffle': False, 'num_workers': 0, 'gt_location_noise': [0.25, 0.25, 0.25], 'gt_rotation_noise': [-0.15707963267, 0.15707963267], 'global_rotation_noise': [-0.78539816, 0.78539816], 'global_scale_noise': [0.95, 1.05], 'global_rotation_per_object_range': [0, 0], 'global_translation_noise': [0.2, 0.2, 0.2], 'anchor_area_threshold': -1, 'remove_points_after_sample': False, 'gt_drop_percentage': 0.0, 'gt_drop_max_keep_points': 15, 'remove_unknow_examples': False, 'remove_environment': False}}, 'eval': {'batch_size': 6, 'preprocess': {'num_workers': 0, 'shuffle': False, 'max_num_voxels': 40000, 'anchor_area_threshold': -1, 'remove_environment': False}, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl', 'nsweeps': 1}}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assigner': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'sample_positive_fraction': -1, 'sample_size': 512, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_classes': [1], 'class_names': [['car']]}}
+2019-05-10 14:05:24,709 3d-object-detection INFO: Using 1 GPUs
+2019-05-10 14:05:24,709 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-10 14:05:24,709 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+    train:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            gt_location_noise: [0.25, 0.25, 0.25]
+            gt_rotation_noise: [-0.15707963267, 0.15707963267]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0.2, 0.2, 0.2]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_classes: [1,]
+    class_names: [["car"],]
+    
+
+
+2019-05-10 14:05:24,709 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'num_point_features': 4, 'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}, 'train': {'batch_size': 6, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl', 'nsweeps': 1}, 'preprocess': {'max_num_voxels': 40000, 'shuffle': False, 'num_workers': 0, 'gt_location_noise': [0.25, 0.25, 0.25], 'gt_rotation_noise': [-0.15707963267, 0.15707963267], 'global_rotation_noise': [-0.78539816, 0.78539816], 'global_scale_noise': [0.95, 1.05], 'global_rotation_per_object_range': [0, 0], 'global_translation_noise': [0.2, 0.2, 0.2], 'anchor_area_threshold': -1, 'remove_points_after_sample': False, 'gt_drop_percentage': 0.0, 'gt_drop_max_keep_points': 15, 'remove_unknow_examples': False, 'remove_environment': False}}, 'eval': {'batch_size': 6, 'preprocess': {'num_workers': 0, 'shuffle': False, 'max_num_voxels': 40000, 'anchor_area_threshold': -1, 'remove_environment': False}, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl', 'nsweeps': 1}}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assigner': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'sample_positive_fraction': -1, 'sample_size': 512, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_classes': [1], 'class_names': [['car']]}}
+2019-05-10 14:05:53,242 3d-object-detection INFO: Using 1 GPUs
+2019-05-10 14:05:53,242 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-10 14:05:53,243 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+    train:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            gt_location_noise: [0.25, 0.25, 0.25]
+            gt_rotation_noise: [-0.15707963267, 0.15707963267]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0.2, 0.2, 0.2]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_classes: [1,]
+    class_names: [["car"],]
+    
+
+
+2019-05-10 14:05:53,243 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'num_point_features': 4, 'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}, 'train': {'batch_size': 6, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl', 'nsweeps': 1}, 'preprocess': {'max_num_voxels': 40000, 'shuffle': False, 'num_workers': 0, 'gt_location_noise': [0.25, 0.25, 0.25], 'gt_rotation_noise': [-0.15707963267, 0.15707963267], 'global_rotation_noise': [-0.78539816, 0.78539816], 'global_scale_noise': [0.95, 1.05], 'global_rotation_per_object_range': [0, 0], 'global_translation_noise': [0.2, 0.2, 0.2], 'anchor_area_threshold': -1, 'remove_points_after_sample': False, 'gt_drop_percentage': 0.0, 'gt_drop_max_keep_points': 15, 'remove_unknow_examples': False, 'remove_environment': False}}, 'eval': {'batch_size': 6, 'preprocess': {'num_workers': 0, 'shuffle': False, 'max_num_voxels': 40000, 'anchor_area_threshold': -1, 'remove_environment': False}, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl', 'nsweeps': 1}}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assigner': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'sample_positive_fraction': -1, 'sample_size': 512, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_classes': [1], 'class_names': [['car']]}}
+2019-05-10 14:06:55,081 3d-object-detection INFO: Using 1 GPUs
+2019-05-10 14:06:55,081 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-10 14:06:55,081 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+    train:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            gt_location_noise: [0.25, 0.25, 0.25]
+            gt_rotation_noise: [-0.15707963267, 0.15707963267]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0.2, 0.2, 0.2]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_classes: [1,]
+    class_names: [["car"],]
+    
+
+
+2019-05-10 14:06:55,082 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'num_point_features': 4, 'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}, 'train': {'batch_size': 6, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl', 'nsweeps': 1}, 'preprocess': {'max_num_voxels': 40000, 'shuffle': False, 'num_workers': 0, 'gt_location_noise': [0.25, 0.25, 0.25], 'gt_rotation_noise': [-0.15707963267, 0.15707963267], 'global_rotation_noise': [-0.78539816, 0.78539816], 'global_scale_noise': [0.95, 1.05], 'global_rotation_per_object_range': [0, 0], 'global_translation_noise': [0.2, 0.2, 0.2], 'anchor_area_threshold': -1, 'remove_points_after_sample': False, 'gt_drop_percentage': 0.0, 'gt_drop_max_keep_points': 15, 'remove_unknow_examples': False, 'remove_environment': False}}, 'eval': {'batch_size': 6, 'preprocess': {'num_workers': 0, 'shuffle': False, 'max_num_voxels': 40000, 'anchor_area_threshold': -1, 'remove_environment': False}, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl', 'nsweeps': 1}}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assigner': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'sample_positive_fraction': -1, 'sample_size': 512, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_classes': [1], 'class_names': [['car']]}}
+2019-05-10 14:07:37,840 3d-object-detection INFO: Using 1 GPUs
+2019-05-10 14:07:37,840 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-10 14:07:37,841 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+    train:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            gt_location_noise: [0.25, 0.25, 0.25]
+            gt_rotation_noise: [-0.15707963267, 0.15707963267]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0.2, 0.2, 0.2]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_classes: [1,]
+    class_names: [["car"],]
+    
+
+
+2019-05-10 14:07:37,841 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'num_point_features': 4, 'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}, 'train': {'batch_size': 6, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl', 'nsweeps': 1}, 'preprocess': {'max_num_voxels': 40000, 'shuffle': False, 'num_workers': 0, 'gt_location_noise': [0.25, 0.25, 0.25], 'gt_rotation_noise': [-0.15707963267, 0.15707963267], 'global_rotation_noise': [-0.78539816, 0.78539816], 'global_scale_noise': [0.95, 1.05], 'global_rotation_per_object_range': [0, 0], 'global_translation_noise': [0.2, 0.2, 0.2], 'anchor_area_threshold': -1, 'remove_points_after_sample': False, 'gt_drop_percentage': 0.0, 'gt_drop_max_keep_points': 15, 'remove_unknow_examples': False, 'remove_environment': False}}, 'eval': {'batch_size': 6, 'preprocess': {'num_workers': 0, 'shuffle': False, 'max_num_voxels': 40000, 'anchor_area_threshold': -1, 'remove_environment': False}, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl', 'nsweeps': 1}}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assigner': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'sample_positive_fraction': -1, 'sample_size': 512, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_classes': [1], 'class_names': [['car']]}}
+2019-05-10 14:08:56,451 3d-object-detection INFO: Using 1 GPUs
+2019-05-10 14:08:56,451 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-10 14:08:56,452 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+    train:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            gt_location_noise: [0.25, 0.25, 0.25]
+            gt_rotation_noise: [-0.15707963267, 0.15707963267]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0.2, 0.2, 0.2]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_classes: [1,]
+    class_names: [["car"],]
+    
+
+
+2019-05-10 14:08:56,452 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'num_point_features': 4, 'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}, 'train': {'batch_size': 6, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl', 'nsweeps': 1}, 'preprocess': {'max_num_voxels': 40000, 'shuffle': False, 'num_workers': 0, 'gt_location_noise': [0.25, 0.25, 0.25], 'gt_rotation_noise': [-0.15707963267, 0.15707963267], 'global_rotation_noise': [-0.78539816, 0.78539816], 'global_scale_noise': [0.95, 1.05], 'global_rotation_per_object_range': [0, 0], 'global_translation_noise': [0.2, 0.2, 0.2], 'anchor_area_threshold': -1, 'remove_points_after_sample': False, 'gt_drop_percentage': 0.0, 'gt_drop_max_keep_points': 15, 'remove_unknow_examples': False, 'remove_environment': False}}, 'eval': {'batch_size': 6, 'preprocess': {'num_workers': 0, 'shuffle': False, 'max_num_voxels': 40000, 'anchor_area_threshold': -1, 'remove_environment': False}, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl', 'nsweeps': 1}}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assigner': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'sample_positive_fraction': -1, 'sample_size': 512, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_classes': [1], 'class_names': [['car']]}}
+2019-05-10 14:09:53,928 3d-object-detection INFO: Using 1 GPUs
+2019-05-10 14:09:53,928 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-10 14:09:53,928 3d-object-detection INFO: 
+output_dir: 'output'
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+    train:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            gt_location_noise: [0.25, 0.25, 0.25]
+            gt_rotation_noise: [-0.15707963267, 0.15707963267]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0.2, 0.2, 0.2]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_classes: [1,]
+    class_names: [["car"],]
+    
+
+
+2019-05-10 14:09:53,929 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'input': {'num_point_features': 4, 'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}, 'train': {'batch_size': 6, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl', 'nsweeps': 1}, 'preprocess': {'max_num_voxels': 40000, 'shuffle': False, 'num_workers': 0, 'gt_location_noise': [0.25, 0.25, 0.25], 'gt_rotation_noise': [-0.15707963267, 0.15707963267], 'global_rotation_noise': [-0.78539816, 0.78539816], 'global_scale_noise': [0.95, 1.05], 'global_rotation_per_object_range': [0, 0], 'global_translation_noise': [0.2, 0.2, 0.2], 'anchor_area_threshold': -1, 'remove_points_after_sample': False, 'gt_drop_percentage': 0.0, 'gt_drop_max_keep_points': 15, 'remove_unknow_examples': False, 'remove_environment': False}}, 'eval': {'batch_size': 6, 'preprocess': {'num_workers': 0, 'shuffle': False, 'max_num_voxels': 40000, 'anchor_area_threshold': -1, 'remove_environment': False}, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl', 'nsweeps': 1}}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assigner': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'sample_positive_fraction': -1, 'sample_size': 512, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_classes': [1], 'class_names': [['car']]}}
+2019-05-10 14:12:37,143 3d-object-detection INFO: Using 1 GPUs
+2019-05-10 14:12:37,143 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=1, local_rank=0)
+2019-05-10 14:12:37,144 3d-object-detection INFO: 
+output_dir: 'output'
+gpus: '0,1'
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+    train:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            gt_location_noise: [0.25, 0.25, 0.25]
+            gt_rotation_noise: [-0.15707963267, 0.15707963267]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0.2, 0.2, 0.2]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_classes: [1,]
+    class_names: [["car"],]
+    
+
+
+2019-05-10 14:12:37,144 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'gpus': '0,1', 'input': {'num_point_features': 4, 'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}, 'train': {'batch_size': 6, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl', 'nsweeps': 1}, 'preprocess': {'max_num_voxels': 40000, 'shuffle': False, 'num_workers': 0, 'gt_location_noise': [0.25, 0.25, 0.25], 'gt_rotation_noise': [-0.15707963267, 0.15707963267], 'global_rotation_noise': [-0.78539816, 0.78539816], 'global_scale_noise': [0.95, 1.05], 'global_rotation_per_object_range': [0, 0], 'global_translation_noise': [0.2, 0.2, 0.2], 'anchor_area_threshold': -1, 'remove_points_after_sample': False, 'gt_drop_percentage': 0.0, 'gt_drop_max_keep_points': 15, 'remove_unknow_examples': False, 'remove_environment': False}}, 'eval': {'batch_size': 6, 'preprocess': {'num_workers': 0, 'shuffle': False, 'max_num_voxels': 40000, 'anchor_area_threshold': -1, 'remove_environment': False}, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl', 'nsweeps': 1}}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assigner': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'sample_positive_fraction': -1, 'sample_size': 512, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_classes': [1], 'class_names': [['car']]}}
+2019-05-10 14:24:17,219 3d-object-detection INFO: Using 2 GPUs
+2019-05-10 14:24:17,219 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=True, gpus=2, local_rank=0)
+2019-05-10 14:24:17,219 3d-object-detection INFO: 
+output_dir: 'output'
+gpus: '0,1'
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+    train:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            gt_location_noise: [0.25, 0.25, 0.25]
+            gt_rotation_noise: [-0.15707963267, 0.15707963267]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0.2, 0.2, 0.2]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_classes: [1,]
+    class_names: [["car"],]
+    
+
+
+2019-05-10 14:24:17,219 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'gpus': '0,1', 'input': {'num_point_features': 4, 'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}, 'train': {'batch_size': 6, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl', 'nsweeps': 1}, 'preprocess': {'max_num_voxels': 40000, 'shuffle': False, 'num_workers': 0, 'gt_location_noise': [0.25, 0.25, 0.25], 'gt_rotation_noise': [-0.15707963267, 0.15707963267], 'global_rotation_noise': [-0.78539816, 0.78539816], 'global_scale_noise': [0.95, 1.05], 'global_rotation_per_object_range': [0, 0], 'global_translation_noise': [0.2, 0.2, 0.2], 'anchor_area_threshold': -1, 'remove_points_after_sample': False, 'gt_drop_percentage': 0.0, 'gt_drop_max_keep_points': 15, 'remove_unknow_examples': False, 'remove_environment': False}}, 'eval': {'batch_size': 6, 'preprocess': {'num_workers': 0, 'shuffle': False, 'max_num_voxels': 40000, 'anchor_area_threshold': -1, 'remove_environment': False}, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl', 'nsweeps': 1}}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assigner': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'sample_positive_fraction': -1, 'sample_size': 512, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_classes': [1], 'class_names': [['car']]}}
+2019-05-10 14:26:48,037 3d-object-detection INFO: Using 2 GPUs
+2019-05-10 14:26:48,037 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=True, gpus=2, local_rank=0)
+2019-05-10 14:26:48,038 3d-object-detection INFO: 
+output_dir: 'output'
+gpus: '0,1'
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+    train:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            gt_location_noise: [0.25, 0.25, 0.25]
+            gt_rotation_noise: [-0.15707963267, 0.15707963267]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0.2, 0.2, 0.2]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_classes: [1,]
+    class_names: [["car"],]
+    
+
+
+2019-05-10 14:26:48,038 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'gpus': '0,1', 'input': {'num_point_features': 4, 'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}, 'train': {'batch_size': 6, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl', 'nsweeps': 1}, 'preprocess': {'max_num_voxels': 40000, 'shuffle': False, 'num_workers': 0, 'gt_location_noise': [0.25, 0.25, 0.25], 'gt_rotation_noise': [-0.15707963267, 0.15707963267], 'global_rotation_noise': [-0.78539816, 0.78539816], 'global_scale_noise': [0.95, 1.05], 'global_rotation_per_object_range': [0, 0], 'global_translation_noise': [0.2, 0.2, 0.2], 'anchor_area_threshold': -1, 'remove_points_after_sample': False, 'gt_drop_percentage': 0.0, 'gt_drop_max_keep_points': 15, 'remove_unknow_examples': False, 'remove_environment': False}}, 'eval': {'batch_size': 6, 'preprocess': {'num_workers': 0, 'shuffle': False, 'max_num_voxels': 40000, 'anchor_area_threshold': -1, 'remove_environment': False}, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl', 'nsweeps': 1}}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assigner': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'sample_positive_fraction': -1, 'sample_size': 512, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_classes': [1], 'class_names': [['car']]}}
+2019-05-10 14:27:13,647 3d-object-detection INFO: Using 2 GPUs
+2019-05-10 14:27:13,648 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=True, gpus=2, local_rank=0)
+2019-05-10 14:27:13,648 3d-object-detection INFO: 
+output_dir: 'output'
+gpus: '0,1'
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+    train:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            gt_location_noise: [0.25, 0.25, 0.25]
+            gt_rotation_noise: [-0.15707963267, 0.15707963267]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0.2, 0.2, 0.2]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_classes: [1,]
+    class_names: [["car"],]
+    
+
+
+2019-05-10 14:27:13,648 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'gpus': '0,1', 'input': {'num_point_features': 4, 'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}, 'train': {'batch_size': 6, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl', 'nsweeps': 1}, 'preprocess': {'max_num_voxels': 40000, 'shuffle': False, 'num_workers': 0, 'gt_location_noise': [0.25, 0.25, 0.25], 'gt_rotation_noise': [-0.15707963267, 0.15707963267], 'global_rotation_noise': [-0.78539816, 0.78539816], 'global_scale_noise': [0.95, 1.05], 'global_rotation_per_object_range': [0, 0], 'global_translation_noise': [0.2, 0.2, 0.2], 'anchor_area_threshold': -1, 'remove_points_after_sample': False, 'gt_drop_percentage': 0.0, 'gt_drop_max_keep_points': 15, 'remove_unknow_examples': False, 'remove_environment': False}}, 'eval': {'batch_size': 6, 'preprocess': {'num_workers': 0, 'shuffle': False, 'max_num_voxels': 40000, 'anchor_area_threshold': -1, 'remove_environment': False}, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl', 'nsweeps': 1}}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assigner': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'sample_positive_fraction': -1, 'sample_size': 512, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_classes': [1], 'class_names': [['car']]}}
+2019-05-10 14:28:25,308 3d-object-detection INFO: Using 2 GPUs
+2019-05-10 14:28:25,308 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=True, gpus=2, local_rank=0)
+2019-05-10 14:28:25,309 3d-object-detection INFO: 
+output_dir: 'output'
+gpus: '0,1'
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+    train:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            gt_location_noise: [0.25, 0.25, 0.25]
+            gt_rotation_noise: [-0.15707963267, 0.15707963267]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0.2, 0.2, 0.2]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_classes: [1,]
+    class_names: [["car"],]
+    
+
+
+2019-05-10 14:28:25,309 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'gpus': '0,1', 'input': {'num_point_features': 4, 'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}, 'train': {'batch_size': 6, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl', 'nsweeps': 1}, 'preprocess': {'max_num_voxels': 40000, 'shuffle': False, 'num_workers': 0, 'gt_location_noise': [0.25, 0.25, 0.25], 'gt_rotation_noise': [-0.15707963267, 0.15707963267], 'global_rotation_noise': [-0.78539816, 0.78539816], 'global_scale_noise': [0.95, 1.05], 'global_rotation_per_object_range': [0, 0], 'global_translation_noise': [0.2, 0.2, 0.2], 'anchor_area_threshold': -1, 'remove_points_after_sample': False, 'gt_drop_percentage': 0.0, 'gt_drop_max_keep_points': 15, 'remove_unknow_examples': False, 'remove_environment': False}}, 'eval': {'batch_size': 6, 'preprocess': {'num_workers': 0, 'shuffle': False, 'max_num_voxels': 40000, 'anchor_area_threshold': -1, 'remove_environment': False}, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl', 'nsweeps': 1}}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assigner': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'sample_positive_fraction': -1, 'sample_size': 512, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_classes': [1], 'class_names': [['car']]}}
+2019-05-10 14:29:50,138 3d-object-detection INFO: Using 2 GPUs
+2019-05-10 14:29:50,139 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=True, gpus=2, local_rank=0)
+2019-05-10 14:29:50,139 3d-object-detection INFO: 
+output_dir: 'output'
+gpus: '0,1'
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+    train:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            gt_location_noise: [0.25, 0.25, 0.25]
+            gt_rotation_noise: [-0.15707963267, 0.15707963267]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0.2, 0.2, 0.2]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_classes: [1,]
+    class_names: [["car"],]
+    
+
+
+2019-05-10 14:29:50,139 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'gpus': '0,1', 'input': {'num_point_features': 4, 'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}, 'train': {'batch_size': 6, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl', 'nsweeps': 1}, 'preprocess': {'max_num_voxels': 40000, 'shuffle': False, 'num_workers': 0, 'gt_location_noise': [0.25, 0.25, 0.25], 'gt_rotation_noise': [-0.15707963267, 0.15707963267], 'global_rotation_noise': [-0.78539816, 0.78539816], 'global_scale_noise': [0.95, 1.05], 'global_rotation_per_object_range': [0, 0], 'global_translation_noise': [0.2, 0.2, 0.2], 'anchor_area_threshold': -1, 'remove_points_after_sample': False, 'gt_drop_percentage': 0.0, 'gt_drop_max_keep_points': 15, 'remove_unknow_examples': False, 'remove_environment': False}}, 'eval': {'batch_size': 6, 'preprocess': {'num_workers': 0, 'shuffle': False, 'max_num_voxels': 40000, 'anchor_area_threshold': -1, 'remove_environment': False}, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl', 'nsweeps': 1}}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assigner': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'sample_positive_fraction': -1, 'sample_size': 512, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_classes': [1], 'class_names': [['car']]}}
+2019-05-10 14:38:18,393 3d-object-detection INFO: Using 2 GPUs
+2019-05-10 14:38:18,393 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=True, gpus=2, local_rank=0)
+2019-05-10 14:38:18,393 3d-object-detection INFO: 
+output_dir: 'output'
+gpus: '0,1'
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+    train:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            gt_location_noise: [0.25, 0.25, 0.25]
+            gt_rotation_noise: [-0.15707963267, 0.15707963267]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0.2, 0.2, 0.2]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_classes: [1,]
+    class_names: [["car"],]
+    
+
+
+2019-05-10 14:38:18,394 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'gpus': '0,1', 'input': {'num_point_features': 4, 'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}, 'train': {'batch_size': 6, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl', 'nsweeps': 1}, 'preprocess': {'max_num_voxels': 40000, 'shuffle': False, 'num_workers': 0, 'gt_location_noise': [0.25, 0.25, 0.25], 'gt_rotation_noise': [-0.15707963267, 0.15707963267], 'global_rotation_noise': [-0.78539816, 0.78539816], 'global_scale_noise': [0.95, 1.05], 'global_rotation_per_object_range': [0, 0], 'global_translation_noise': [0.2, 0.2, 0.2], 'anchor_area_threshold': -1, 'remove_points_after_sample': False, 'gt_drop_percentage': 0.0, 'gt_drop_max_keep_points': 15, 'remove_unknow_examples': False, 'remove_environment': False}}, 'eval': {'batch_size': 6, 'preprocess': {'num_workers': 0, 'shuffle': False, 'max_num_voxels': 40000, 'anchor_area_threshold': -1, 'remove_environment': False}, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl', 'nsweeps': 1}}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assigner': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'sample_positive_fraction': -1, 'sample_size': 512, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_classes': [1], 'class_names': [['car']]}}
+2019-05-10 14:39:16,912 3d-object-detection INFO: Using 2 GPUs
+2019-05-10 14:39:16,912 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=True, gpus=2, local_rank=0)
+2019-05-10 14:39:16,912 3d-object-detection INFO: 
+output_dir: 'output'
+gpus: '0,1'
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+    train:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            gt_location_noise: [0.25, 0.25, 0.25]
+            gt_rotation_noise: [-0.15707963267, 0.15707963267]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0.2, 0.2, 0.2]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_classes: [1,]
+    class_names: [["car"],]
+    
+
+
+2019-05-10 14:39:16,913 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'gpus': '0,1', 'input': {'num_point_features': 4, 'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}, 'train': {'batch_size': 6, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl', 'nsweeps': 1}, 'preprocess': {'max_num_voxels': 40000, 'shuffle': False, 'num_workers': 0, 'gt_location_noise': [0.25, 0.25, 0.25], 'gt_rotation_noise': [-0.15707963267, 0.15707963267], 'global_rotation_noise': [-0.78539816, 0.78539816], 'global_scale_noise': [0.95, 1.05], 'global_rotation_per_object_range': [0, 0], 'global_translation_noise': [0.2, 0.2, 0.2], 'anchor_area_threshold': -1, 'remove_points_after_sample': False, 'gt_drop_percentage': 0.0, 'gt_drop_max_keep_points': 15, 'remove_unknow_examples': False, 'remove_environment': False}}, 'eval': {'batch_size': 6, 'preprocess': {'num_workers': 0, 'shuffle': False, 'max_num_voxels': 40000, 'anchor_area_threshold': -1, 'remove_environment': False}, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_eval.pkl', 'nsweeps': 1}}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assigner': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'sample_positive_fraction': -1, 'sample_size': 512, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_classes': [1], 'class_names': [['car']]}}
+2019-05-10 14:42:41,187 3d-object-detection INFO: Using 2 GPUs
+2019-05-10 14:42:41,187 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=True, gpus=2, local_rank=0)
+2019-05-10 14:42:41,188 3d-object-detection INFO: 
+output_dir: 'output'
+gpus: '0,1'
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+    train:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            gt_location_noise: [0.25, 0.25, 0.25]
+            gt_rotation_noise: [-0.15707963267, 0.15707963267]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0.2, 0.2, 0.2]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_val.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_classes: [1,]
+    class_names: [["car"],]
+    
+
+
+2019-05-10 14:42:41,188 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'gpus': '0,1', 'input': {'num_point_features': 4, 'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}, 'train': {'batch_size': 6, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl', 'nsweeps': 1}, 'preprocess': {'max_num_voxels': 40000, 'shuffle': False, 'num_workers': 0, 'gt_location_noise': [0.25, 0.25, 0.25], 'gt_rotation_noise': [-0.15707963267, 0.15707963267], 'global_rotation_noise': [-0.78539816, 0.78539816], 'global_scale_noise': [0.95, 1.05], 'global_rotation_per_object_range': [0, 0], 'global_translation_noise': [0.2, 0.2, 0.2], 'anchor_area_threshold': -1, 'remove_points_after_sample': False, 'gt_drop_percentage': 0.0, 'gt_drop_max_keep_points': 15, 'remove_unknow_examples': False, 'remove_environment': False}}, 'eval': {'batch_size': 6, 'preprocess': {'num_workers': 0, 'shuffle': False, 'max_num_voxels': 40000, 'anchor_area_threshold': -1, 'remove_environment': False}, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_val.pkl', 'nsweeps': 1}}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assigner': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'sample_positive_fraction': -1, 'sample_size': 512, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_classes': [1], 'class_names': [['car']]}}
+2019-05-10 14:43:03,864 3d-object-detection INFO: Using 2 GPUs
+2019-05-10 14:43:03,864 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=True, gpus=2, local_rank=0)
+2019-05-10 14:43:03,865 3d-object-detection INFO: 
+output_dir: 'output'
+gpus: '0,1'
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+    train:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            gt_location_noise: [0.25, 0.25, 0.25]
+            gt_rotation_noise: [-0.15707963267, 0.15707963267]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0.2, 0.2, 0.2]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_val.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [(1.97, 4.63, 1.74),]
+        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
+        anchor_rotations: [(0, 1.57),]
+        anchor_velocities: [(0, 0),]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_classes: [1,]
+    class_names: [["car"],]
+    
+
+
+2019-05-10 14:43:03,865 3d-object-detection INFO: Running with config:
+{'output_dir': 'output', 'gpus': '0,1', 'input': {'num_point_features': 4, 'voxel': {'voxel_size': [0.05, 0.05, 0.1], 'point_cloud_range': [0, -40.0, -3.0, 70.4, 40.0, 1.0], 'max_num_points': 5, 'max_voxels': 20000}, 'train': {'batch_size': 6, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl', 'nsweeps': 1}, 'preprocess': {'max_num_voxels': 40000, 'shuffle': False, 'num_workers': 0, 'gt_location_noise': [0.25, 0.25, 0.25], 'gt_rotation_noise': [-0.15707963267, 0.15707963267], 'global_rotation_noise': [-0.78539816, 0.78539816], 'global_scale_noise': [0.95, 1.05], 'global_rotation_per_object_range': [0, 0], 'global_translation_noise': [0.2, 0.2, 0.2], 'anchor_area_threshold': -1, 'remove_points_after_sample': False, 'gt_drop_percentage': 0.0, 'gt_drop_max_keep_points': 15, 'remove_unknow_examples': False, 'remove_environment': False}}, 'eval': {'batch_size': 6, 'preprocess': {'num_workers': 0, 'shuffle': False, 'max_num_voxels': 40000, 'anchor_area_threshold': -1, 'remove_environment': False}, 'dataset': {'type': 'KittiDataset', 'root_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object', 'info_path': '/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_val.pkl', 'nsweeps': 1}}}, 'box_coder': {'type': 'ground_box3d_coder', 'value': {'linear_dim': False, 'encode_angle_vector': False}}, 'target_assigner': {'anchor_generators': {'anchor_types': ['anchor_generator_range'], 'anchor_sizes': ['(1.97', 4.63, '1.74)'], 'anchor_ranges': ['(-51.2', -51.2, -0.92, 51.2, 51.2, '-0.92)'], 'anchor_rotations': ['(0', '1.57)'], 'anchor_velocities': ['(0', '0)'], 'anchor_matched_thresholds': [0.6], 'anchor_unmatched_thresholds': [0.45], 'anchor_class_names': ['car'], 'sample_positive_fraction': -1, 'sample_size': 512, 'region_similarity_calculator': {'type': 'nearest_iou_similarity', 'value': 0}}}, 'tasks': {'num_classes': [1], 'class_names': [['car']]}}

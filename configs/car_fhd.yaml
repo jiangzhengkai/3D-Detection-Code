@@ -1,5 +1,7 @@
 output_dir: 'output'
+gpus: '0,1'
 input:
+    num_point_features: 4
     voxel:
         voxel_size: [0.05, 0.05, 0.1]
         point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
@@ -8,7 +10,9 @@ input:
     train:
         dataset:
             type: "KittiDataset"
-
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
         preprocess:
             max_num_voxels: 40000
             shuffle: False
@@ -23,9 +27,20 @@ input:
             remove_points_after_sample: False
             gt_drop_percentage: 0.0
             gt_drop_max_keep_points: 15
-            remove_unkonw_examples: False
+            remove_unknow_examples: False
             remove_environment: False
-
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_val.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            anchor_area_threshold: -1
+            remove_environment: False
 
 box_coder:
     type: "ground_box3d_coder"
@@ -43,10 +58,8 @@ target_assigner:
         anchor_matched_thresholds: [0.6,]
         anchor_unmatched_thresholds: [0.45,]
         anchor_class_names: ["car",]
-       
         sample_positive_fraction: -1
         sample_size: 512
-
         region_similarity_calculator: 
             type: "nearest_iou_similarity"
             value: 0

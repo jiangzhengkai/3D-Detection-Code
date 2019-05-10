@@ -4,23 +4,25 @@ from lib.engine.train import train
 from lib.utils.dist_common import get_rank
 from lib.config.config import cfg, cfg_from_file
 from lib.utils.logger import setup_logger
+from lib.utils.dist_common import synchronize
 
 def main():
     parser = argparse.ArgumentParser(description='3d object detection train')
     parser.add_argument('--cfg', default="", metavar="FILE", help="path to config file", type=str)
     parser.add_argument('--local_rank', type=int, default=0)
-    parser.add_argument('--gpus', type=int, default=1, help="number of gpus to use")
+    parser.add_argument('--gpus', type=int, help="number of gpus to use")
     args = parser.parse_args()
 
     cfg_from_file(args.cfg)
     output_dir = cfg.output_dir
-    num_gpus = args.gpus
+    num_gpus = args.gpus if args.gpus else len(cfg.gpus.split(','))
 
     args.distributed = num_gpus > 1
     if args.distributed:
         torch.cuda.set_device(args.local_rank)
         torch.distributed.init_process_group(
-            backend="nccl", init_method="env://"
+        	backend="nccl", init_method="tcp://127.0.0.1:23456",
+		rank=0, world_size=1
         )
         synchronize()
 

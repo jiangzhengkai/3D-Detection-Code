@@ -15,7 +15,7 @@ class KittiDataset(Dataset):
             infos = pickle.load(f)
         self._root_path = root_path
         self._kitti_infos = infos
-        self._num_point_features = 4
+        self._num_point_features = num_point_features
         self._class_names = class_names
         self._prep_func = prep_func
 

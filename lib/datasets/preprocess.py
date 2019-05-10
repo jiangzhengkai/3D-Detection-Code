@@ -1,4 +1,68 @@
 import itertools
+import numpy as np
+
+def collate_batch_fn(batch_list):
+    example_merged = defaultdict(list)
+    for example in batch_list:
+        for k, v in example.items():
+            example_merged[k].append(v)
+    batch_size = len(batch_list)
+    ret = {}
+    for key, elems in example_merged.items():
+        if key in ['voxels', 'num_points', 'num_gt', 'voxel_labels']:
+            ret[key] = np.concatenate(elems, axis=0)
+        elif key in [
+                "gt_boxes",
+        ]:
+            task_max_gts = []
+            for task_id in range(len(elems[0])):
+                max_gt = 0
+                for k in range(batch_size):
+                    max_gt = max(max_gt, len(elems[k][task_id]))
+                task_max_gts.append(max_gt)
+            res = []
+            for idx, max_gt in enumerate(task_max_gts):
+                batch_task_gt_boxes3d = np.zeros((batch_size, max_gt, 9))
+                for i in range(batch_size):
+                    batch_task_gt_boxes3d[i, :len(elems[i][idx]
+                                                  ), :] = elems[i][idx]
+                res.append(batch_task_gt_boxes3d)
+            ret[key] = res
+        elif key == 'metadata':
+            ret[key] = elems
+        elif key == "calib":
+            ret[key] = {}
+            for elem in elems:
+                for k1, v1 in elem.items():
+                    if k1 not in ret[key]:
+                        ret[key][k1] = [v1]
+                    else:
+                        ret[key][k1].append(v1)
+            for k1, v1 in ret[key].items():
+                ret[key][k1] = np.stack(v1, axis=0)
+        elif key in ['coordinates', 'points']:
+            coors = []
+            for i, coor in enumerate(elems):
+                coor_pad = np.pad(coor, ((0, 0), (1, 0)),
+                                  mode='constant',
+                                  constant_values=i)
+                coors.append(coor_pad)
+            ret[key] = np.concatenate(coors, axis=0)
+        elif key in [
+                "anchors", "anchors_mask", "reg_targets", "reg_weights",
+                "labels"
+        ]:
+            ret[key] = defaultdict(list)
+            for elem in elems:
+                for idx, ele in enumerate(elem):
+                    ret[key][str(idx)].append(ele)
+        else:
+            ret[key] = np.stack(elems, axis=0)
+
+    return ret
+
+
+
 
 
 def prep_pointcloud(config,
@@ -66,7 +130,7 @@ def prep_pointcloud(config,
         calib = input_dict["calib"]
 
     if reference_detections is not None:
-        assert calib is not None and "image" in input_dict:
+        assert calib is not None and "image" in input_dict
         C, R, T = box_np_ops.projection_matrix_to_CRT_kitti(P2)
         frustums = box_np_ops.get_frustum_v2(reference_detections, C)
         frustums -= T
