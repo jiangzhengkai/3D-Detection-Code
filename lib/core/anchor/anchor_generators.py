@@ -116,7 +116,6 @@ class AnchorGeneratorRange:
 
     @property
     def ndim(self):
-        # return 7 + len(self._custom_values)
         return self._anchors.shape[-1]
 
     def generate(self, feature_map_size):
