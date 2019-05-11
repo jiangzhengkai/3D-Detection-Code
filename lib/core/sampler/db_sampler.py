@@ -2,6 +2,7 @@ from lib.core.sampler.sampler_ops import DataBaseSampler
 import pickle
 import abc
 import logging
+import numpy as np
 
 def DBSampler(config):
     config_db_sampler = config.input.train.preprocess.db_sampler
@@ -19,7 +20,13 @@ def DBSampler(config):
     db_preprocess = DataBasePreprocessor(preprocess)
     rate = config_db_sampler.rate
     global_rotate_range = list(config_db_sampler.global_random_rotation_range_per_object)
-    groups = config_db_sampler.sample_groups
+    group_config = config_db_sampler.sample_groups
+    group_classes = group_config.classes
+    group_values = group_config.values
+    groups = []
+    for i in range(len(group_classes)):
+        groups.append({group_classes[i]:group_values[i]})
+   
     info_path = config_db_sampler.db_info_path
     with open(info_path, 'rb') as f:
         db_infos = pickle.load(f)
@@ -98,7 +105,6 @@ class DBFilterByMinNumPoint(DataBasePreprocessing):
         logger.info("{min_gt_point_dict}")
 
     def _preprocess(self, db_infos):
-        import pdb;pdb.set_trace()
         for name, min_num in self._min_gt_point_dict.items():
             if min_num > 0:
                 filtered_infos = []

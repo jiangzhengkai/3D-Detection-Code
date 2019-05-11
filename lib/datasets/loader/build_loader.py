@@ -55,7 +55,9 @@ def build_dataset(config, training):
 
     out_size_factor = 8
     grid_size = voxel_generator.grid_size
-    feature_map = grid_size[:2] // out_size_factor
+    feature_map_size = grid_size[:2] // out_size_factor
+    feature_map_size = [*feature_map_size, 1][::-1]
+
     dataset_class = get_dataset_class(config.input.train.dataset.type)    
     config_dataset = config.input.train.dataset if training else config.input.eval.dataset
 
@@ -85,11 +87,11 @@ def build_dataset(config, training):
 	for ret in rets
     ]
     anchors_bvs = [
-        box_np_ops.rbbox2d_to_near_bbox(anchors[:, [0, 1, 3, 4, -1]])
-        for anchors in anchorss
+        box_np_ops.rbbox2d_to_near_bbox(anchor[:, [0, 1, 3, 4, -1]])
+        for anchor in anchors
     ]
     anchor_cache = {
-        "anchors": anchorss,
+        "anchors": anchors,
         "anchors_bv": anchors_bvs,
         "matched_thresholds": matched_thresholdss,
         "unmatched_thresholds": unmatched_thresholdss,

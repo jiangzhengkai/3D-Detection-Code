@@ -8,6 +8,7 @@ import numpy as np
 
 from lib.core.bbox import box_np_ops
 from lib.datasets import preprocess as prep
+from lib.core.sampler import db_sampler
 from utils.check import shape_mergeable
 
 
@@ -78,7 +79,7 @@ class DataBaseSampler:
 
         self._sampler_dict = {}
         for k, v in self._group_db_infos.items():
-            self._sampler_dict[k] = prep.BatchSampler(v, k)
+            self._sampler_dict[k] = db_sampler.BatchSampler(v, k)
         self._enable_global_rot = False
         if global_rot_range is not None:
             if not isinstance(global_rot_range, (list, tuple, np.ndarray)):

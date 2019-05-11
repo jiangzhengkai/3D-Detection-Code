@@ -36,11 +36,11 @@ input:
                 db_preprocess_steps:
                     filter_by_min_num_points:
                         type: "filter_by_min_num_points"
-                        classes: ["car",] 
+                        classes: ["Car",] 
                         values: [5,]
                     filter_by_difficulty:
                         type: "filter_by_difficulty"
-                        value: -1
+                        value: [-1,]
                 global_random_rotation_range_per_object: [0, 0]
                 rate: 1.0
                 sample_groups:
@@ -69,10 +69,10 @@ box_coder:
 target_assigner:
     anchor_generators:
         anchor_types: ["anchor_generator_range",]
-        anchor_sizes: [(1.97, 4.63, 1.74),]
-        anchor_ranges: [(-51.2, -51.2, -0.92, 51.2, 51.2, -0.92),]
-        anchor_rotations: [(0, 1.57),]
-        anchor_velocities: [(0, 0),]
+        anchor_sizes: [[1.97, 4.63, 1.74],]
+        anchor_ranges: [[-51.2, -51.2, -0.92, 51.2, 51.2, -0.92],]
+        anchor_rotations: [[0, 1.57],]
+        anchor_velocities: [[0, 0],]
         anchor_matched_thresholds: [0.6,]
         anchor_unmatched_thresholds: [0.45,]
         anchor_class_names: ["car",]

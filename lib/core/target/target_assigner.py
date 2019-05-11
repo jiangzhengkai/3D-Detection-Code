@@ -2,7 +2,7 @@ from lib.core.bbox import box_np_ops
 from lib.core.target.target_ops import create_target_np
 from lib.core.bbox import region_similarity
 import numpy as np
-
+from collections import OrderedDict
 
 class TargetAssigner:
     def __init__(self,
@@ -20,6 +20,9 @@ class TargetAssigner:
     @property
     def box_coder(self):
         return self._box_coder
+    @property
+    def classes(self):
+        return [a.class_name for a in self._anchor_generators]
 
     def assign(self,
                anchors,
