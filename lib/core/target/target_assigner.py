@@ -58,24 +58,17 @@ class TargetAssigner:
 
     def generate_anchors(self, feature_map_size):
         anchors_list = []
-        matched_thresholds = [
-            a.match_threshold for a in self._anchor_generators
-        ]
-        unmatched_thresholds = [
-            a.unmatch_threshold for a in self._anchor_generators
-        ]
+        matched_thresholds = [a.match_threshold for a in self._anchor_generators]
+        unmatched_thresholds = [a.unmatch_threshold for a in self._anchor_generators]
         match_list, unmatch_list = [], []
         for anchor_generator, match_thresh, unmatch_thresh in zip(
-                self._anchor_generators, matched_thresholds,
-                unmatched_thresholds):
+                self._anchor_generators, matched_thresholds, unmatched_thresholds):
             anchors = anchor_generator.generate(feature_map_size)
-            anchors = anchors.reshape([*anchors.shape[:3], -1, 7])
+            anchors = anchors.reshape([*anchors.shape[:3], -1, anchors.shape[-1]])
             anchors_list.append(anchors)
             num_anchors = np.prod(anchors.shape[:-1])
-            match_list.append(
-                np.full([num_anchors], match_thresh, anchors.dtype))
-            unmatch_list.append(
-                np.full([num_anchors], unmatch_thresh, anchors.dtype))
+            match_list.append(np.full([num_anchors], match_thresh, anchors.dtype))
+            unmatch_list.append(np.full([num_anchors], unmatch_thresh, anchors.dtype))
         anchors = np.concatenate(anchors_list, axis=-2)
         matched_thresholds = np.concatenate(match_list, axis=0)
         unmatched_thresholds = np.concatenate(unmatch_list, axis=0)
@@ -84,6 +77,33 @@ class TargetAssigner:
             "matched_thresholds": matched_thresholds,
             "unmatched_thresholds": unmatched_thresholds
         }
+    def generate_anchors_dict(self, feature_map_size):
+        anchors_list = []
+        matched_thresholds = [
+            a.match_threshold for a in self._anchor_generators
+        ]
+        unmatched_thresholds = [
+            a.unmatch_threshold for a in self._anchor_generators
+        ]
+        match_list, unmatch_list = [], []
+        anchors_dict = {a.class_name: {} for a in self._anchor_generators}
+        anchors_dict = OrderedDict(anchors_dict)
+        for anchor_generator, match_thresh, unmatch_thresh in zip(
+                self._anchor_generators, matched_thresholds,
+                unmatched_thresholds):
+            anchors = anchor_generator.generate(feature_map_size)
+            anchors = anchors.reshape([*anchors.shape[:3], -1, anchors.shape[-1]])
+            anchors_list.append(anchors)
+            num_anchors = np.prod(anchors.shape[:-1])
+            match_list.append(
+                np.full([num_anchors], match_thresh, anchors.dtype))
+            unmatch_list.append(
+                np.full([num_anchors], unmatch_thresh, anchors.dtype))
+            class_name = anchor_generator.class_name
+            anchors_dict[class_name]["anchors"] = anchors
+            anchors_dict[class_name]["matched_thresholds"] = match_list[-1]
+            anchors_dict[class_name]["unmatched_thresholds"] = unmatch_list[-1]
+        return anchors_dict
 
     @property
     def num_anchors_per_location(self):

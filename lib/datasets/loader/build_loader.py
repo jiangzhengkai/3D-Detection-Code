@@ -72,6 +72,44 @@ def build_dataset(config, training):
 	num_point_feature=config.input.num_point_features,
 	out_size_factor=out_size_factor)
 
+
+    ####### anchor_caches #######
+    rets = [
+	target_assigner.generate_anchors(feature_map_size) 
+	for target_assigner in target_assigners
+    ]
+    class_namess = [
+	target_assigner.classes 
+	for target_assigner in target_assigners
+    ]
+    anchors_dicts = [
+	target_assigner.generate_anchors_dict(feature_map_size) 
+	for target_assigner in target_assigners
+    ]
+    anchors = [
+	ret["anchors"].reshape([-1, ret["anchors"].shape[-1]]) 
+	for ret in rets
+    ]
+    matched_thresholdss = [
+	ret["matched_thresholds"] 
+	for ret in rets
+    ]
+    unmatched_thresholdss = [
+	ret["unmatched_thresholds"] 
+	for ret in rets
+    ]
+    anchors_bvs = [
+        box_np_ops.rbbox2d_to_near_bbox(anchors[:, [0, 1, 3, 4, -1]])
+        for anchors in anchorss
+    ]
+    anchor_cache = {
+        "anchors": anchorss,
+        "anchors_bv": anchors_bvs,
+        "matched_thresholds": matched_thresholdss,
+        "unmatched_thresholds": unmatched_thresholdss,
+        "anchors_dict": anchors_dicts,
+    }
+    prep_func = partial(prep_func, anchor_cache=anchor_cache)
     ######## dataset ########
     dataset = dataset_class(
 	info_path=config_dataset.info_path,
