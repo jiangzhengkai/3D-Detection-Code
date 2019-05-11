@@ -11,7 +11,7 @@ from lib.datasets import preprocess as prep
 from utils.check import shape_mergeable
 
 
-class DataBaseSamplerV2:
+class DataBaseSampler:
     def __init__(self,
                  db_infos,
                  groups,
@@ -277,6 +277,9 @@ class DataBaseSamplerV2:
         valid_samples = []
         for i in range(num_gt, num_gt + num_sampled):
             if coll_mat[i].any():
+                coll_mat[i] = False
+                coll_mat[:, i] = False
+            else:
                 if self._enable_global_rot:
                     sampled[i - num_gt]["box3d_lidar"][:2] = boxes[i, :2]
                     sampled[i - num_gt]["box3d_lidar"][-1] = boxes[i, -1]
@@ -316,6 +319,9 @@ class DataBaseSamplerV2:
         if self._enable_global_rot:
             # place samples to any place in a circle.
             prep.noise_per_object_v3_(
+                boxes,
+                None,
+                valid_mask,
                 0,
                 0,
                 self._global_rot_range,
@@ -325,6 +331,9 @@ class DataBaseSamplerV2:
         sp_boxes_bv = box_np_ops.center_to_corner_box2d(
             sp_boxes_new[:, 0:2], sp_boxes_new[:, 3:5], sp_boxes_new[:, -1])
         total_bv = np.concatenate([gt_boxes_bv, sp_boxes_bv], axis=0)
+        # coll_mat = collision_test_allbox(total_bv)
+        coll_mat = prep.box_collision_test(total_bv, total_bv)
+        diag = np.arange(total_bv.shape[0])
         coll_mat[diag, diag] = False
         valid_samples = []
         idx = num_gt
@@ -346,13 +355,4 @@ class DataBaseSamplerV2:
                     valid_samples.append(sampled[idx - num_gt + i])
             idx += num
         return valid_samples
-        # coll_mat = collision_test_allbox(total_bv)
-        coll_mat = prep.box_collision_test(total_bv, total_bv)
-        diag = np.arange(total_bv.shape[0])
-                boxes,
-                None,
-                valid_mask,
-                coll_mat[i] = False
-                coll_mat[:, i] = False
-            else:
 

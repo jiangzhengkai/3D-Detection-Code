@@ -4,7 +4,7 @@ from lib.core.bbox.box_coder import box_coder
 from lib.core.anchor.anchor_generators import anchor_generators
 from lib.core.bbox.region_similarity import region_similarity_calculator
 from lib.core.target.target_assigner import TargetAssigner
-from lib.core.voxel.db_sampler import DBSampler
+from lib.core.sampler.db_sampler import DBSampler
 from lib.datasets.preprocess import prep_pointcloud
 from .sampler import Sampler, DistributedSampler
 
