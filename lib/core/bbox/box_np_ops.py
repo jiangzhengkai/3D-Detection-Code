@@ -1,6 +1,5 @@
 import numpy as np
 import numba
-import numpy as np
 from lib.core.bbox.geometry import points_in_convex_polygon_3d_jit
 
 
