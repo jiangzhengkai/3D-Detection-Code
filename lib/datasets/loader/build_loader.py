@@ -4,7 +4,7 @@ from lib.core.bbox.box_coder import box_coder
 from lib.core.anchor.anchor_generators import anchor_generators
 from lib.core.bbox.region_similarity import region_similarity_calculator
 from lib.core.target.target_assigner import TargetAssigner
-from lib.core.voxel.db_sampler import DataBaseSampler
+from lib.core.voxel.db_sampler import DBSampler
 from lib.datasets.preprocess import prep_pointcloud
 from .sampler import Sampler, DistributedSampler
 
@@ -46,10 +46,10 @@ def build_dataset(config, training):
         flag += len(class_name)
         target_assigners.append(target_assigner)
         class_names.append(class_name)
-    
+
     ######## database sampler ########
     if training:
-        db_sampler = DataBaseSampler(config)
+        db_sampler = DBSampler(config)
     else:
         db_sampler = None
 
@@ -58,20 +58,6 @@ def build_dataset(config, training):
     feature_map = grid_size[:2] // out_size_factor
     dataset_class = get_dataset_class(config.input.train.dataset.type)    
     config_dataset = config.input.train.dataset if training else config.input.eval.dataset
-
-    ######## prep_pointcloud ########
-    prep_func = partial(
-	prep_pointcloud,
-        cfg=config,
-	root_paths=config_dataset.root_path,
-	voxel_generator=voxel_generator,
-	target_assigners=target_assigners,
-	training=training,
-	remove_outsize_points=False,
-	db_sampler=db_sampler,
-	num_point_feature=config.input.num_point_features,
-	out_size_factor=out_size_factor)
-
 
     ####### anchor_caches #######
     rets = [
@@ -109,7 +95,20 @@ def build_dataset(config, training):
         "unmatched_thresholds": unmatched_thresholdss,
         "anchors_dict": anchors_dicts,
     }
-    prep_func = partial(prep_func, anchor_cache=anchor_cache)
+    ######## prep_pointcloud ########
+    prep_func = partial(
+	prep_pointcloud,
+        cfg=config,
+	root_paths=config_dataset.root_path,
+	voxel_generator=voxel_generator,
+	target_assigners=target_assigners,
+	training=training,
+        anchor_cache=anchor_cache,
+	remove_outsize_points=False,
+	db_sampler=db_sampler,
+	num_point_feature=config.input.num_point_features,
+	out_size_factor=out_size_factor)
+
     ######## dataset ########
     dataset = dataset_class(
 	info_path=config_dataset.info_path,

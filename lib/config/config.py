@@ -50,11 +50,19 @@ _C.input.train.preprocess.remove_environment = False
 _C.input.train.preprocess.db_sampler = edict()
 _C.input.train.preprocess.db_sampler.enable = True
 _C.input.train.preprocess.db_sampler.db_info_path = " "
-_C.input.train.preprocess.db_sampler.sample_group_names = ["car",]
-_C.input.train.preprocess.db_Sampler.sample_group_values = [2,]
+_C.input.train.preprocess.db_sampler.global_random_rotation_range_per_object = [0, 0]
+_C.input.train.preprocess.db_sampler.rate = 1.0
 _C.input.train.preprocess.db_sampler.db_preprocess_steps = edict()
-_C.input.train.preprocess.db_sampler.db_preprocess_steps.type = ["car",]
-_C.input.train.preprocess.db_sampler.db_preprocess_steps.value = [5, ]
+_C.input.train.preprocess.db_sampler.db_preprocess_steps.filter_by_min_num_points = edict()
+_C.input.train.preprocess.db_sampler.db_preprocess_steps.filter_by_min_num_points.type = ""
+_C.input.train.preprocess.db_sampler.db_preprocess_steps.filter_by_min_num_points.classes = ["cars",]
+_C.input.train.preprocess.db_sampler.db_preprocess_steps.filter_by_min_num_points.values = [5,]
+_C.input.train.preprocess.db_sampler.db_preprocess_steps.filter_by_difficulty = edict()
+_C.input.train.preprocess.db_sampler.db_preprocess_steps.filter_by_difficulty.type = ""
+_C.input.train.preprocess.db_sampler.db_preprocess_steps.filter_by_difficulty.value = -1
+_C.input.train.preprocess.db_sampler.sample_groups = edict()
+_C.input.train.preprocess.db_sampler.sample_groups.classes = ["car",]
+_C.input.train.preprocess.db_sampler.sample_groups.values = [5,]
 # --------------------------------------------------------------------
 # eval
 # --------------------------------------------------------------------
@@ -146,4 +154,4 @@ def _merge_a_into_b(a, b):
                 raise
         else:
             b[k] = v
-
+cfg = _C
