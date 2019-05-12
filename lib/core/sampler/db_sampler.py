@@ -73,7 +73,6 @@ class BatchSampler:
     def sample(self, num):
         indices = self._sample(num)
         return [self._sampled_list[i] for i in indices]
-        # return np.random.choice(self._sampled_list, num)
 
 class DataBasePreprocessing:
     def __call__(self, db_infos):
