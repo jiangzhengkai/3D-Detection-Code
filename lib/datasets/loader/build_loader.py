@@ -1,3 +1,6 @@
+import torch
+import torch.utils.data
+import itertools
 from functools import partial
 from lib.core.voxel.voxel_generator import VoxelGenerator
 from lib.core.bbox.box_coder import box_coder
@@ -6,13 +9,10 @@ from lib.core.bbox.region_similarity import region_similarity_calculator
 from lib.core.target.target_assigner import TargetAssigner
 from lib.core.sampler.db_sampler import DBSampler
 from lib.datasets.preprocess import prep_pointcloud
-from .sampler import Sampler, DistributedSampler
+from lib.datasets.loader.sampler import Sampler, DistributedSampler
 from lib.datasets.all_dataset import get_dataset_class
 from lib.datasets.preprocess import collate_batch_fn
-import itertools
 from lib.core.bbox import box_np_ops
-import torch
-import torch.utils.data
 
 def build_dataset(config, training):
     ######## voxel generator ########
