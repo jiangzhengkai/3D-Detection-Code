@@ -14,7 +14,7 @@ from lib.datasets.all_dataset import get_dataset_class
 from lib.datasets.preprocess import collate_batch_fn
 from lib.core.bbox import box_np_ops
 
-def build_dataset(config, training):
+def build_dataset(config, training, logger=None):
     ######## voxel generator ########
     voxel_generator = VoxelGenerator(
 	voxel_size=config.input.voxel.voxel_size,
@@ -49,7 +49,9 @@ def build_dataset(config, training):
 
     ######## database sampler ########
     if training:
-        db_sampler = DBSampler(config)
+        if logger is not None:
+            logger.info("Enable db sampler: {db_sampler}")
+        db_sampler = DBSampler(config, logger=logger)
     else:
         db_sampler = None
 
@@ -57,7 +59,8 @@ def build_dataset(config, training):
     grid_size = voxel_generator.grid_size
     feature_map_size = grid_size[:2] // out_size_factor
     feature_map_size = [*feature_map_size, 1][::-1]
-
+    if logger is not None:
+        logger.info("feature_map_size: {}".format(feature_map_size))
     dataset_class = get_dataset_class(config.input.train.dataset.type)    
     config_dataset = config.input.train.dataset if training else config.input.eval.dataset
 
@@ -97,18 +100,19 @@ def build_dataset(config, training):
         "unmatched_thresholds": unmatched_thresholdss,
         "anchors_dict": anchors_dicts,
     }
+    
     ######## prep_pointcloud ########
     prep_func = partial(
 	prep_pointcloud,
-        cfg=config,
-	root_paths=config_dataset.root_path,
+        config=config,
+	root_path=config_dataset.root_path,
 	voxel_generator=voxel_generator,
 	target_assigners=target_assigners,
 	training=training,
         anchor_cache=anchor_cache,
-	remove_outsize_points=False,
+	remove_outside_points=False,
 	db_sampler=db_sampler,
-	num_point_feature=config.input.num_point_features,
+	num_point_features=config.input.num_point_features,
 	out_size_factor=out_size_factor)
 
     ######## dataset ########
@@ -120,8 +124,8 @@ def build_dataset(config, training):
 	prep_func=prep_func)
     return dataset
 
-def build_dataloader(config, training):
-    dataset = build_dataset(config, training)
+def build_dataloader(config, training, logger=None):
+    dataset = build_dataset(config, training, logger=logger)
     
     batch_size = config.input.train.batch_size if training else config.input.eval.batch_size
     num_workers = config.input.train.preprocess.num_workers if training else config.input.eval.preprocess.num_workers
@@ -129,7 +133,7 @@ def build_dataloader(config, training):
     if distributed:
         sampler = DistributedSampler(dataset)
     else:
-        sampler = Sampler(dataset)
+        sampler = None
 
     dataloader = torch.utils.data.DataLoader(dataset,
                                              batch_size=batch_size,

@@ -9,6 +9,7 @@ input:
         max_num_points: 5
         max_voxels: 20000
     train:
+        num_epochs: 50
         dataset:
             type: "KittiDataset"
             root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
@@ -44,7 +45,7 @@ input:
                 global_random_rotation_range_per_object: [0, 0]
                 rate: 1.0
                 sample_groups:
-                     classes: ["car",] 
+                     classes: ["Car",] 
                      values: [5, ]
 
     eval:
@@ -75,7 +76,7 @@ target_assigner:
         anchor_velocities: [[0, 0],]
         anchor_matched_thresholds: [0.6,]
         anchor_unmatched_thresholds: [0.45,]
-        anchor_class_names: ["car",]
+        anchor_class_names: ["Car",]
         sample_positive_fraction: -1
         sample_size: 512
         region_similarity_calculator: 
@@ -83,6 +84,6 @@ target_assigner:
             value: 0
 tasks:
     num_classes: [1,]
-    class_names: [["car"],]
+    class_names: [["Car"],]
     
 

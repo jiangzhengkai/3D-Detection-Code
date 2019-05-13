@@ -1,5 +1,11 @@
 import itertools
 import numpy as np
+from lib.datasets import kitti_common as kitti
+from lib.core.bbox import box_np_ops
+from lib.datasets import preprocess as prep
+import numba
+from lib.core.bbox.geometry import points_in_convex_polygon_3d_jit, points_in_convex_polygon_jit
+
 
 def collate_batch_fn(batch_list):
     example_merged = defaultdict(list)
@@ -61,15 +67,18 @@ def collate_batch_fn(batch_list):
 
     return ret
 
-
-
-
+def _dict_select(dict_, inds):
+    for k, v in dict_.items():
+        if isinstance(v, dict):
+            _dict_select(v, inds)
+        else:
+            dict_[k] = v[inds]
 
 def prep_pointcloud(config,
 		    input_dict,
 		    root_path,
 		    voxel_generator,
-		    target_assiginers,
+		    target_assigners,
 		    db_sampler=None,
 		    remove_outside_points=False,
 		    training=True,
@@ -86,17 +95,14 @@ def prep_pointcloud(config,
     convert point cloud to voxels, create targets if ground truths exists
     input_dict format: dataset.get_sensor_data format
     """ 
-    prep_config = config.train.preprocess if training  else config.eval.preprocess
-    
-    
-
+    prep_config = config.input.train.preprocess if training  else config.input.eval.preprocess
     remove_environment = prep_config.remove_environment
     max_num_voxels = prep_config.max_num_voxels
     shuffle_points = prep_config.shuffle
     anchor_area_threshold = prep_config.anchor_area_threshold
     
     if training:
-        remove_unkonw = prep_config.remove_unkonw_examples 
+        remove_unknown = prep_config.remove_unknow_examples 
         gt_rotation_noise = prep_config.gt_rotation_noise
         gt_location_noise_std = prep_config.gt_location_noise
         global_rotation_noise = prep_config.global_rotation_noise
@@ -111,8 +117,10 @@ def prep_pointcloud(config,
  
     task_class_names = [target_assigner.classes for target_assigner in target_assigners]
     class_names = list(itertools.chain(*task_class_names))
-        
-    points = input_dict["lidar"]["combined"]
+    if config.input.train.dataset.type == "KittiDataset":
+        points = input_dict["lidar"]["points"]
+    else:
+        points = input_dict["lidar"]["combined"]
     if training:
         anno_dict = input_dict["lidar"]["annotations"]
         gt_dict = {
@@ -146,7 +154,7 @@ def prep_pointcloud(config,
         points = box_np_ops.remove_outside_points(points, calib["rect"],
                                                   calib["Trv2c"], calib["P2"],
                                                   image_shape)
-    if remove_environmnet is True and training:
+    if remove_environment is True and training:
         selected = kitti.keep_arrays_by_name(gt_names, target_assigner.classes)
         _dict_select(gt_dict, selected)
         masks = box_np_ops.points_in_rbbox(points, gt_dict["gt_boxes"])
@@ -195,13 +203,12 @@ def prep_pointcloud(config,
         pc_range = voxel_generator.point_cloud_range
 
         _dict_select(gt_dict, gt_boxes_mask)
-
         gt_classes = np.array([class_names.index(n) + 1 for n in gt_dict["gt_names"]], dtype=np.int32)
         gt_dict["gt_classes"] = gt_classes
 
         gt_dict["gt_boxes"], points = prep.random_flip(gt_dict["gt_boxes"], points)
         gt_dict["gt_boxes"], points = prep.global_rotation(gt_dict["gt_boxes"], points, rotation=global_rotation_noise)
-        gt_dict["gt_boxes"], points = prep.global_scaling_v2(gt_dict["gt_boxes"], points, *global_scaling_noise)
+        gt_dict["gt_boxes"], points = prep.global_scaling_v2(gt_dict["gt_boxes"], points, *global_scale_noise)
         prep.global_translate_(gt_dict["gt_boxes"], points, global_translate_noise_std)
 
         bv_range = voxel_generator.point_cloud_range[[0, 1, 3, 4]]
@@ -244,7 +251,7 @@ def prep_pointcloud(config,
     pc_range = voxel_generator.point_cloud_range
     grid_size = voxel_generator.grid_size
 
-    voxels, coordinates, num_points = voxel_generator.generate(points, max_voxels)
+    voxels, coordinates, num_points = voxel_generator.generate(points, max_num_voxels)
     num_voxels = np.array([voxels.shape[0]], dtype=np.int64)
 
     example = {
@@ -329,4 +336,160 @@ def prep_pointcloud(config,
     return example
 
 
+@numba.jit(nopython=True)
+def box_collision_test(boxes, qboxes, clockwise=True):
+    N = boxes.shape[0]
+    K = qboxes.shape[0]
+    ret = np.zeros((N, K), dtype=np.bool_)
+    slices = np.array([1, 2, 3, 0])
+    lines_boxes = np.stack((boxes, boxes[:, slices, :]),
+                           axis=2)  # [N, 4, 2(line), 2(xy)]
+    lines_qboxes = np.stack((qboxes, qboxes[:, slices, :]), axis=2)
+    # vec = np.zeros((2,), dtype=boxes.dtype)
+    boxes_standup = box_np_ops.corner_to_standup_nd_jit(boxes)
+    qboxes_standup = box_np_ops.corner_to_standup_nd_jit(qboxes)
+    for i in range(N):
+        for j in range(K):
+            # calculate standup first
+            iw = (min(boxes_standup[i, 2], qboxes_standup[j, 2]) - max(
+                boxes_standup[i, 0], qboxes_standup[j, 0]))
+            if iw > 0:
+                ih = (min(boxes_standup[i, 3], qboxes_standup[j, 3]) - max(
+                    boxes_standup[i, 1], qboxes_standup[j, 1]))
+                if ih > 0:
+                    for k in range(4):
+                        for l in range(4):
+                            A = lines_boxes[i, k, 0]
+                            B = lines_boxes[i, k, 1]
+                            C = lines_qboxes[j, l, 0]
+                            D = lines_qboxes[j, l, 1]
+                            acd = (D[1] - A[1]) * (C[0] - A[0]) > (
+                                C[1] - A[1]) * (D[0] - A[0])
+                            bcd = (D[1] - B[1]) * (C[0] - B[0]) > (
+                                C[1] - B[1]) * (D[0] - B[0])
+                            if acd != bcd:
+                                abc = (C[1] - A[1]) * (B[0] - A[0]) > (
+                                    B[1] - A[1]) * (C[0] - A[0])
+                                abd = (D[1] - A[1]) * (B[0] - A[0]) > (
+                                    B[1] - A[1]) * (D[0] - A[0])
+                                if abc != abd:
+                                    ret[i, j] = True  # collision.
+                                    break
+                        if ret[i, j] is True:
+                            break
+                    if ret[i, j] is False:
+                        # now check complete overlap.
+                        # box overlap qbox:
+                        box_overlap_qbox = True
+                        for l in range(4):  # point l in qboxes
+                            for k in range(4):  # corner k in boxes
+                                vec = boxes[i, k] - boxes[i, (k + 1) % 4]
+                                if clockwise:
+                                    vec = -vec
+                                cross = vec[1] * (
+                                    boxes[i, k, 0] - qboxes[j, l, 0])
+                                cross -= vec[0] * (
+                                    boxes[i, k, 1] - qboxes[j, l, 1])
+                                if cross >= 0:
+                                    box_overlap_qbox = False
+                                    break
+                            if box_overlap_qbox is False:
+                                break
+
+                        if box_overlap_qbox is False:
+                            qbox_overlap_box = True
+                            for l in range(4):  # point l in boxes
+                                for k in range(4):  # corner k in qboxes
+                                    vec = qboxes[j, k] - qboxes[j, (k + 1) % 4]
+                                    if clockwise:
+                                        vec = -vec
+                                    cross = vec[1] * (
+                                        qboxes[j, k, 0] - boxes[i, l, 0])
+                                    cross -= vec[0] * (
+                                        qboxes[j, k, 1] - boxes[i, l, 1])
+                                    if cross >= 0:  #
+                                        qbox_overlap_box = False
+                                        break
+                                if qbox_overlap_box is False:
+                                    break
+                            if qbox_overlap_box:
+                                ret[i, j] = True  # collision.
+                        else:
+                            ret[i, j] = True  # collision.
+    return ret
+
+def global_translate_(gt_boxes, points, noise_translate_std):
+    """
+    Apply global translation to gt_boxes and points.
+    """
+
+    if not isinstance(noise_translate_std, (list, tuple, np.ndarray)):
+        noise_translate_std = np.array([noise_translate_std, noise_translate_std, noise_translate_std])
+    if all([e == 0 for e in noise_translate_std]):
+        return gt_boxes, points
+    noise_translate = np.array([np.random.normal(0, noise_translate_std[0], 1),
+                                np.random.normal(0, noise_translate_std[1], 1),
+                                np.random.normal(0, noise_translate_std[0], 1)]).T
+
+    points[:, :3] += noise_translate
+    gt_boxes[:, :3] += noise_translate
+
+def global_rotation(gt_boxes, points, rotation=np.pi / 4):
+    if not isinstance(rotation, list):
+        rotation = [-rotation, rotation]
+    noise_rotation = np.random.uniform(rotation[0], rotation[1])
+    points[:, :3] = box_np_ops.rotation_points_single_angle(
+        points[:, :3], noise_rotation, axis=2)
+    gt_boxes[:, :3] = box_np_ops.rotation_points_single_angle(
+        gt_boxes[:, :3], noise_rotation, axis=2)
+    if gt_boxes.shape[1] > 7:
+         gt_boxes[:, 6:8] = box_np_ops.rotation_points_single_angle(
+             np.hstack([gt_boxes[:, 6:8], np.zeros((gt_boxes.shape[0], 1))]), noise_rotation, axis=2)[:, :2]
+    gt_boxes[:, -1] += noise_rotation
+    return gt_boxes, points
+
+
+def random_flip(gt_boxes, points, probability=0.5):
+    enable = np.random.choice([False, True],
+                              replace=False,
+                              p=[1 - probability, probability])
+    if enable:
+        gt_boxes[:, 1] = -gt_boxes[:, 1]
+        gt_boxes[:, -1] = -gt_boxes[:, -1] + np.pi
+        points[:, 1] = -points[:, 1]
+        if gt_boxes.shape[1] > 7: # y axis: x, y, z, w, h, l, vx, vy, r
+            gt_boxes[:, 7] = -gt_boxes[:, 7]
+    return gt_boxes, points
+
+
+def global_scaling_v2(gt_boxes, points, min_scale=0.95, max_scale=1.05):
+    noise_scale = np.random.uniform(min_scale, max_scale)
+    points[:, :3] *= noise_scale
+    gt_boxes[:, :-1] *= noise_scale
+    return gt_boxes, points
+
+
+def global_rotation_v2(gt_boxes, points, min_rad=-np.pi / 4,
+                       max_rad=np.pi / 4):
+    noise_rotation = np.random.uniform(min_rad, max_rad)
+    points[:, :3] = box_np_ops.rotation_points_single_angle(
+        points[:, :3], noise_rotation, axis=2)
+    gt_boxes[:, :3] = box_np_ops.rotation_points_single_angle(
+        gt_boxes[:, :3], noise_rotation, axis=2)
+    gt_boxes[:, 6] += noise_rotation
+    return gt_boxes, points
+def filter_gt_box_outside_range(gt_boxes, limit_range):
+    """remove gtbox outside training range.
+    this function should be applied after other prep functions
+    Args:
+        gt_boxes ([type]): [description]
+        limit_range ([type]): [description]
+    """
+    gt_boxes_bv = box_np_ops.center_to_corner_box2d(
+        gt_boxes[:, [0, 1]], gt_boxes[:, [3, 3 + 1]], gt_boxes[:, -1])
+    bounding_box = box_np_ops.minmax_to_corner_2d(
+        np.asarray(limit_range)[np.newaxis, ...])
+    ret = points_in_convex_polygon_jit(
+        gt_boxes_bv.reshape(-1, 2), bounding_box)
+    return np.any(ret.reshape(-1, 4), axis=1)
 

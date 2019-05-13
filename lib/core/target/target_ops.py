@@ -158,8 +158,12 @@ def create_target_np(all_anchors,
             labels[bg_inds] = 0
             # re-enable anchors_with_max_overlap
             labels[anchors_with_max_overlap] = gt_classes[gt_inds_force]
-    bbox_targets = np.zeros(
-        (num_inside, box_code_size), dtype=all_anchors.dtype)
+    if gt_boxes.shape[-1] == 7:
+        bbox_targets = np.zeros(
+            (num_inside, 7), dtype=all_anchors.dtype)
+    else:
+        bbox_targets = np.zeros(
+            (num_inside, box_code_size), dtype=all_anchors.dtype)
     if len(gt_boxes) > 0 and anchors.shape[0] > 0:
         # print(anchors[fg_inds, :].shape, gt_boxes[anchor_to_gt_argmax[fg_inds], :].shape)
         # bbox_targets[fg_inds, :] = box_encoding_fn(

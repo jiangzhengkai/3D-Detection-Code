@@ -6,7 +6,7 @@ def anchor_generators(config):
     anchor_generators = []
     for i in range(len(config.anchor_types)):
         if config.anchor_types[i] == "anchor_generator_stride":
-            ag = AnchorGeneratorStride(
+            anchor = AnchorGeneratorStride(
 			        sizes=config.anchor_sizes[i],
                                 strides=config.anchor_strides[i],
                                 offsets=config.anchor_offsets[i],
@@ -16,7 +16,7 @@ def anchor_generators(config):
                                 unmatch_threshold=config.anchor_unmatch_thresholds[i],
                                 class_name=config.anchor_class_names[i])
         elif config.anchor_types[i] == "anchor_generator_range":
-            ag = AnchorGeneratorRange(
+            anchor = AnchorGeneratorRange(
                                 ranges=config.anchor_ranges[i],
                                 rotations=config.anchor_rotations[i],
                                 match_threshold=config.anchor_matched_thresholds[i],
@@ -24,7 +24,7 @@ def anchor_generators(config):
                                 class_name=config.anchor_class_names[i])
         else:
             raise ValueError(" unknown anchor generator type")
-        anchor_generators.append(ag)
+        anchor_generators.append(anchor)
     return anchor_generators
 
 class AnchorGeneratorStride:

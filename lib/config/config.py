@@ -23,6 +23,7 @@ _C.input.voxel.max_voxels = 20000
 # --------------------------------------------------------------------
 _C.input.train = edict()
 _C.input.train.batch_size = 6
+_C.input.train.num_epochs = 50
 _C.input.train.dataset = edict()
 _C.input.train.dataset.type = "KittiDataset"
 _C.input.train.dataset.root_path = " "

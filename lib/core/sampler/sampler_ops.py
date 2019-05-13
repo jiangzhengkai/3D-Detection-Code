@@ -20,7 +20,6 @@ class DataBaseSampler:
                  rate=1.0,
                  global_rot_range=None,
                  logger=None):
-        import pdb;pdb.set_trace()
         for k, v in db_infos.items():
             logger.info(f"load {len(v)} {k} database infos")
 

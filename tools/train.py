@@ -29,8 +29,7 @@ def main():
     with open(args.cfg, "r") as cf:
         config_str = "\n" + cf.read()
         logger.info(config_str)
-    logger.info("Running with config:\n{}".format(cfg))
-    train(cfg)
+    train(cfg, logger=logger)
 
 if __name__ == "__main__":
     main()

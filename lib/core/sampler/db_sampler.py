@@ -1,22 +1,20 @@
 from lib.core.sampler.sampler_ops import DataBaseSampler
 import pickle
 import abc
-import logging
 import numpy as np
 
-def DBSampler(config):
+def DBSampler(config, logger=None):
     config_db_sampler = config.input.train.preprocess.db_sampler
     config_preprocess = config_db_sampler.db_preprocess_steps
     preprocess = []
     for step in list(config_preprocess.keys()):
         if step == "filter_by_min_num_points":
-            prep = DBFilterByMinNumPoint(dict(zip(config_preprocess[step]["classes"],config_preprocess[step]["values"])), logger=logging)
+            prep = DBFilterByMinNumPoint(dict(zip(config_preprocess[step]["classes"],config_preprocess[step]["values"])), logger=logger)
         elif step == "filter_by_difficulty":
-            prep = DBFilterByDifficulty(config_preprocess[step]["value"], logger=logging)
+            prep = DBFilterByDifficulty(config_preprocess[step]["value"], logger=logger)
         else:
             raise ValueError("unknown database prep type")
         preprocess.append(prep)
-    
     db_preprocess = DataBasePreprocessor(preprocess)
     rate = config_db_sampler.rate
     global_rotate_range = list(config_db_sampler.global_random_rotation_range_per_object)
@@ -31,7 +29,7 @@ def DBSampler(config):
     with open(info_path, 'rb') as f:
         db_infos = pickle.load(f)
     global_rotate_range = None if len(global_rotate_range) == 0 else global_rotate_range
-    sampler = DataBaseSampler(db_infos, groups, db_preprocess, rate, global_rotate_range, logger=logging)
+    sampler = DataBaseSampler(db_infos, groups, db_preprocess, rate, global_rotate_range, logger=logger)
     return  sampler
 
 

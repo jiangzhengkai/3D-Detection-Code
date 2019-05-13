@@ -230,6 +230,23 @@ def center_to_minmax_2d(centers, dims, origin=0.5):
     corners = center_to_corner_box2d(centers, dims, origin=origin)
     return corners[:, [0, 2]].reshape([-1, 4])
 
+def rotation_2d(points, angles):
+    """rotation 2d points based on origin point clockwise when angle positive.
+
+    Args:
+        points (float array, shape=[N, point_size, 2]): points to be rotated.
+        angles (float array, shape=[N]): rotation angle.
+
+    Returns:
+        float array: same shape as points
+    """
+    rot_sin = np.sin(angles)
+    rot_cos = np.cos(angles)
+    rot_mat_T = np.stack([[rot_cos, -rot_sin], [rot_sin, rot_cos]])
+    return np.einsum('aij,jka->aik', points, rot_mat_T)
+
+
+
 def center_to_corner_box2d(centers, dims, angles=None, origin=0.5):
     """convert kitti locations, dimensions and angles to corners.
     format: center(xy), dims(xy), angles(clockwise when positive)
@@ -333,4 +350,202 @@ def create_anchors_3d_range(feature_size,
 
     ret = np.concatenate(rets, axis=-1)
     return np.transpose(ret, [2, 1, 0, 3, 4, 5])
+@numba.njit
+def corner_to_standup_nd_jit(boxes_corner):
+    num_boxes = boxes_corner.shape[0]
+    ndim = boxes_corner.shape[-1]
+    result = np.zeros((num_boxes, ndim * 2), dtype=boxes_corner.dtype)
+    for i in range(num_boxes):
+        for j in range(ndim):
+            result[i, j] = np.min(boxes_corner[i, :, j])
+        for j in range(ndim):
+            result[i, j + ndim] = np.max(boxes_corner[i, :, j])
+    return result
+
+
+def corner_to_standup_nd(boxes_corner):
+    assert len(boxes_corner.shape) == 3
+    standup_boxes = []
+    standup_boxes.append(np.min(boxes_corner, axis=1))
+    standup_boxes.append(np.max(boxes_corner, axis=1))
+    return np.concatenate(standup_boxes, -1)
+
+def rotation_points_single_angle(points, angle, axis=0):
+    # points: [N, 3]
+    rot_sin = np.sin(angle)
+    rot_cos = np.cos(angle)
+    if axis == 1:
+        rot_mat_T = np.array(
+            [[rot_cos, 0, -rot_sin], [0, 1, 0], [rot_sin, 0, rot_cos]],
+            dtype=points.dtype)
+    elif axis == 2 or axis == -1:
+        rot_mat_T = np.array(
+            [[rot_cos, -rot_sin, 0], [rot_sin, rot_cos, 0], [0, 0, 1]],
+            dtype=points.dtype)
+    elif axis == 0:
+        rot_mat_T = np.array(
+            [[1, 0, 0], [0, rot_cos, -rot_sin], [0, rot_sin, rot_cos]],
+            dtype=points.dtype)
+    else:
+        raise ValueError("axis should in range")
+
+    return points @ rot_mat_T
+
+def minmax_to_corner_2d(minmax_box):
+    ndim = minmax_box.shape[-1] // 2
+    center = minmax_box[..., :ndim]
+    dims = minmax_box[..., ndim:] - center
+    return center_to_corner_box2d(center, dims, origin=0.0)
+
+
+def bev_box_decode(box_encodings, anchors, encode_angle_to_vector=False, smooth_dim=False):
+    """box decode for VoxelNet in lidar
+    Args:
+        boxes ([N, 7] Tensor): normal boxes: x, y, z, w, l, h, r
+        anchors ([N, 7] Tensor): anchors
+    """
+    # need to convert box_encodings to z-bottom format
+    xa, ya, wa, la, ra = np.split(anchors, 5, axis=-1)
+    if encode_angle_to_vector:
+        xt, yt, wt, lt, rtx, rty = np.split(box_encodings, 6, axis=-1)
+    else:
+        xt, yt, wt, lt, rt = np.split(box_encodings, 5, axis=-1)
+    diagonal = np.sqrt(la**2 + wa**2)
+    xg = xt * diagonal + xa
+    yg = yt * diagonal + ya
+    if smooth_dim:
+        lg = (lt + 1) * la
+        wg = (wt + 1) * wa
+    else:
+        lg = np.exp(lt) * la
+        wg = np.exp(wt) * wa
+    if encode_angle_to_vector:
+        rax = np.cos(ra)
+        ray = np.sin(ra)
+        rgx = rtx + rax
+        rgy = rty + ray
+        rg = np.arctan2(rgy, rgx)
+    else:
+        rg = rt + ra
+    return np.concatenate([xg, yg, wg, lg, rg], axis=-1)
+
+
+def second_box_encode(boxes, anchors, encode_angle_to_vector=False, smooth_dim=False,  cylindrical=False):
+    """box encode for VoxelNet in lidar
+    Args:
+        boxes ([N, 7] Tensor): normal boxes: x, y, z, w, l, h, r
+        anchors ([N, 7] Tensor): anchors
+    """
+    # need to convert boxes to z-center format
+    box_ndim = anchors.shape[-1]
+    if box_ndim == 7:
+        xa, ya, za, wa, la, ha, ra = np.split(anchors, box_ndim, axis=1)
+        xg, yg, zg, wg, lg, hg, rg = np.split(boxes, box_ndim, axis=1)
+    else:
+        xa, ya, za, wa, la, ha, vxa, vya, ra = np.split(anchors, box_ndim, axis=1)
+        xg, yg, zg, wg, lg, hg, vxg, vyg, rg = np.split(boxes, box_ndim, axis=1)
+
+    diagonal = np.sqrt(la**2 + wa**2)  # 4.3
+    xt = (xg - xa) / diagonal
+    yt = (yg - ya) / diagonal
+    zt = (zg - za) / ha # 1.6
+
+    if smooth_dim:
+        lt = lg / la - 1
+        wt = wg / wa - 1
+        ht = hg / ha - 1
+    else:
+        lt = np.log(lg / la)
+        wt = np.log(wg / wa)
+        ht = np.log(hg / ha)
+
+    ret = [xt, yt, zt, wt, lt, ht]
+
+    if box_ndim > 7:
+        vxt = vxg - vxa
+        vyt = vyg - vya
+        ret.extend([vxt, vyt])
+
+    if encode_angle_to_vector:
+        rgx = np.cos(rg)
+        rgy = np.sin(rg)
+        rax = np.cos(ra)
+        ray = np.sin(ra)
+        rtx = rgx - rax
+        rty = rgy - ray
+
+        ret.extend([rtx, rty])
+    else:
+        rt = rg - ra
+        ret.append(rt)
+
+    return np.concatenate(ret, axis=1)
+
+
+
+def second_box_decode(box_encodings, anchors, encode_angle_to_vector=False, smooth_dim=False, cylindrical=False):
+    """box decode for VoxelNet in lidar
+    Args:
+        boxes ([N, 9] Tensor): normal boxes: x, y, z, w, l, h, vx, vy, r
+        anchors ([N, 9] Tensor): anchors
+    """
+    # need to convert box_encodings to z-bottom format
+    box_ndim = anchors.shape[-1]
+
+    if box_ndim > 7:
+        xa, ya, za, wa, la, ha, vxa, vya, ra = np.split(anchors, box_ndim, axis=1)
+        if encode_angle_to_vector:
+            xt, yt, zt, wt, lt, ht, vxt, vyt, rtx, rty = np.split(box_encodings, box_ndim+1, axis=-1)
+        else:
+            xt, yt, zt, wt, lt, ht, vxt, vyt, rt = np.split(box_encodings, box_ndim, axis=-1)
+    else:
+        xa, ya, za, wa, la, ha, ra = np.split(anchors, box_ndim, axis=-1)
+        if encode_angle_to_vector:
+            xt, yt, zt, wt, lt, ht, rtx, rty = np.split(box_encodings, box_ndim + 1, axis=-1)
+        else:
+            xt, yt, zt, wt, lt, ht, rt = np.split(box_encodings, box_ndim, axis=-1)
+
+    # if cylindrical:
+    #     diagonal = np.sqrt(la**2 + wa**2)
+    #     xg = xt * diagonal + xa
+    #     yg = yt * diagonal + ya
+    # else:
+    #     diagonal = np.sqrt(la**2 + wa**2)
+    #     xg = xt * diagonal + xa
+    #     yg = yt * diagonal + ya
+
+    diagonal = np.sqrt(la**2 + wa**2)
+    xg = xt * diagonal + xa
+    yg = yt * diagonal + ya
+    zg = zt * ha + za
+
+    ret = [xg, yg, zg]
+
+    if smooth_dim:
+        lg = (lt + 1) * la
+        wg = (wt + 1) * wa
+        hg = (ht + 1) * ha
+    else:
+        lg = np.exp(lt) * la
+        wg = np.exp(wt) * wa
+        hg = np.exp(ht) * ha
+    ret.extend([wg, lg, hg])
+
+    if encode_angle_to_vector:
+        rax = np.cos(ra)
+        ray = np.sin(ra)
+        rgx = rtx + rax
+        rgy = rty + ray
+        rg = np.arctan2(rgy, rgx)
+    else:
+        rg = rt + ra
+
+    if box_ndim > 7:
+        vxg = vxt + vxa
+        vyg = vyt + vya
+
+    ret.extend([vxg, vyg])
+    ret.append(rg)
+
+    return np.concatenate(ret, axis=1)
 
