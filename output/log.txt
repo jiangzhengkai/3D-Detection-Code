@@ -18305,3 +18305,349 @@ tasks:
 2019-05-13 17:50:15,671 Training INFO: load 56 Person_sitting database infos
 2019-05-13 17:50:15,672 Training INFO: feature_map_size: [1, 200, 176]
 2019-05-13 17:50:15,857 Training INFO: total training steps: 50
+2019-05-13 17:53:58,742 3d-object-detection INFO: Using 1 GPUs
+2019-05-13 17:53:58,743 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=None, local_rank=0)
+2019-05-13 17:53:58,743 3d-object-detection INFO: 
+output_dir: 'output'
+gpus: '0'
+devices: [0, 1]
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+    train:
+        batch_size: 1
+        num_epochs: 50
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            gt_location_noise: [0.25, 0.25, 0.25]
+            gt_rotation_noise: [-0.15707963267, 0.15707963267]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0.2, 0.2, 0.2]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+            db_sampler:
+                enable: True
+                db_info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/dbinfos_train.pkl"
+                db_preprocess_steps:
+                    filter_by_min_num_points:
+                        type: "filter_by_min_num_points"
+                        classes: ["Car",] 
+                        values: [5,]
+                    filter_by_difficulty:
+                        type: "filter_by_difficulty"
+                        value: [-1,]
+                global_random_rotation_range_per_object: [0, 0]
+                rate: 1.0
+                sample_groups:
+                     classes: ["Car",] 
+                     values: [5, ]
+
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_val.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [[1.97, 4.63, 1.74],]
+        anchor_ranges: [[-51.2, -51.2, -0.92, 51.2, 51.2, -0.92],]
+        anchor_rotations: [[0, 1.57],]
+        anchor_velocities: [[0, 0],]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["Car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_classes: [1,]
+    class_names: [["Car"],]
+    
+
+
+2019-05-13 17:53:58,744 Training INFO: Enable db sampler: db_sampler
+2019-05-13 17:53:58,744 Training INFO: db_filter_by_min_num_points
+2019-05-13 17:53:58,744 Training INFO: db_filter_by_removed_difficulties
+2019-05-13 17:53:58,907 Training INFO: load 2207 Pedestrian database infos
+2019-05-13 17:53:58,907 Training INFO: load 14357 Car database infos
+2019-05-13 17:53:58,907 Training INFO: load 734 Cyclist database infos
+2019-05-13 17:53:58,907 Training INFO: load 1297 Van database infos
+2019-05-13 17:53:58,907 Training INFO: load 488 Truck database infos
+2019-05-13 17:53:58,908 Training INFO: load 224 Tram database infos
+2019-05-13 17:53:58,908 Training INFO: load 337 Misc database infos
+2019-05-13 17:53:58,908 Training INFO: load 56 Person_sitting database infos
+2019-05-13 17:53:58,937 Training INFO: After filter database:
+2019-05-13 17:53:58,937 Training INFO: load 2207 Pedestrian database infos
+2019-05-13 17:53:58,937 Training INFO: load 13442 Car database infos
+2019-05-13 17:53:58,937 Training INFO: load 734 Cyclist database infos
+2019-05-13 17:53:58,937 Training INFO: load 1297 Van database infos
+2019-05-13 17:53:58,937 Training INFO: load 488 Truck database infos
+2019-05-13 17:53:58,937 Training INFO: load 224 Tram database infos
+2019-05-13 17:53:58,937 Training INFO: load 337 Misc database infos
+2019-05-13 17:53:58,938 Training INFO: load 56 Person_sitting database infos
+2019-05-13 17:53:58,938 Training INFO: feature_map_size: [1, 200, 176]
+2019-05-13 17:53:59,116 Training INFO: total training steps: 50
+2019-05-13 18:11:35,704 3d-object-detection INFO: Using 1 GPUs
+2019-05-13 18:11:35,704 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=None, local_rank=0)
+2019-05-13 18:11:35,705 3d-object-detection INFO: 
+output_dir: 'output'
+gpus: '0'
+devices: [0, 1]
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+    train:
+        batch_size: 1
+        num_epochs: 50
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            gt_location_noise: [0.25, 0.25, 0.25]
+            gt_rotation_noise: [-0.15707963267, 0.15707963267]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0.2, 0.2, 0.2]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+            db_sampler:
+                enable: True
+                db_info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/dbinfos_train.pkl"
+                db_preprocess_steps:
+                    filter_by_min_num_points:
+                        type: "filter_by_min_num_points"
+                        classes: ["Car",] 
+                        values: [5,]
+                    filter_by_difficulty:
+                        type: "filter_by_difficulty"
+                        value: [-1,]
+                global_random_rotation_range_per_object: [0, 0]
+                rate: 1.0
+                sample_groups:
+                     classes: ["Car",] 
+                     values: [5, ]
+
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_val.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [[1.97, 4.63, 1.74],]
+        anchor_ranges: [[-51.2, -51.2, -0.92, 51.2, 51.2, -0.92],]
+        anchor_rotations: [[0, 1.57],]
+        anchor_velocities: [None,]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["Car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_classes: [1,]
+    class_names: [["Car"],]
+    
+
+
+2019-05-13 18:11:35,706 Training INFO: Enable db sampler: db_sampler
+2019-05-13 18:11:35,707 Training INFO: db_filter_by_min_num_points
+2019-05-13 18:11:35,707 Training INFO: db_filter_by_removed_difficulties
+2019-05-13 18:11:35,881 Training INFO: load 2207 Pedestrian database infos
+2019-05-13 18:11:35,881 Training INFO: load 14357 Car database infos
+2019-05-13 18:11:35,881 Training INFO: load 734 Cyclist database infos
+2019-05-13 18:11:35,881 Training INFO: load 1297 Van database infos
+2019-05-13 18:11:35,881 Training INFO: load 488 Truck database infos
+2019-05-13 18:11:35,881 Training INFO: load 224 Tram database infos
+2019-05-13 18:11:35,881 Training INFO: load 337 Misc database infos
+2019-05-13 18:11:35,881 Training INFO: load 56 Person_sitting database infos
+2019-05-13 18:11:35,912 Training INFO: After filter database:
+2019-05-13 18:11:35,913 Training INFO: load 2207 Pedestrian database infos
+2019-05-13 18:11:35,913 Training INFO: load 13442 Car database infos
+2019-05-13 18:11:35,913 Training INFO: load 734 Cyclist database infos
+2019-05-13 18:11:35,913 Training INFO: load 1297 Van database infos
+2019-05-13 18:11:35,913 Training INFO: load 488 Truck database infos
+2019-05-13 18:11:35,913 Training INFO: load 224 Tram database infos
+2019-05-13 18:11:35,913 Training INFO: load 337 Misc database infos
+2019-05-13 18:11:35,913 Training INFO: load 56 Person_sitting database infos
+2019-05-13 18:11:35,914 Training INFO: feature_map_size: [1, 200, 176]
+2019-05-13 18:13:05,753 3d-object-detection INFO: Using 1 GPUs
+2019-05-13 18:13:05,753 3d-object-detection INFO: Namespace(cfg='configs/car_fhd.yaml', distributed=False, gpus=None, local_rank=0)
+2019-05-13 18:13:05,754 3d-object-detection INFO: 
+output_dir: 'output'
+gpus: '0'
+devices: [0, 1]
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_voxels: 20000
+    train:
+        batch_size: 1
+        num_epochs: 50
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            gt_location_noise: [0.25, 0.25, 0.25]
+            gt_rotation_noise: [-0.15707963267, 0.15707963267]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0.2, 0.2, 0.2]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+            db_sampler:
+                enable: True
+                db_info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/dbinfos_train.pkl"
+                db_preprocess_steps:
+                    filter_by_min_num_points:
+                        type: "filter_by_min_num_points"
+                        classes: ["Car",] 
+                        values: [5,]
+                    filter_by_difficulty:
+                        type: "filter_by_difficulty"
+                        value: [-1,]
+                global_random_rotation_range_per_object: [0, 0]
+                rate: 1.0
+                sample_groups:
+                     classes: ["Car",] 
+                     values: [5, ]
+
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_val.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 0
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [[1.97, 4.63, 1.74],]
+        anchor_ranges: [[-51.2, -51.2, -0.92, 51.2, 51.2, -0.92],]
+        anchor_rotations: [[0, 1.57],]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["Car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+tasks:
+    num_classes: [1,]
+    class_names: [["Car"],]
+    
+
+
+2019-05-13 18:13:05,755 Training INFO: Enable db sampler: db_sampler
+2019-05-13 18:13:05,755 Training INFO: db_filter_by_min_num_points
+2019-05-13 18:13:05,755 Training INFO: db_filter_by_removed_difficulties
+2019-05-13 18:13:05,928 Training INFO: load 2207 Pedestrian database infos
+2019-05-13 18:13:05,929 Training INFO: load 14357 Car database infos
+2019-05-13 18:13:05,929 Training INFO: load 734 Cyclist database infos
+2019-05-13 18:13:05,929 Training INFO: load 1297 Van database infos
+2019-05-13 18:13:05,929 Training INFO: load 488 Truck database infos
+2019-05-13 18:13:05,929 Training INFO: load 224 Tram database infos
+2019-05-13 18:13:05,929 Training INFO: load 337 Misc database infos
+2019-05-13 18:13:05,929 Training INFO: load 56 Person_sitting database infos
+2019-05-13 18:13:05,958 Training INFO: After filter database:
+2019-05-13 18:13:05,959 Training INFO: load 2207 Pedestrian database infos
+2019-05-13 18:13:05,959 Training INFO: load 13442 Car database infos
+2019-05-13 18:13:05,959 Training INFO: load 734 Cyclist database infos
+2019-05-13 18:13:05,959 Training INFO: load 1297 Van database infos
+2019-05-13 18:13:05,959 Training INFO: load 488 Truck database infos
+2019-05-13 18:13:05,959 Training INFO: load 224 Tram database infos
+2019-05-13 18:13:05,959 Training INFO: load 337 Misc database infos
+2019-05-13 18:13:05,959 Training INFO: load 56 Person_sitting database infos
+2019-05-13 18:13:05,960 Training INFO: feature_map_size: [1, 200, 176]
+2019-05-13 18:13:06,139 Training INFO: total training steps: 50

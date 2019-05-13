@@ -74,7 +74,6 @@ target_assigner:
         anchor_sizes: [[1.97, 4.63, 1.74],]
         anchor_ranges: [[-51.2, -51.2, -0.92, 51.2, 51.2, -0.92],]
         anchor_rotations: [[0, 1.57],]
-        anchor_velocities: [[0, 0],]
         anchor_matched_thresholds: [0.6,]
         anchor_unmatched_thresholds: [0.45,]
         anchor_class_names: ["Car",]

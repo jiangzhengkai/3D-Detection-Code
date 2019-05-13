@@ -40,14 +40,15 @@ class BoxCoder(object):
         pass
 
 class GroundBox3dCoder(BoxCoder):
-    def __init__(self, linear_dim=False, vec_encode=False):
+    def __init__(self, linear_dim=False, vec_encode=False, n_dim=7):
         super().__init__()
         self.linear_dim = linear_dim
         self.vec_encode = vec_encode
+        self.n_dim = n_dim
 
     @property
     def code_size(self):
-        return 8 if self.vec_encode else 7
+        return self.n_dim + 1 if self.vec_encode else self.n_dim
 
     def _encode(self, boxes, anchors):
         return box_np_ops.second_box_encode(boxes, anchors, self.vec_encode, self.linear_dim)
