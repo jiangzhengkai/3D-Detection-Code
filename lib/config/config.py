@@ -115,9 +115,60 @@ _C.target_assigner.anchor_generators.region_similarity_calculator.value = 0
 # --------------------------------------------------------------------
 # tasks
 # --------------------------------------------------------------------
-_C.tasks = edict()
-_C.tasks.num_classes = [1,]
-_C.tasks.class_names = ["car",]
+_C.model = edict()
+_C.model.encoder = edict()
+_C.model.encoder.vfe = edict()
+_C.model.encoder.vfe.type = ""
+_C.model.encoder.vfe.num_filters = [16,]
+_C.model.encoder.vfe.with_distance = False
+_C.model.encoder.vfe.num_input_features = 4
+
+_C.model.encoder.middle = edict()
+_C.model.encoder.middle.type = "SpMiddleFHD"
+_C.model.encoder.middle.num_filters_down1 = []
+_C.model.encoder.middle.num_filters_down2 = []
+_C.model.encoder.middle.downsample_factor = 8
+_C.model.encoder.middle.num_input_features = 5
+
+
+_C.model.post_process = edict()
+_C.model.post_process.post_center_limit_range = [-51.2, -51.2, -10.0, 51.2, 51.2, 10.0]
+_C.model.post_process.use_rotate_nms = True
+_C.model.post_process.use_multi_class_nms = False
+_C.model.post_process.nms_pre_max_size = 1000
+_C.model.post_process.nms_post_max_size = 80
+_C.model.post_process.nms_score_threshold = 0.1
+_C.model.post_process.nms_iou_threshold = 0.2
+
+
+_C.model.loss = edict()
+_C.model.loss.loss_scale_factor = -1
+_C.model.loss.loss_norm_type = "NormByNumPositives"
+_C.model.loss.pos_class_weight = 1.0
+_C.model.loss.neg_class_weight = 2.0
+_C.model.loss.use_sigmoid_score = True
+_C.model.loss.encode_background_as_zeros = True
+_C.model.loss.encode_rad_error_by_sin = True
+
+_C.model.loss.classification_loss = edict()
+_C.model.loss.classification_loss.type = 'weighted_sigmoid_focal'
+_C.model.loss.classification_loss.value = edict()
+_C.model.loss.classification_loss.value.alpha = 0.25
+_C.model.loss.classification_loss.value.gamma = 2.0
+_C.model.loss.classification_loss.value.anchorwise_output = True
+
+
+_C.model.loss.localization_loss = edict()
+
+_C.model.loss.localization_loss.type = 'weighted_smooth_l1'
+_C.model.loss.localization_loss.value = edict()
+_C.model.loss.localization_loss.value.sigma = 3.0
+_C.model.loss.localization_loss.value.code_weight = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+
+_C.model.loss.classification_weight = 1.0
+_C.model.loss.localization_weight = 1.0
+_C.model.loss.direction_loss_weight = 0.2
+
 # --------------------------------------------------------------------
 # functions
 # --------------------------------------------------------------------

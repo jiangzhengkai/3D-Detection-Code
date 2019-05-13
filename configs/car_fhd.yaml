@@ -6,10 +6,10 @@ input:
     voxel:
         voxel_size: [0.05, 0.05, 0.1]
         point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
-        max_num_points: 5
-        max_voxels: 20000
+        max_num_points: 30
+        max_voxels: 200
     train:
-        batch_size: 1
+        batch_size: 4
         num_epochs: 50
         dataset:
             type: "KittiDataset"
@@ -82,6 +82,52 @@ target_assigner:
         region_similarity_calculator: 
             type: "nearest_iou_similarity"
             value: 0
+model:
+    encoder:
+        vfe:
+            type: "VoxelFeatureExtractorV3"
+            num_filters: [16,]
+            with_distance: False
+            num_input_features: 4
+        middle:
+            type: "SpMiddleFHD"
+            num_filters_down1: []
+            num_filters_down2: []
+            downsample_factor: 8
+            num_input_features: 5
+    post_process:
+        post_center_limit_range: [-51.2, -51.2, -10.0, 51.2, 51.2, 10.0]
+        use_rotate_nms: True
+        use_milti_class_nms: False
+        nms_pre_max_size: 1000
+        nms_post_max_size: 80
+        nms_score_threshold: 0.1
+        nms_iou_threshold: 0.2
+
+    loss:
+        loss_scale_factor: -1
+        loss_norm_type: "NormByNumPositives"
+        pos_class_weight: 1.0
+        neg_class_weight: 2.0
+        use_sigmoid_score: True
+        encode_background_as_zeros: True
+        encode_rad_error_by_sin: True
+        classfication_loss:
+            type: "weighted_sigmoid_focal"
+            value: 
+                alpha: 0.25
+                gamma: 2.0
+                anchorwise_output: True
+        localization_loss:
+            type: "weighted_smooth_l1"
+            value: 
+                sigma: 3.0
+                code_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+        classification_weight: 1.0
+        localization_weight: 1.0
+        direction_loss_weight: 0.2
+
+
 tasks:
     num_classes: [1,]
     class_names: [["Car"],]
