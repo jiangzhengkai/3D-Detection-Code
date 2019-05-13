@@ -84,7 +84,7 @@ class DataBasePreprocessing:
 class DBFilterByDifficulty(DataBasePreprocessing):
     def __init__(self, removed_difficulties, logger=None):
         self._removed_difficulties = removed_difficulties
-        logger.info(f"{removed_difficulties}")
+        logger.info("removed_difficulties")
 
     def _preprocess(self, db_infos):
         new_db_infos = {}

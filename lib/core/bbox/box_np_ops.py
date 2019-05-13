@@ -347,7 +347,6 @@ def create_anchors_3d_range(feature_size,
     combines = np.tile(combines, tile_size_shape)
 
     rets.insert(3, combines)
-
     ret = np.concatenate(rets, axis=-1)
     return np.transpose(ret, [2, 1, 0, 3, 4, 5])
 @numba.njit

@@ -47,7 +47,7 @@ class GroundBox3dCoder(BoxCoder):
 
     @property
     def code_size(self):
-        return 10 if self.vec_encode else 9
+        return 8 if self.vec_encode else 7
 
     def _encode(self, boxes, anchors):
         return box_np_ops.second_box_encode(boxes, anchors, self.vec_encode, self.linear_dim)

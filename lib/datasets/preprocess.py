@@ -3,6 +3,7 @@ import numpy as np
 from lib.datasets import kitti_common as kitti
 from lib.core.bbox import box_np_ops
 from lib.datasets import preprocess as prep
+from collections import defaultdict
 import numba
 from lib.core.bbox.geometry import points_in_convex_polygon_3d_jit, points_in_convex_polygon_jit
 
@@ -181,7 +182,6 @@ def prep_pointcloud(config,
                 gt_group_ids=group_ids,
                 calib=calib,
             )
-
             if sampled_dict is not None:
                 sampled_gt_names = sampled_dict["gt_names"]
                 sampled_gt_boxes = sampled_dict["gt_boxes"]
@@ -198,7 +198,8 @@ def prep_pointcloud(config,
                 masks = box_np_ops.points_in_rbbox(points, sampled_gt_boxes)
                 points = points[np.logical_not(masks.any(-1))]
 
-            points = np.concatenate([sampled_points, points], axis=0)
+            if sampled_dict is not None:
+                points = np.concatenate([sampled_points, points], axis=0)
 
         pc_range = voxel_generator.point_cloud_range
 

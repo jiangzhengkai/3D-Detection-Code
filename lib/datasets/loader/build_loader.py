@@ -50,7 +50,7 @@ def build_dataset(config, training, logger=None):
     ######## database sampler ########
     if training:
         if logger is not None:
-            logger.info("Enable db sampler: {db_sampler}")
+            logger.info("Enable db sampler: db_sampler")
         db_sampler = DBSampler(config, logger=logger)
     else:
         db_sampler = None
