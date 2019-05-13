@@ -9,6 +9,7 @@ input:
         max_num_points: 5
         max_voxels: 20000
     train:
+        batch_size: 1
         num_epochs: 50
         dataset:
             type: "KittiDataset"

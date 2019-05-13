@@ -40,7 +40,7 @@ def train(config, logger=None):
     num_gpus = len(config.gpus.split(','))
 
     total_steps = int(num_epochs)
-    logger.info("total training steps: {total_steps}")
+    logger.info("total training steps: %s" %(total_steps))
 
 
     #arguments = {}
