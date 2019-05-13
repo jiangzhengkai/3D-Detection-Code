@@ -90,8 +90,6 @@ class TargetAssigner:
                 prune_anchor_fn = None
               
             anchor = anchor_dict["anchors"].reshape(-1, self.box_coder.code_size)        
-            print("anchor_shape",anchor.shape)
-            print('gt_boxes_shape',gt_boxes.shape)
             targets = create_target_np(
                 anchor,
                 gt_boxes[mask],
