@@ -2,6 +2,7 @@
 import torch
 import argparse
 import os
+import numpy as np
 
 import pathlib
 import torch
@@ -14,6 +15,60 @@ from lib.datasets.loader.build_loader import build_dataloader
 
 from lib.utils.logger import setup_logger
 from lib.utils.dist_common import get_rank
+
+def data_batch_convert_to_torch(data_batch, dtype=torch.float32, device=None):
+    device = device if device is not None else torch.device("cuda:0")
+    
+    data_batch_torch = {}
+    for k, v in data_batch.items():
+        if k in ["anchors", "reg_targets", "reg_weights"]:
+            res = []
+            for kk, vv in v.items():
+                vv = np.array(vv)
+                res.append(torch.tensor(vv, dtype=torch.float32,
+                                        device=device))
+            data_batch_torch[k] = res
+        elif k in ["voxels", "bev_map"]:
+            # slow when directly provide fp32 data with dtype=torch.half
+            data_batch_torch[k] = torch.tensor(v,
+                                            dtype=torch.float32,
+                                            device=device)
+        elif k in ["coordinates", "num_points"]:
+            data_batch_torch[k] = torch.tensor(v,
+                                            dtype=torch.int32,
+                                            device=device)
+        elif k == 'labels':
+            res = []
+            for kk, vv in v.items():
+                vv = np.array(vv)
+                res.append(torch.tensor(vv, dtype=torch.int32, device=device))
+            data_batch_torch[k] = res
+        elif k == 'points':
+            data_batch_torch[k] = torch.tensor(v,
+                                            dtype=torch.float,
+                                            device=device)
+        elif k in ["anchors_mask"]:
+            res = []
+            for kk, vv in v.items():
+                vv = np.array(vv)
+                res.append(torch.tensor(vv, dtype=torch.uint8, device=device))
+            data_batch_torch[k] = res
+        elif k == "calib":
+            calib = {}
+            for k1, v1 in v.items():
+                calib[k1] = torch.tensor(v1, dtype=dtype, device=device)
+            data_batch_torch[k] = calib
+        elif k == "num_voxels":
+            data_batch_torch[k] = torch.tensor(v,
+                                            dtype=torch.int64,
+                                            device=device)
+        else:
+            data_batch_torch[k] = v
+
+    return data_batch_torch
+
+
+
 
 
 def train(config, logger=None):
@@ -41,12 +96,13 @@ def train(config, logger=None):
 
     total_steps = int(num_epochs)
     logger.info("total training steps: %s" %(total_steps))
-
-
+    
+    device = torch.device('cuda')
     #arguments = {}
     #arguments['iter'] = 0
     #arguments['epoch'] = 0
     for epoch in range(num_epochs):
         for i, data_batch in enumerate(train_dataloader):
+            data_torch = data_batch_convert_to_torch(data_batch, device=device)
             import pdb;pdb.set_trace() 
             print(1)
