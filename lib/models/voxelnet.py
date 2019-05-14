@@ -1,6 +1,7 @@
 import torch
 from torch import nn
 from lib.models import voxel_encoder
+from lib.models import middle
 
 
 class VoxelNet(nn.Module):

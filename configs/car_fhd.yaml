@@ -111,9 +111,9 @@ model:
                 num_classes: [1]
                 class_names: [["car"],]
             weights: [1,]
-         auxiliary:
-             use_direction_classifier: True
-             direction_offset: 0.785
+        auxiliary:
+            use_direction_classifier: True
+            direction_offset: 0.785
     post_process:
         post_center_limit_range: [-51.2, -51.2, -10.0, 51.2, 51.2, 10.0]
         use_rotate_nms: True
@@ -131,7 +131,7 @@ model:
         use_sigmoid_score: True
         encode_background_as_zeros: True
         encode_rad_error_by_sin: True
-        classfication_loss:
+        classification_loss:
             type: "weighted_sigmoid_focal"
             value: 
                 alpha: 0.25

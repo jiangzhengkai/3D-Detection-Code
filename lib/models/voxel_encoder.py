@@ -55,8 +55,8 @@ class VoxelFeatureExtractor(nn.Module):
             BatchNorm1d = nn.BatchNorm1d(momentum=0.01, eps=1e-3)
             Linear = nn.Linear(bias=True)
         else:
-            BatchNorm = Empty
             Linear = nn.Linear(bias=False)
+        self._use_norm = use_norm
         self.linear = linear
         self.batchnorm = BatchNorm1d
        

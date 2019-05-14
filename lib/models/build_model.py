@@ -25,7 +25,7 @@ def build_network(config, logger=None, device=None):
             config=config,
             num_classes=num_classes,
             use_norm=True,
-            target_assigners=target_asigners,
+            target_assigners=target_assigners,
             voxel_generator=voxel_generator,
             name='VoxelNet',
             device=device,

@@ -144,15 +144,15 @@ _C.model.decoder.rpn.group_norm = False
 _C.model.decoder.rpn.num_groups = 32
 _C.model.decoder.rpn.num_input_features = 128
 
-_C.model.head = edict()
-_C.model.head.tasks = edict()
-_C.model.head.tasks.num_classes = [1,]
-_C.model.head.tasks.class_names = [["car"],]
-_C.model.head.weights = [1,]
+_C.model.decoder.head = edict()
+_C.model.decoder.head.tasks = edict()
+_C.model.decoder.head.tasks.num_classes = [1,]
+_C.model.decoder.head.tasks.class_names = [["car"],]
+_C.model.decoder.head.weights = [1,]
 
-_C.model.auxliary = edict()
-_C.model.auxliary.use_direction_classifier = True
-_C.model.auxliary.direction_offset = 0.785
+_C.model.decoder.auxiliary = edict()
+_C.model.decoder.auxiliary.use_direction_classifier = True
+_C.model.decoder.auxiliary.direction_offset = 0.785
 
 
 _C.model.post_process = edict()

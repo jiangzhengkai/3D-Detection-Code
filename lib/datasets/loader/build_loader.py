@@ -43,7 +43,7 @@ def build_dataset(config, training, logger=None):
 	target_assigner.generate_anchors(feature_map_size) 
 	for target_assigner in target_assigners
     ]
-    class_namess = [
+    class_names = [
 	target_assigner.classes 
 	for target_assigner in target_assigners
     ]

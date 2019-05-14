@@ -21,7 +21,7 @@ def target_assigners_all_classes(config):
     class_names = []
     target_assigners = []
     flag = 0
-    for num_class, class_name in zip(config.tasks.num_classes, config.tasks.class_names):
+    for num_class, class_name in zip(config.model.decoder.head.tasks.num_classes, config.model.decoder.head.tasks.class_names):
         target_assigner = TargetAssigner(
             box_coder=bbox_coder,
             anchor_generators=anchor_generators_all_class[flag:flag+len(class_name)],
