@@ -3,10 +3,7 @@ import torch.utils.data
 import itertools
 from functools import partial
 from lib.core.voxel.voxel_generator import VoxelGenerator
-from lib.core.bbox.box_coder import box_coder
-from lib.core.anchor.anchor_generators import anchor_generators
-from lib.core.bbox.region_similarity import region_similarity_calculator
-from lib.core.target.target_assigner import TargetAssigner
+from lib.core.target.target_assigner import target_assigners_all_classes
 from lib.core.sampler.db_sampler import DBSampler
 from lib.datasets.preprocess import prep_pointcloud
 from lib.datasets.loader.sampler import Sampler, DistributedSampler
@@ -21,31 +18,8 @@ def build_dataset(config, training, logger=None):
 	point_cloud_range=config.input.voxel.point_cloud_range,
 	max_num_points=config.input.voxel.max_num_points,
 	max_voxels=config.input.voxel.max_voxels)
-
-    ######## box coder ########
-    bbox_coder = box_coder(config)
-
-    ######## region similarity ########
-    region_similarity = region_similarity_calculator(config.target_assigner.anchor_generators.region_similarity_calculator)
-
-    ######## anchor generators ########
-    anchor_generators_all_class = anchor_generators(config.target_assigner.anchor_generators)
-
-    ######## target assiginers ########
-    target_assigners = []
-    class_names = []
-    flag = 0
-    for num_class, class_name in zip(config.tasks.num_classes, config.tasks.class_names):
-        target_assigner = TargetAssigner(
-	    box_coder=bbox_coder,
-	    anchor_generators=anchor_generators_all_class[flag:flag+len(class_name)],
-	    region_similarity_calculator=region_similarity,
-	    positive_fraction=config.target_assigner.anchor_generators.sample_positive_fraction,
-	    sample_size=config.target_assigner.anchor_generators.sample_size)
-    
-        flag += len(class_name)
-        target_assigners.append(target_assigner)
-        class_names.append(class_name)
+    ####### target assigners ########
+    target_assigners = target_assigners_all_classes(config)
 
     ######## database sampler ########
     if training:

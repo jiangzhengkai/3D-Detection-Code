@@ -1,4 +1,6 @@
 from lib.core.voxel.voxel_generator import VoxelGenerator
+from lib.core.target.target_assigner import target_assigners_all_classes
+from lib.models.voxelnet import VoxelNet
 
 
 def build_network(config, logger=None, device=None):
@@ -10,20 +12,7 @@ def build_network(config, logger=None, device=None):
         max_voxels=config.input.voxel.max_voxels)
     
     ######## target assiginers ########
-    target_assigners = []
-    class_names = []
-    flag = 0
-    for num_class, class_name in zip(config.tasks.num_classes, config.tasks.class_names):
-        target_assigner = TargetAssigner(
-            box_coder=bbox_coder,
-            anchor_generators=anchor_generators_all_class[flag:flag+len(class_name)],
-            region_similarity_calculator=region_similarity,
-            positive_fraction=config.target_assigner.anchor_generators.sample_positive_fraction,
-            sample_size=config.target_assigner.anchor_generators.sample_size)
-
-        flag += len(class_name)
-        target_assigners.append(target_assigner)
-        class_names.append(class_name)
+    target_assigners = target_assigners_all_classes(config)
 
     vfe_num_filters = config.model.encoder.vfe.num_filters
     grid_size = voxel_generator.grid_size
@@ -32,12 +21,13 @@ def build_network(config, logger=None, device=None):
 
 
     net = VoxelNet(
-            dense_shape,
+            output_shape=dense_shape,
+            config=config,
             num_classes=num_classes,
             use_norm=True,
-            config,
             target_assigners=target_asigners,
             voxel_generator=voxel_generator,
+            name='VoxelNet',
             device=device,
             logger=logger)
     return net    
