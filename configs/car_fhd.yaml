@@ -95,10 +95,29 @@ model:
             num_filters_down2: []
             downsample_factor: 8
             num_input_features: 5
+    decoder:
+        rpn:
+            type: "RPNV2"
+            layer_nums: [5, 5]
+            downsample_layer_strides: [1, 2]
+            downsample_num_filters: [128, 256]
+            upsample_layer_strides: [1, 2]
+            upsample_num_filters: [128, 128]
+            group_norm: False
+            num_groups: 32
+            num_input_features: 128
+        head:
+            tasks:
+                num_classes: [1]
+                class_names: [["car"],]
+            weights: [1,]
+         auxiliary:
+             use_direction_classifier: True
+             direction_offset: 0.785
     post_process:
         post_center_limit_range: [-51.2, -51.2, -10.0, 51.2, 51.2, 10.0]
         use_rotate_nms: True
-        use_milti_class_nms: False
+        use_multi_class_nms: False
         nms_pre_max_size: 1000
         nms_post_max_size: 80
         nms_score_threshold: 0.1
@@ -126,10 +145,3 @@ model:
         classification_weight: 1.0
         localization_weight: 1.0
         direction_loss_weight: 0.2
-
-
-tasks:
-    num_classes: [1,]
-    class_names: [["Car"],]
-    
-

@@ -1,6 +1,6 @@
 import torch
 from torch import nn
-from lib.models import voxel_encoder, pixor_encoder
+from lib.models import voxel_encoder
 
 
 class VoxelNet(nn.Module):
@@ -30,8 +30,6 @@ class VoxelNet(nn.Module):
             "VoxelFeatureExtractorV2": voxel_encoder.VoxelFeatureExtractorV2,
             "VoxelFeatureExtractorV3": voxel_encoder.VoxelFeatureExtractorV3, 
             "SimpleVoxel": voxel_encoder.SimpleVoxel,
-            "PillarFeatureNet": pillar_encoder.PillarFeatureExtractor,
-            "PixorFeatureLayer": pixor_encoder.PixorFeatureLayer,
         }
         vfe_class_name = config.model.encoder.vfe.type
         vfe_num_filters = config.model.encoder.vfe.num_filters
@@ -53,21 +51,8 @@ class VoxelNet(nn.Module):
             	pc_range=self.voxel_generator.point_cloud_range)
   
         middle_class_dict = {
-            "SparseMiddleExtractor": middle.SparseMiddleExtractor,
-            "SpMiddleD4HD": middle.SpMiddleD4HD,
-            "SpMiddleD8HD": middle.SpMiddleD8HD,
             "SpMiddleFHD": middle.SpMiddleFHD,
-            "SpMiddleFHDV2": middle.SpMiddleFHDV2,
-            "SpMiddleFHDLarge": middle.SpMiddleFHDLarge,
-            "SpMiddleResNetFHD": middle.SpMiddleResNetFHD,
-            "SpMiddleD4HDLite": middle.SpMiddleD4HDLite,
-            "SpMiddleFHDLite": middle.SpMiddleFHDLite,
-            "SpMiddle2K": middle.SpMiddle2K,
-            "SpMiddleFHDPeople": middle.SpMiddleFHDPeople,
-            "SpMiddle2KPeople": middle.SpMiddle2KPeople,
-            "SpMiddleHDLite": middle.SpMiddleHDLite,
-            "PointPillarsScatter": pillar_encoder.PointPillarsScatter,
-            "None": None}
+        }
     
         middle_class_name = config.model.encoder.middle.type
         middle_num_input_features = config.model.encoder.middle.num_input_features
@@ -93,10 +78,8 @@ class VoxelNet(nn.Module):
             logger.info("Pixor do not need Middle Layer")
         ######## rpn ########
         rpn_class_dict = {
-            "RPN": rpn.RPN,
             "RPNV2": rpn.RPNV2,
-            "ResNetRPN": rpn.ResnetRPN,
-            "RetinaNet": RetinaNet}
+        }
 
         rpn_class_name = config.model.decoder.rpn.type
         rpn_num_input_features = config.model.decoder.rpn.num_input_features

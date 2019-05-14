@@ -131,6 +131,30 @@ _C.model.encoder.middle.downsample_factor = 8
 _C.model.encoder.middle.num_input_features = 5
 
 
+_C.model.decoder = edict()
+_C.model.decoder.rpn = edict()
+_C.model.decoder.rpn.type = "RPNV2"
+_C.model.decoder.rpn.layer_nums = [5, 5]
+
+_C.model.decoder.rpn.downsample_layer_strides = [1, 2]
+_C.model.decoder.rpn.downsample_num_filters = [128, 256]
+_C.model.decoder.rpn.upsample_layer_strides = [1, 2]
+_C.model.decoder.rpn.upsample_num_filters = [128, 256]
+_C.model.decoder.rpn.group_norm = Fase
+_C.model.decoder.rpn.num_groups = 32
+_C.model.decoder.rpn.num_input_features = 128
+
+_C.model.head = edict()
+_C.model.head.tasks = edict()
+_C.model.head.tasks.num_classes = [1,]
+_C.model.head.tasks.class_names = [["car"],]
+_C.model.head.weights = [1,]
+
+_C.model.auxliary = edict()
+_C.model.auxliary.use_direction_classifier = True
+_C.model.auxliary.direction_offset = 0.785
+
+
 _C.model.post_process = edict()
 _C.model.post_process.post_center_limit_range = [-51.2, -51.2, -10.0, 51.2, 51.2, 10.0]
 _C.model.post_process.use_rotate_nms = True

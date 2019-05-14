@@ -8,12 +8,12 @@ def get_padding_indicator(actual_num, max_num, axis=0):
     actual_num = torch.unsqueeze(actual_num, axis + 1)
     max_num_shape = [1] * len(actual_num.shape)
     max_num_shape[axis + 1] = -1
-    max_num = torch.arange(max_num. dtype=torch.int. device=actual_num.device).view(max_num_shape)
+    max_num = torch.arange(max_num, dtype=torch.int, device=actual_num.device).view(max_num_shape)
     paddings_indicator = actual_num.int() > max_num
     return paddings_indicator
 
 
-class VFELayer(nn.Module)
+class VFELayer(nn.Module):
     def __init__(self, in_channels, out_channels, use_norm=True, name='VFE'):
         super(VFELayer, self).__init__()
         self.name = name
@@ -43,7 +43,7 @@ class VFELayer(nn.Module)
 class VoxelFeatureExtractor(nn.Module):
     def __init__(self, 
                  num_input_features, 
-                 use_norm, num_filters,
+                 use_norm, 
                  num_filters=[32,128],
                  with_distance=False,
                  voxel_size=(0.2, 0.2, 4),
@@ -62,7 +62,8 @@ class VoxelFeatureExtractor(nn.Module):
        
         num_input_features += 3
         self._with_distance = with_distance
-        self.vfe1 = VFELayer(num_input_features, num_filters[0], use_norm)        self.vfe2 = VFELayer(num_filters[0], num_filters[1], use_norm)
+        self.vfe1 = VFELayer(num_input_features, num_filters[0], use_norm)        
+        self.vfe2 = VFELayer(num_filters[0], num_filters[1], use_norm)
         self.linear = Linear(num_filters[1], num_filters[1])
         self.norm = BatchNorm1d(num_filters[1]) 
     
@@ -136,9 +137,6 @@ class VoxelFeatureExtractorV2(nn.Module):
         features *= mask
         voxelwise = torch.max(features, dim=1)[0]
         return voxelwise
-    return voxelwise
-
-
 
 class VoxelFeatureExtractorV3(nn.Module):
     def __init__(self,
@@ -152,7 +150,7 @@ class VoxelFeatureExtractorV3(nn.Module):
         super(VoxelFeatureExtractorV3, self).__init__()
         self.name = name
         self.num_input_features = num_input_features
-    def forward(self, features, num_voxels, coordinates)
+    def forward(self, features, num_voxels, coordinates):
         points_mean = features[:, :, :self.num_input_features].sum(dim=1, keepdim=False) / num_voxels.type_as(features).view(-1, 1)
         return points_mean.contiguous()
 
