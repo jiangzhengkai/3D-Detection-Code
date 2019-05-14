@@ -1,7 +1,7 @@
 import numpy as np
 import torch
 from torch import nn
-from .common import Empty
+from lib.models.common import Empty
 from torch.nn import functional as F
 
 def get_padding_indicator(actual_num, max_num, axis=0):
