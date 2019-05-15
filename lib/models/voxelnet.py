@@ -19,12 +19,10 @@ class VoxelNet(nn.Module):
         self.name = name
         self.logger = logger
         self._num_classes = num_classes
-
-
-        self.target_assigners = target_assigners
-        self.voxel_generator = voxel_generator
-
-
+        self._target_assigners = target_assigners
+        self._voxel_generator = voxel_generator
+        self._encode_background_as_zeros = config.model.loss.encode_background_as_zeros
+        self._use_direction_classifier = config.model.decoder.auxiliary.use_direction_classifier
         ####### voxel feature encoder #######
         vfe_class_dict = {
             "VoxelFeatureExtractor": voxel_encoder.VoxelFeatureExtractor,
@@ -40,16 +38,16 @@ class VoxelNet(nn.Module):
         logger.info("Voxel Feature Encoder: {}".format(self._vfe_class_name))
     
         if "Pixor" in self._vfe_class_name:
-            self.voxel_feature_extractor = vfe_class(output_shape[:-1])
+            self._voxel_feature_extractor = vfe_class(output_shape[:-1])
             rpn_num_input_features = self.voxel_feature_extractor.nchannels
         else:
-            self.voxel_feature_extractor = vfe_class(
+            self._voxel_feature_extractor = vfe_class(
             	config.model.encoder.vfe.num_input_features,
             	use_norm,
             	num_filters=vfe_num_filters,
             	with_distance=with_distance,
-            	voxel_size=self.voxel_generator.voxel_size,
-            	pc_range=self.voxel_generator.point_cloud_range)
+            	voxel_size=self._voxel_generator.voxel_size,
+            	pc_range=self._voxel_generator.point_cloud_range)
   
         middle_class_dict = {
             "SpMiddleFHD": middle.SpMiddleFHD,
@@ -65,11 +63,11 @@ class VoxelNet(nn.Module):
         logger.info("Middle class name: {}".format(middle_class_name))
     
         if "Pixor" in self._middle_class_name:
-            self.middle_feature_extractor = middle_class(
+            self._middle_feature_extractor = middle_class(
                 output_shape=output_shape,
                 num_input_features=vfe_num_filters[-1])
         elif middle_class:
-            self.middle_feature_extractor = middle_class(
+            self._middle_feature_extractor = middle_class(
                 output_shape,
                 use_norm,
                 num_input_features=middle_num_input_features,
@@ -97,7 +95,7 @@ class VoxelNet(nn.Module):
         self._rpn_class_name = rpn_class_name
         logger.info("RPN class name: {}".format(self._rpn_class_name))
     
-        self.rpn = rpn_class(
+        self._rpn = rpn_class(
             use_norm=True,
             num_classes=num_classes,
             layer_nums=rpn_layer_nums,
@@ -105,7 +103,6 @@ class VoxelNet(nn.Module):
             num_filters=rpn_num_filters,
             upsample_strides=rpn_upsample_strides,
             num_upsample_filters=rpn_num_upsample_filters,
-            num_input_filters=rpn_num_upsample_filters,
             num_input_features=rpn_num_input_features,
             num_anchor_per_locs = [
                 target_assigner.num_anchors_per_location
@@ -125,21 +122,26 @@ class VoxelNet(nn.Module):
         voxels = example["voxels"]
         num_points = example["num_points"]
         coordinates = example["coordinates"]
+        batch_anchors = example["anchors"]
+        batch_size_dev = batch_anchors[0].shape[0]
         
         if "Pixor" in self._vfe_class_name:
-            voxel_features = self.voxel_feature_extractor(
+            voxel_features = self._voxel_feature_extractor(
                 voxels, num_points, coordinates, batch_size_dev)
         else:
-            voxel_features = self.voxel_feature_extractor(
+            voxel_features = self._voxel_feature_extractor(
                 voxels, num_points, coordinates)
     
         if "Pixor" not in self._vfe_class_name:
-            spatial_features = self.middle_feature_extractor(
+            spatial_features = self._middle_feature_extractor(
                 voxel_features, coordinates, batch_size_dev)
         else:
             spatial_features = voxel_features
 
-        predict_dicts = self.rpn(spatial_features)
+        predict_dicts = self._rpn(spatial_features)
  
         return predict_dicts
 
+
+    def loss(self, example, pred_dict):
+    

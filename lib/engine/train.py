@@ -25,7 +25,7 @@ def train(config, logger=None):
     #val_dataloader = build_dataloader(config, training=False, logger=logger)
 
     ####### build network ######
-    net = build_network(config, logger=logger)
+    model = build_network(config, logger=logger)
 
     ####### optimizer #######
     #optimizer = build_optimizer(config)
@@ -44,6 +44,8 @@ def train(config, logger=None):
     logger.info("total training steps: %s" %(total_steps))
     
     device = torch.device('cuda')
+    model = model.to(device)
+    logger.info("Model Articutures: %s"%(model))
     for epoch in range(num_epochs):
         for i, data_batch in enumerate(train_dataloader):
             ######## data_device ########
@@ -61,5 +63,6 @@ def train(config, logger=None):
             #### reg_weights: [batch_size x num_anchors]
             #### meta_data: [dict_0, dict_1, ... dict_batch_size]
             data_device = convert_batch_to_device(data_batch, device=device)
+            rpn_predict_dicts = model(data_device)
             import pdb;pdb.set_trace() 
             print(1)

@@ -6,10 +6,10 @@ input:
     voxel:
         voxel_size: [0.05, 0.05, 0.1]
         point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
-        max_num_points: 30
-        max_voxels: 200
+        max_num_points: 5
+        max_voxels: 20000
     train:
-        batch_size: 4
+        batch_size: 6
         num_epochs: 50
         dataset:
             type: "KittiDataset"
@@ -94,7 +94,7 @@ model:
             num_filters_down1: []
             num_filters_down2: []
             downsample_factor: 8
-            num_input_features: 5
+            num_input_features: 4
     decoder:
         rpn:
             type: "RPNV2"
