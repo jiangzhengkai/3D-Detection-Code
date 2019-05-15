@@ -3,7 +3,8 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from lib.models.common import Empty
+from lib.models.common import Empty, GroupNorm, Sequential
+from lib.models.common import change_default_args
 
 class RPNHead(nn.Module):
     def __init__(self,
@@ -43,18 +44,14 @@ class RPNHead(nn.Module):
 class RPNBase(nn.Module):
     def __init__(self,
                  use_norm=True,
-                 num_classes=[
-                     2,
-                 ],
+                 num_classes=[2,],
                  layer_nums=(3, 5, 5),
                  layer_strides=(2, 2, 2),
                  num_filters=(128, 128, 256),
                  upsample_strides=(1, 2, 4),
                  num_upsample_filters=(256, 256, 256),
                  num_input_features=128,
-                 num_anchor_per_locs=[
-                     2,
-                 ],
+                 num_anchor_per_locs=[2, ],
                  encode_background_as_zeros=True,
                  use_direction_classifier=True,
                  use_groupnorm=False,
@@ -82,7 +79,6 @@ class RPNBase(nn.Module):
 
         must_equal_list = []
         for i in range(len(upsample_strides)):
-            # print(upsample_strides[i])
             must_equal_list.append(upsample_strides[i] / np.prod(
                 layer_strides[:i + self._upsample_start_idx + 1]))
 
@@ -126,7 +122,6 @@ class RPNBase(nn.Module):
                     BatchNorm2d(
                         num_upsample_filters[i - self._upsample_start_idx]),
                     nn.ReLU(),
-                    # SEModule(num_upsample_filters[i - self._upsample_start_idx], reduction=16),
                 )
                 deblocks.append(deblock)
         self.blocks = nn.ModuleList(blocks)
@@ -136,8 +131,7 @@ class RPNBase(nn.Module):
         num_preds = []
         num_dirs = []
 
-        for num_c, num_a, box_cs in zip(num_classes, num_anchor_per_locs,
-                                        box_code_sizes):
+        for num_c, num_a, box_cs in zip(num_classes, num_anchor_per_locs, box_code_sizes):
             if encode_background_as_zeros:
                 num_cls = num_a * num_c
             else:
@@ -220,12 +214,10 @@ class RPNV2(RPNBase):
             Conv2d(inplanes, planes, 3, stride=stride),
             BatchNorm2d(planes),
             nn.ReLU(),
-            # SEModule(planes, reduction=16),
         )
         for j in range(num_blocks):
             block.add(Conv2d(planes, planes, 3, padding=1))
             block.add(BatchNorm2d(planes))
             block.add(nn.ReLU())
-            # block.add(SEModule(num_filters[0], reduction=16))
         return block, planes
 
