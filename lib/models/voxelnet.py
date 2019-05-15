@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 from lib.models import voxel_encoder
-from lib.models import middle
+from lib.models import middle, rpn
 
 
 class VoxelNet(nn.Module):
@@ -86,7 +86,7 @@ class VoxelNet(nn.Module):
         rpn_num_input_features = config.model.decoder.rpn.num_input_features
         rpn_layer_nums = config.model.decoder.rpn.layer_nums
         rpn_layer_strides = config.model.decoder.rpn.downsample_layer_strides
-        rpn_num_filters = config.model.decoder.rpn.downsample_nu_filters
+        rpn_num_filters = config.model.decoder.rpn.downsample_num_filters
         rpn_upsample_strides = config.model.decoder.rpn.upsample_layer_strides
         rpn_num_upsample_filters = config.model.decoder.rpn.upsample_num_filters
 
@@ -105,7 +105,7 @@ class VoxelNet(nn.Module):
             num_filters=rpn_num_filters,
             upsample_strides=rpn_upsample_strides,
             num_upsample_filters=rpn_num_upsample_filters,
-            num_input_filters=rpn_num_input_filters,
+            num_input_filters=rpn_num_upsample_filters,
             num_input_features=rpn_num_input_features,
             num_anchor_per_locs = [
                 target_assigner.num_anchors_per_location

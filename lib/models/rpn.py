@@ -15,7 +15,7 @@ class RPNHead(nn.Module):
                  use_rc=False,
                  name='',
                  **kwargs):
-    super(RPNHead, self).__init__(**kwargs)
+        super(RPNHead, self).__init__(**kwargs)
         self.use_dir = use_dir
         self.use_rc = use_rc
 

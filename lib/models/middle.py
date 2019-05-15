@@ -2,7 +2,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 import spconv
-from lib.models.common import Empty
+from lib.models.common import Empty, change_default_args
 import numpy as np
 
 class SpMiddleFHD(nn.Module):
@@ -16,29 +16,34 @@ class SpMiddleFHD(nn.Module):
         super(SpMiddleFHD, self).__init__()
         self.name = name
         if use_norm:
-            BatchNorm2d = nn.BatchNorm2d(eps=1e-3, momentum=0.01)
-            BatchNorm1d = nn.BatchNorm1d(eps=1e-3, momentum=0.01)
-            Conv2d = nn.Conv2d(bias=False)
-            SpConv3d = spconv.SparseConv3d(bias=False)
-            SubMConv3d = spconv.SubMConv3d(bias=False)
-            ConvTranspose2d = nn.ConvTranspose2d(bias=False)
+            BatchNorm2d = change_default_args(
+                eps=1e-3, momentum=0.01)(nn.BatchNorm2d)
+            BatchNorm1d = change_default_args(
+                eps=1e-3, momentum=0.01)(nn.BatchNorm1d)
+            Conv2d = change_default_args(bias=False)(nn.Conv2d)
+            SpConv3d = change_default_args(bias=False)(spconv.SparseConv3d)
+            SubMConv3d = change_default_args(bias=False)(spconv.SubMConv3d)
+            ConvTranspose2d = change_default_args(bias=False)(
+                nn.ConvTranspose2d)
         else:
-            BatchNorm2d = Epmty
+            BatchNorm2d = Empty
             BatchNorm1d = Empty
-            Conv2d = nn.Conv2d(bias=True)
-            SpConv3d = spconv.SparseConv3d(bias=True)
-            SubMConv3d = spconv.SubMConv3d(bias=True)
-            ConvTranspose2d = nn.ConvTranspose2d(bias=True)
+            Conv2d = change_default_args(bias=True)(nn.Conv2d)
+            SpConv3d = change_default_args(bias=True)(spconv.SparseConv3d)
+            SubMConv3d = change_default_args(bias=True)(spconv.SubMConv3d)
+            ConvTranspose2d = change_default_args(bias=True)(
+                nn.ConvTranspose2d)
+
         sparse_shape = np.array(output_shape[1:4]) + [1, 0, 0]
         self.sparse_shape = sparse_shape
         self.voxel_output_shape = output_shape
         # [1600, 1200, 41]
         self.middle_conv = spconv.SparseSequential(
             SubMConv3d(num_input_features, 16, 3, indice_key="subm0"),
-            BatchNorm1d(16),
+            nn.BatchNorm1d(16),
             nn.ReLU(),
             SubMConv3d(16, 16, 3, indice_key="subm0"),
-            BatchNorm1d(16),
+            nn.BatchNorm1d(16),
             nn.ReLU(),
             SpConv3d(16, 32, 3, 2,
                      padding=1),  # [1600, 1200, 41] -> [800, 600, 21]
@@ -77,7 +82,7 @@ class SpMiddleFHD(nn.Module):
             SubMConv3d(64, 64, 3, indice_key="subm3"),
             BatchNorm1d(64),
             nn.ReLU(),
-
+  
             SpConv3d(64, 64, (3, 1, 1),
                      (2, 1, 1)),  # [200, 150, 5] -> [200, 150, 2]
             BatchNorm1d(64),

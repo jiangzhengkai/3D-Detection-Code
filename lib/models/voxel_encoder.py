@@ -19,22 +19,19 @@ class VFELayer(nn.Module):
         self.name = name
         self.units = int(out_channels / 2)
         if use_norm:
-            BatchNorm1d = nn.BatchNorm1d(momentum=0.01, eps=1e-3)
-            Linear = nn.Linear(bias=True)
+            self.batchnorm = nn.BatchNorm1d(momentum=0.01, eps=1e-3)
+            self.linear = nn.Linear(in_channels, self.units, bias=True)
         else:
-            BatchNorm = Empty
-            Linear = nn.Linear(bias=False)
-
-        self.linear = Linear
-        self.batchnorm = BatchNorm1d
+            self.linear = nn.Linear(in_channels, self.units, bias=False)
     def forward(self, inputs):
         voxel_count = input.shape[1]
         x = self.linear(inputs)
-        x = self.norm(x.permute(0, 2, 1).contiguous()).permute(0, 2, 1).contiguous()
+        if self.use_norm:
+            x = self.batchnorm(x.permute(0, 2, 1).contiguous()).permute(0, 2, 1).contiguous()
+        else:
+            x = x.permute(0, 2, 1).contiguous()
         pointwise = F.relu(x)
-
         aggregated = torch.max(pointwise, dim=1, keepdim=True)[0]
-
         repeated = aggregated.repeat(1, voxel_count, 1)
         concatenated = torch.cat([pointwise, repeated], dim=2)
         return concatenated
@@ -51,26 +48,24 @@ class VoxelFeatureExtractor(nn.Module):
                  name='VOxelFeatureExtractor'):
         super(VoxelFeatureExtractor, self).__init__()
         self.name = name
-        if use_norm:
-            BatchNorm1d = nn.BatchNorm1d(momentum=0.01, eps=1e-3)
-            Linear = nn.Linear(bias=True)
-        else:
-            Linear = nn.Linear(bias=False)
-        self._use_norm = use_norm
-        self.linear = linear
-        self.batchnorm = BatchNorm1d
-       
+        self.use_norm = use_norm
+        self.linear = linear 
+        self.with_distance = with_distance
         num_input_features += 3
-        self._with_distance = with_distance
-        self.vfe1 = VFELayer(num_input_features, num_filters[0], use_norm)        
-        self.vfe2 = VFELayer(num_filters[0], num_filters[1], use_norm)
-        self.linear = Linear(num_filters[1], num_filters[1])
-        self.norm = BatchNorm1d(num_filters[1]) 
-    
+
+        self.vfe1 = VFELayer(num_input_features, num_filters[0], self.use_norm)        
+        self.vfe2 = VFELayer(num_filters[0], num_filters[1], self.use_norm)
+       
+        if use_norm:
+            self.batchnorm = nn.BatchNorm1d(num_filters[1], momentum=0.01, eps=1e-3)
+            self.linear = nn.Linear(num_filters[1], num_filters[1], bias=True)
+        else:
+            self.linear = nn.Linear(num_filters[1], num_filters[1], bias=False)
+
     def forward(self, features, num_voxels, coordinates):
         points_mean = features[:, :, :3].sum(dim=1, keepdim=True) / num_voxels.type_as(features).view(-1, 1, 1)
         features_relative = features[:, :, :3] - points_mean
-        if self._with_distance:
+        if self.with_distance:
             points_distance = torch.norm(features[:, :, :3], 2, 2, keepdim=True)
             features = torch.cat([features, features_relative, points_distance], dim=-1)
         else:
