@@ -2,7 +2,12 @@ import torch
 from torch import nn
 from lib.models import voxel_encoder
 from lib.models import middle, rpn
+from lib.solver import build_losses
 
+from lib.core.loss.loss import prepare_loss_weights, create_loss, get_pos_neg_loss, get_direction_target
+from lib.solver.losses import (WeightedSigmoidClassificationLoss,
+                               WeightedSmoothL1LocalizationLoss,
+                               WeightedSoftmaxClassificationLoss)
 
 class VoxelNet(nn.Module):
     def __init__(self, 
@@ -22,7 +27,32 @@ class VoxelNet(nn.Module):
         self._target_assigners = target_assigners
         self._voxel_generator = voxel_generator
         self._encode_background_as_zeros = config.model.loss.encode_background_as_zeros
+        self._encode_rad_error_by_sin = config.model.loss.encode_rad_error_by_sin
         self._use_direction_classifier = config.model.decoder.auxiliary.use_direction_classifier
+        ######## args ########
+        self._pos_cls_weight = config.model.loss.pos_class_weight
+        self._neg_cls_weight = config.model.loss.neg_class_weight
+        self._loss_norm_type = config.model.loss.loss_norm_type
+        self._direction_offset = config.model.decoder.auxiliary.direction_offset
+        self._use_direction_classifier = config.model.decoder.auxiliary.use_direction_classifier
+        logger.info("Using direction offset %f to fix aoe" %(self._direction_offset))
+        self._box_coders = [
+            target_assigner.box_coder for target_assigner in target_assigners
+        ]
+       
+        self._dir_loss_function = WeightedSoftmaxClassificationLoss()
+        self._diff_loss_function = WeightedSmoothL1LocalizationLoss(device=device)
+
+        ######## classifization and localization function ########
+        cls_loss_function, loc_loss_function = build_losses.build(config)
+        
+        self._loc_loss_function = cls_loss_function
+        self._cls_loss_function = loc_loss_function
+        self._cls_loss_weight = config.model.loss.classification_loss_weight
+        self._loc_loss_weight = config.model.loss.localization_loss_weight
+        self._direction_loss_weight = config.model.loss.direction_loss_weight
+        self._post_center_range = config.model.post_process.post_center_limit_range
+     
         ####### voxel feature encoder #######
         vfe_class_dict = {
             "VoxelFeatureExtractor": voxel_encoder.VoxelFeatureExtractor,
@@ -163,11 +193,14 @@ class VoxelNet(nn.Module):
             cls_weights, reg_weights, cared = prepare_loss_weights(labels,
                                                                    pos_cls_weight=self._pos_cls_weight,
                                                                    neg_cls_weight=self._neg_cls_weight,
-                                                                   loss_norm_type=self._noss_norm_type,
+                                                                   loss_norm_type=self._loss_norm_type,
                                                                    dtype=voxels.dtype)
 
-            loc_loss, cls_loss = create_loss(self._loc_loss_factor,
-                                             self._cls_loss_factor,
+            cls_targets = labels * cared.type_as(labels)
+            cls_targets = cls_targets.unsqueeze(-1)
+
+            loc_loss, cls_loss = create_loss(self._loc_loss_function,
+                                             self._cls_loss_function,
                                              box_preds=box_preds,
                                              reg_targets=reg_targets,
                                              reg_weights=reg_weights,
@@ -196,12 +229,12 @@ class VoxelNet(nn.Module):
                                                    reg_targets,
                                                    dir_offset=self._direction_offset)
                 dir_logits = pred_dict["dir_cls_preds"].view(batch_size_dev, -1, 2)
-                weights = (labels >0).type_as(dir_logits)
-                weights /= torch.clamp(weights.sum(-1, keep_dim=True))
-                dir_loss = self._dir_loss_factor(dir_logits,
-                                                 dir_targets,
-                                                 weights=weights)
-
+                weights = (labels > 0).type_as(dir_logits)
+                weights /= torch.clamp(weights.sum(-1, keepdim=True), min=1.0)
+                dir_loss = self._dir_loss_function(dir_logits,
+                                                   dir_targets,
+                                                   weights=weights)
+                dir_loss = dir_loss.sum() / batch_size_dev
                 loss += dir_loss * self._direction_loss_weight
             ret = {
                 "loss": loss,
@@ -210,12 +243,12 @@ class VoxelNet(nn.Module):
                 "cls_pos_loss": cls_pos_loss,
                 "cls_neg_loss": cls_neg_loss,
                 "cls_preds": cls_preds,
-                "dir_loss_reduced": dir_loss if self._use_dirction_classifier else None,
+                "dir_loss_reduced": dir_loss if self._use_direction_classifier else None,
                 "cls_loss_reduced": cls_loss_reduced,
                 "loc_loss_reduced": loc_loss_reduced,
                 "cared": cared,
                   }
             rets.append(ret)
 
-
+        return rets
 

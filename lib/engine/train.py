@@ -64,5 +64,6 @@ def train(config, logger=None):
             #### meta_data: [dict_0, dict_1, ... dict_batch_size]
             data_device = convert_batch_to_device(data_batch, device=device)
             rpn_predict_dicts = model(data_device)
+            loss = model.loss(data_device, rpn_predict_dicts)
             import pdb;pdb.set_trace() 
             print(1)

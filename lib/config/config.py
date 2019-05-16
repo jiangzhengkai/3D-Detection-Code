@@ -189,8 +189,8 @@ _C.model.loss.localization_loss.value = edict()
 _C.model.loss.localization_loss.value.sigma = 3.0
 _C.model.loss.localization_loss.value.code_weight = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
 
-_C.model.loss.classification_weight = 1.0
-_C.model.loss.localization_weight = 1.0
+_C.model.loss.classification_loss_weight = 1.0
+_C.model.loss.localization_loss_weight = 1.0
 _C.model.loss.direction_loss_weight = 0.2
 
 # --------------------------------------------------------------------

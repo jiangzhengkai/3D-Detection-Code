@@ -9,7 +9,7 @@ input:
         max_num_points: 5
         max_voxels: 20000
     train:
-        batch_size: 6
+        batch_size: 1
         num_epochs: 50
         dataset:
             type: "KittiDataset"
@@ -142,6 +142,6 @@ model:
             value: 
                 sigma: 3.0
                 code_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
-        classification_weight: 1.0
-        localization_weight: 1.0
+        classification_loss_weight: 1.0
+        localization_loss_weight: 1.0
         direction_loss_weight: 0.2
