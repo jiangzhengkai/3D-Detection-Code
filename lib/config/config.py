@@ -192,6 +192,25 @@ _C.model.loss.localization_loss.value.code_weight = [1.0, 1.0, 1.0, 1.0, 1.0, 1.
 _C.model.loss.classification_loss_weight = 1.0
 _C.model.loss.localization_loss_weight = 1.0
 _C.model.loss.direction_loss_weight = 0.2
+# --------------------------------------------------------------------
+# optimizer
+# --------------------------------------------------------------------
+_C.optimizer = edict()
+_C.optimizer.type = "adam"
+_C.optimizer.value = edict()
+_C.optimizer.value.lr = edict()
+_C.optimizer.value.lr.type = "one_cycle"
+_C.optimizer.value.lr.value = edict()
+_C.optimizer.value.lr.value.lr_max = 0.030
+_C.optimizer.value.lr.value.moms = [0.95, 0.85]
+_C.optimizer.value.lr.value.div_factor = 10.0
+_C.optimizer.value.lr.value.pct_start = 0.4
+
+_C.optimizer.value.amsgrad = 0.0
+_C.optimizer.value.wd = 0.01
+_C.optimizer.fixed_wd = True
+_C.optimizer.moving_average = False
+
 
 # --------------------------------------------------------------------
 # functions

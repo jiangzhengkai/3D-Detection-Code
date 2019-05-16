@@ -447,4 +447,4 @@ class VoxelNet(nn.Module):
                     meta,
                 }
             predictions_dicts.append(predictions_dict)
-    return predictions_dicts                               
+        return predictions_dicts                               

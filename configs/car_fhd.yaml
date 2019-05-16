@@ -145,3 +145,18 @@ model:
         classification_loss_weight: 1.0
         localization_loss_weight: 1.0
         direction_loss_weight: 0.2
+
+optimizer:
+    type: "adam"
+    value: 
+        lr:
+            type: "one_cycle"
+            value: 
+                lr_max: 0.030
+                moms: [0.95, 0.85]
+                div_factor: 10.0
+                pct_start: 0.4
+        amsgrad: 0.0
+        wd: 0.01
+    fixed_wd: True
+    moving_average: False
