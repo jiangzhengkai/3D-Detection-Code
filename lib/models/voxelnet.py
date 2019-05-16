@@ -168,10 +168,8 @@ class VoxelNet(nn.Module):
         else:
             spatial_features = voxel_features
 
-        predict_dicts = self._rpn(spatial_features)
- 
+        predict_dicts = self._rpn(spatial_features) 
         return predict_dicts
-
 
     def loss(self, example, preds_dicts):
         voxels = example["voxels"]
@@ -179,9 +177,6 @@ class VoxelNet(nn.Module):
         coordinates = example["coordinates"]
         batch_anchors = example["anchors"]
         batch_size_dev = batch_anchors[0].shape[0]
-
-   
-
         rets = []
         for task_id, pred_dict in enumerate(preds_dicts): 
             box_preds = pred_dict["box_preds"] 
@@ -249,6 +244,40 @@ class VoxelNet(nn.Module):
                 "cared": cared,
                   }
             rets.append(ret)
-
         return rets
+
+    def predict(self, example, preds_dict, task_id):
+        batch_size = example["anchors"][task_id].shape[0]
+        if "metadata" not in example or len(example["metadata"]) == 0:
+            meta_list = [None] * batch_size
+        else:
+            meta_list = example["metadata"]
+
+        batch_anchors = example["anchors"][task_id].view(batch_size, -1, 9)
+        
+        if "anchors_mask" not in example:
+            batch_anchors_mask = [None] * batch_size
+        else:
+            batch_anchors_mask = example["anchors_mask"][task_id].view(batch_size, -1)
+     
+        batch_box_preds = preds_dict["box_preds"]
+        batch_cls_preds = preds_dict["cls_preds"]
+        batch_box_preds = batch_box_preds.view(batch_size, -1, self._box_coders[task_id].code_size)
+        num_class_with_bg = self._num_classes[task_id]
+        if not self._encode_background_as_zeros:
+            num_class_with_bg = self._num_classes[task_id] + 1
+        batch_cls_preds = batch_cls_preds.view(batch_size, -1, num_class_with_bg)
+
+        batch_box_preds = self._box_coders[task_id].decode_torch(batch_box_preds, batch_anchors)
+
+        if self._use_direction_classifier:
+            batch_dir_preds = preds_dict["dir_cls_preds"]
+            batch_dir_preds = batch_dir_preds.view(batch_size, -1, 2)
+        else:
+            batch_dir_preds = [None] * batch_size
+
+        if len(self._post_center_range) > 0:
+            post_center_range = torch.tensor(self._post_center_range,
+                                             dtype=batch_box_preds.dtype,
+                                             device=batch_box_preds.device)
 
