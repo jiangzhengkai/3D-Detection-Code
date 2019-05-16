@@ -166,6 +166,7 @@ _C.model.post_process.nms_iou_threshold = 0.2
 
 
 _C.model.loss = edict()
+_C.model.loss.rpn_thresholds = [0.5,]
 _C.model.loss.loss_scale_factor = -1
 _C.model.loss.loss_norm_type = "NormByNumPositives"
 _C.model.loss.pos_class_weight = 1.0

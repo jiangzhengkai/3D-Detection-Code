@@ -145,6 +145,7 @@ model:
         classification_loss_weight: 1.0
         localization_loss_weight: 1.0
         direction_loss_weight: 0.2
+        rpn_thresholds: [0.5,]
 
 optimizer:
     type: "adam"

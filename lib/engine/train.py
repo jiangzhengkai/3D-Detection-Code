@@ -10,13 +10,14 @@ import torch
 from lib.datasets.loader.build_loader import build_dataloader
 from lib.models.build_model import build_network
 from lib.solver.build_optimizer import build_optimizer
-#from lib.metrics.build_loss import build_detection_loss
-#from utils.build_scheduler import build_scheduler
+from lib.solver.build_scheduler import build_lr_scheduler
+from lib.core.target.target_assigner import target_assigners_all_classes
 
 from lib.utils.logger import setup_logger
 from lib.utils.dist_common import get_rank
 from lib.engine.convert_batch_to_device import convert_batch_to_device
 
+from lib.engine.metrics import get_metrics
 from lib.engine.test import test
 from lib.utils.dist_common import synchronize
 
@@ -25,30 +26,33 @@ def train(config, logger=None):
 
     ####### dataloader #######
     train_dataloader = build_dataloader(config, training=True, logger=logger)
-    #val_dataloader = build_dataloader(config, training=False, logger=logger)
+    val_dataloader = build_dataloader(config, training=False, logger=logger)
 
     ####### build network ######
     model = build_network(config, logger=logger)
 
     ####### optimizer #######
     optimizer = build_optimizer(config, model)
-    #lr_scheduler = build_scheduler(config)
-
-
-    ####### criterions #######
-    #self.criterion = build_detection_loss(config)
 
 
     num_epochs = config.input.train.num_epochs
-    #eval_epoch = config.eval.num_epoch
     num_gpus = len(config.gpus.split(','))
 
-    total_steps = int(num_epochs)
+    
+    total_steps = int(num_epochs * len(train_dataloader.dataset) / config.input.train.batch_size * num_gpus)
     logger.info("total training steps: %s" %(total_steps))
+
+    lr_scheduler = build_lr_scheduler(config, model, total_steps)
     
     device = torch.device('cuda')
     model = model.to(device)
     logger.info("Model Articutures: %s"%(model))
+    model_dir = config.output_dir
+
+    # num_classes 
+    target_assigners = target_assigners_all_classes(config)
+    num_classes = [len(target_assigner.classes) for target_assigner in target_assigners]
+    class_names = [target_assigner.classes for target_assigner in target_assigners]
     for epoch in range(num_epochs):
         for i, data_batch in enumerate(train_dataloader):
             ######## data_device ########
@@ -65,6 +69,8 @@ def train(config, logger=None):
             #### reg_targets: [batch_size x num_anchors x 7]
             #### reg_weights: [batch_size x num_anchors]
             #### meta_data: [dict_0, dict_1, ... dict_batch_size]
+            step = int(epoch * len(train_dataloader.dataset) / config.input.train.batch_size) + i
+            lr_scheduler.step(step)
             data_device = convert_batch_to_device(data_batch, device=device)
             rpn_predict_dicts = model(data_device)
             losses_dict = model.loss(data_device, rpn_predict_dicts)
@@ -100,16 +106,49 @@ def train(config, logger=None):
                 loc_loss_reduceds.append(loc_loss_reduced)
                 cls_preds.append(cls_pred)
                 careds.append(cared)
+                
             task_loss = torch.stack(losses)
             loss_all = torch.Tensor(config.model.decoder.head.weights).to(device) * task_loss
             loss_mean = torch.mean(loss_all)
             
-
             optimizer.zero_grad()
             loss_mean.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 10.0)
             optimizer.step()
 
+            for idx, [cls_loss_reduced, loc_loss_reduced, cls_pred, labels, cared, loc_loss, cls_pos_loss, cls_neg_loss, loss] in enumerate(zip(cls_loss_reduceds, loc_loss_reduceds, cls_preds, data_device["labels"], careds, loc_losses, cls_pos_losses, cls_neg_losses, losses)):
+                net_metrics = get_metrics(config, cls_loss_reduced, loc_loss_reduced, cls_pred, labels, cared, num_classes[idx])
+
+                metrics = {}
+                num_pos = int((labels > 0)[0].float().sum().cpu().numpy())
+                num_neg = int((labels == 0)[0].float().sum().cpu().numpy())
+                if "anchor_mask" not in data_device:
+                    num_anchors = data_device["anchors"][idx].shape[1]
+                else:
+                    num_anchors = int(data_device["anchors_mask"][idx].shape[1])
+
+
+                if step % 50 == 0:
+                    logger.info("Metrics for task: {}".format(class_names[idx]))
+
+                    loc_loss_elem = [float(loc_loss[:,:,i].sum().detach().cpu().numpy() / batch_size) for i in range(loc_loss.shape[-1])]
+                    metrics["loss"] = loss
+                    metrics["loc_elem"] = loc_loss_elem
+                    metrics["cls_pos_rt"] = float(cls_pos_loss.sum().detach().cpu().numpy())
+                    metrics["cls_neg_rt"] = float(cls_neg_loss.sum().detach().cpu().numpy())
+                    if config.model.decoder.auxiliary.use_direction_classifier:
+                        metrics["dir_rt"] = float(dir_loss_reduced.sum().detach().cpu().numpy())
+
+                    logger.info("loss %2f loc_elements x %2f y %2f z %2f w  %2f h %2f l %2f alphs %2f cls_pos_rt %2f cls_neg_rt %2f dir_rt %2f"%(
+                                loss, *(metrics["loc_elem"]), metrics["cls_pos_rt"], metrics["cls_neg_rt"], metrics["dir_rt"]))
+                    auxi = {}
+                    num_voxel = int(data_device["voxels"].shape[0])
+                    num_pos = int(num_pos)
+                    num_neg = int(num_neg)
+                    num_anchors = int(num_anchors)
+                    lr = float(optimizer.lr)
+                    logger.info("auxiliraries num_voxel %d num_pos %d num_neg %d num_anchors %d lr %4f"%(
+                                 num_voxel, num_pos, num_neg, num_anchors, lr))
 
         torch.save(model.state_dict(), )
         if epoch % eval_epoch == 0:
