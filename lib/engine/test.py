@@ -1,7 +1,8 @@
-import tqdm
+from tqdm import tqdm
 import torch
 from lib.engine.convert_batch_to_device import convert_batch_to_device
 from lib.utils.dist_common import synchronize
+from lib.utils.dist_common import get_world_size
 
 def compute_on_dataset(model, data_loader, device):
     model.eval()
@@ -11,7 +12,8 @@ def compute_on_dataset(model, data_loader, device):
     for batch in tqdm(data_loader):
         example = convert_batch_to_device(batch, device=device)
         with torch.no_grad():
-            outputs = model(example)
+            output = model(example)
+            outputs = model.loss(example, output)
             for output in outputs:
                 token = output['metadata']['token']
                 for k, v in output.items():
@@ -32,7 +34,7 @@ def accumulate_predictions_from_multiple_gpus(predictions_per_gpu):
 
 
 
-def test(dataloader, model, save_dir=None, device='cuda', ditributed=False, logger=None):
+def test(dataloader, model, save_dir=None, device='cuda', distributed=False, logger=None):
     if distributed:
         model = model.module
    
@@ -41,7 +43,7 @@ def test(dataloader, model, save_dir=None, device='cuda', ditributed=False, logg
     num_devices = get_world_size()
     logger.info("Start evaluation on dataset for {} samples.".format(len(dataset)))
     
-    detections = compute_on_dataset(model, dataloader, device, logger=logger)
+    detections = compute_on_dataset(model, dataloader, device)
 
     synchronize()
 

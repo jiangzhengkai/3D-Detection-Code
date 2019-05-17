@@ -6,6 +6,7 @@ import numpy as np
 
 import pathlib
 import torch
+import time
 
 from lib.datasets.loader.build_loader import build_dataloader
 from lib.models.build_model import build_network
@@ -47,14 +48,13 @@ def train(config, logger=None):
     device = torch.device('cuda')
     model = model.to(device)
     logger.info("Model Articutures: %s"%(model))
-    model_dir = config.output_dir
 
     # num_classes 
     target_assigners = target_assigners_all_classes(config)
     num_classes = [len(target_assigner.classes) for target_assigner in target_assigners]
     class_names = [target_assigner.classes for target_assigner in target_assigners]
+    t = time.time()
 
-    optimizer.zero_grad()
     for epoch in range(num_epochs):
         for i, data_batch in enumerate(train_dataloader):
             ######## data_device ########
@@ -79,7 +79,7 @@ def train(config, logger=None):
 
             batch_size = data_device["anchors"][0].shape[0]
             losses = []
-            cls_loss_reduceds, loc_loss_reduceds, cls_preds, careds = [], [], [], []
+            cls_loss_reduceds, loc_loss_reduceds, dir_loss_reduceds, cls_preds, careds = [], [], [], [], []
             loc_losses, cls_pos_losses, cls_neg_losses = [], [], []
 
             if config.model.decoder.auxiliary.use_direction_classifier:
@@ -105,21 +105,21 @@ def train(config, logger=None):
                 cls_neg_losses.append(cls_neg_loss)
                 cls_loss_reduceds.append(cls_loss_reduced)
                 loc_loss_reduceds.append(loc_loss_reduced)
+                dir_loss_reduceds.append(dir_loss_reduced)
                 cls_preds.append(cls_pred)
                 careds.append(cared)
                 
             task_loss = torch.stack(losses)
             loss_all = torch.Tensor(config.model.decoder.head.weights).to(device) * task_loss
             loss_mean = torch.mean(loss_all)
-            
-           
+
+            optimizer.zero_grad()                       
             loss_mean.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 10.0)
             optimizer.step()
-            optimizer.zero_grad()
 
-            for idx, [cls_loss_reduced, loc_loss_reduced, cls_pred, labels, cared, loc_loss, cls_pos_loss, cls_neg_loss, loss] in enumerate(
-                zip(cls_loss_reduceds, loc_loss_reduceds, cls_preds, data_device["labels"], careds, loc_losses, cls_pos_losses, cls_neg_losses, losses)):
+            for idx, [cls_loss_reduced, loc_loss_reduced, dir_loss_reduced, cls_pred, labels, cared, loc_loss, cls_pos_loss, cls_neg_loss, loss] in enumerate(
+                zip(cls_loss_reduceds, loc_loss_reduceds, dir_loss_reduceds, cls_preds, data_device["labels"], careds, loc_losses, cls_pos_losses, cls_neg_losses, losses)):
 
                 net_metrics = get_metrics(config, cls_loss_reduced, loc_loss_reduced, cls_pred, labels, cared, num_classes[idx])
                 metrics = {}
@@ -130,6 +130,8 @@ def train(config, logger=None):
                 else:
                     num_anchors = int(data_device["anchors_mask"][idx].shape[1])
 
+                step_time = time.time() - t
+                t = time.time()
                 if step % 50 == 0:
                     logger.info("Metrics for task: {}".format(class_names[idx]))
 
@@ -141,11 +143,13 @@ def train(config, logger=None):
                     if config.model.decoder.auxiliary.use_direction_classifier:
                         metrics["dir_rt"] = float(dir_loss_reduced.sum().detach().cpu().numpy())
 
-                    logger.info("step: %d Loss_all: %2f, Loss_cls: %2f Loss_loc: %2f Loss_dir: %2f"%(
-                                 step, loss, metrics["cls_neg_rt"] + metrics["cls_pos_rt"], sum(metrics["loc_elem"]), metrics["dir_rt"]))
-                    logger.info("step: %d Loc_elements x: %2f y: %2f z: %2f w: %2f h: %2f l: %2f dir: %2f cls_pos_rt: %2f cls_neg_rt: %2f"%(
-                                step, *(metrics["loc_elem"]), metrics["cls_pos_rt"], metrics["cls_neg_rt"]))
-                    auxi = {}
+                    logger.info("step: %d time %4f Loss_all: %2f, Loss_cls: %2f Loss_loc: %2f Loss_dir: %2f"%(
+                                 step, step_time, loss, cls_loss_reduced, loc_loss_reduced, dir_loss_reduced))
+                    logger.info("step: %d Loc_elements x: %2f y: %2f z: %2f w: %2f h: %2f l: %2f angle: %2f"%(
+                                step, *(metrics["loc_elem"])))
+                    logger.info("step: %d Cls_elements cls_neg_rt: %2f cls_pos_rt: %2f"%(
+                                step, metrics["cls_neg_rt"], metrics["cls_pos_rt"]))
+                    
                     num_voxel = int(data_device["voxels"].shape[0])
                     num_pos = int(num_pos)
                     num_neg = int(num_neg)
@@ -153,19 +157,20 @@ def train(config, logger=None):
                     lr = float(optimizer.lr)
                     logger.info("step: %d Auxiliraries num_voxels: %d num_pos: %d num_neg: %d num_anchors: %d lr: %6f"%(
                                  step, num_voxel, num_pos, num_neg, num_anchors, lr))
-
                     pr_metrics = net_metrics["pr"]
                     logger.info("step: %d PrecRec prec@50: %f rec@50: %f prec@90: %f rec@90: %f"%(
                                  step, pr_metrics["prec@50"], pr_metrics["rec@50"], pr_metrics["prec@90"], pr_metrics["rec@90"])) 
+                    logger.info("-------------------------------------------------------------------------------------------------------------------")
 
-
+            torch.cuda.empty_cache()
 
         torch.save(model.state_dict(), config.output_dir+"/model_%d.pth"%epoch)
         if epoch % 10 == 0:
             logger.info("Finish epoch %d, start eval ..." %(epoch))
-            test(eval_dataloader, 
+            distributed = len(config.gpus.split(',')) > 1
+            test(val_dataloader, 
                  model, 
-                 save_dir=save_dir, 
+                 save_dir=config.output_dir, 
                  device=device, 
                  distributed=distributed, 
                  logger=logger)

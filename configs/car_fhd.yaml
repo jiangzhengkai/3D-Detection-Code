@@ -19,7 +19,7 @@ input:
         preprocess:
             max_num_voxels: 40000
             shuffle: False
-            num_workers: 0
+            num_workers: 4
             gt_location_noise: [0.25, 0.25, 0.25]
             gt_rotation_noise: [-0.15707963267, 0.15707963267]
             global_rotation_noise: [-0.78539816, 0.78539816]

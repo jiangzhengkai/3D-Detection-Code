@@ -41,7 +41,6 @@ class VoxelNet(nn.Module):
         ]
        
         self._dir_loss_function = WeightedSoftmaxClassificationLoss()
-        self._diff_loss_function = WeightedSmoothL1LocalizationLoss(device=device)
 
         ######## classifization and localization function ########
         cls_loss_function, loc_loss_function = build_losses.build(config)
@@ -178,74 +177,97 @@ class VoxelNet(nn.Module):
         batch_anchors = example["anchors"]
         batch_size_dev = batch_anchors[0].shape[0]
         rets = []
-        for task_id, pred_dict in enumerate(preds_dicts): 
-            box_preds = pred_dict["box_preds"] 
-            cls_preds = pred_dict["cls_preds"]
+        for task_id, pred_dict in enumerate(preds_dicts):
+            if self.training: 
+                box_preds = pred_dict["box_preds"] 
+                cls_preds = pred_dict["cls_preds"]
      
-            labels = example["labels"][task_id]
-            reg_targets = example["reg_targets"][task_id]
+                labels = example["labels"][task_id]
+                reg_targets = example["reg_targets"][task_id]
             
-            cls_weights, reg_weights, cared = prepare_loss_weights(labels,
-                                                                   pos_cls_weight=self._pos_cls_weight,
-                                                                   neg_cls_weight=self._neg_cls_weight,
-                                                                   loss_norm_type=self._loss_norm_type,
-                                                                   dtype=voxels.dtype)
+                cls_weights, reg_weights, cared = prepare_loss_weights(labels,
+                                                                       pos_cls_weight=self._pos_cls_weight,
+                                                                       neg_cls_weight=self._neg_cls_weight,
+                                                                       loss_norm_type=self._loss_norm_type,
+                                                                       dtype=voxels.dtype)
 
-            cls_targets = labels * cared.type_as(labels)
-            cls_targets = cls_targets.unsqueeze(-1)
+                cls_targets = labels * cared.type_as(labels)
+                cls_targets = cls_targets.unsqueeze(-1)
 
-            loc_loss, cls_loss = create_loss(self._loc_loss_function,
-                                             self._cls_loss_function,
-                                             box_preds=box_preds,
-                                             reg_targets=reg_targets,
-                                             reg_weights=reg_weights,
-                                             cls_preds=cls_preds,
-                                             cls_targets=cls_targets,
-                                             cls_weights=cls_weights,
-                                             num_class=self._num_classes[task_id],
-                                             encode_rad_error_by_sin=self._encode_rad_error_by_sin,
-                                             encode_background_as_zeros=self._encode_background_as_zeros,
-                                             box_code_size=self._box_coders[task_id].code_size)
+                loc_loss, cls_loss = create_loss(self._loc_loss_function,
+                                                 self._cls_loss_function,
+                                                 box_preds=box_preds,
+                                                 reg_targets=reg_targets,
+                                                 reg_weights=reg_weights,
+                                                 cls_preds=cls_preds,
+                                                 cls_targets=cls_targets,
+                                                 cls_weights=cls_weights,
+                                                 num_class=self._num_classes[task_id],
+                                                 encode_rad_error_by_sin=self._encode_rad_error_by_sin,
+                                                 encode_background_as_zeros=self._encode_background_as_zeros,
+                                                 box_code_size=self._box_coders[task_id].code_size)
             
                 
-            loc_loss_reduced = loc_loss.sum() / batch_size_dev
-            loc_loss_reduced *= self._loc_loss_weight
-    
-            cls_pos_loss, cls_neg_loss = get_pos_neg_loss(cls_loss, labels)
-            cls_pos_loss /= self._pos_cls_weight
-            cls_neg_loss /= self._neg_cls_weight
-           
-            cls_loss_reduced = cls_loss.sum() / batch_size_dev
-            cls_loss_reduced *= self._cls_loss_weight
+                loc_loss_reduced = loc_loss.sum() / batch_size_dev
+                loc_loss_reduced *= self._loc_loss_weight
+             
+                cls_pos_loss, cls_neg_loss = get_pos_neg_loss(cls_loss, labels) 
+                cls_loss_reduced = cls_loss.sum() / batch_size_dev
+                cls_loss_reduced *= self._cls_loss_weight
 
-            loss = loc_loss_reduced + cls_loss_reduced  
+                loss = loc_loss_reduced + cls_loss_reduced  
        
-            if self._use_direction_classifier:
-                dir_targets = get_direction_target(example["anchors"][task_id],
-                                                   reg_targets,
-                                                   dir_offset=self._direction_offset)
-                dir_logits = pred_dict["dir_cls_preds"].view(batch_size_dev, -1, 2)
-                weights = (labels > 0).type_as(dir_logits)
-                weights /= torch.clamp(weights.sum(-1, keepdim=True), min=1.0)
-                dir_loss = self._dir_loss_function(dir_logits,
-                                                   dir_targets,
-                                                   weights=weights)
-                dir_loss = dir_loss.sum() / batch_size_dev
-                loss += dir_loss * self._direction_loss_weight
-            ret = {
-                "loss": loss,
-                "cls_loss": cls_loss,
-                "loc_loss": loc_loss,
-                "cls_pos_loss": cls_pos_loss,
-                "cls_neg_loss": cls_neg_loss,
-                "cls_preds": cls_preds,
-                "dir_loss_reduced": dir_loss if self._use_direction_classifier else None,
-                "cls_loss_reduced": cls_loss_reduced,
-                "loc_loss_reduced": loc_loss_reduced,
-                "cared": cared,
-                  }
-            rets.append(ret)
-        return rets
+                if self._use_direction_classifier:
+                    dir_targets = get_direction_target(example["anchors"][task_id],
+                                                       reg_targets,
+                                                       dir_offset=self._direction_offset)
+                    dir_logits = pred_dict["dir_cls_preds"].view(batch_size_dev, -1, 2)
+                    weights = (labels > 0).type_as(dir_logits)
+                    weights /= torch.clamp(weights.sum(-1, keepdim=True), min=1.0)
+                    dir_loss = self._dir_loss_function(dir_logits,
+                                                       dir_targets,
+                                                       weights=weights)
+                    dir_loss = self._direction_loss_weight * dir_loss.sum() / batch_size_dev
+                    loss += dir_loss
+                ret = {
+                    "loss": loss,
+                    "cls_loss": cls_loss,
+                    "loc_loss": loc_loss,
+                    "cls_pos_loss": cls_pos_loss,
+                    "cls_neg_loss": cls_neg_loss,
+                    "cls_preds": cls_preds,
+                    "dir_loss_reduced": dir_loss if self._use_direction_classifier else None,
+                    "cls_loss_reduced": cls_loss_reduced,
+                    "loc_loss_reduced": loc_loss_reduced,
+                    "cared": cared,
+                      }
+                rets.append(ret)
+            else:
+                with torch.no_grad():
+                    rets = self.predict(data_device, pred_dict, task_id)
+
+        if self.training:
+            return rets
+        else:
+            num_tasks = len(rets)
+            ret_list = []
+            num_preds = len(rets)
+            num_samples = len(rets[0])
+            for i in range(num_samples):
+                ret = {}
+                for k in rets[0][i].keys():
+                    if k in ['box3d_lidar', 'scores']:
+                        ret[k] = torch.cat([ret[i][k] for ret in rets])
+                    elif k in ['label_preds']:
+                        flag = 0
+                        for j, num_class in enumerate(self._num_classes):
+                            rets[j][i][k] += flag
+                            flag += num_class
+                        ret[k] = torch.cat([ret[i][k] for ret in rets])
+                    elif k == 'metadata':
+                        ret[k] = rets[0][i][k]
+                ret_list.append(ret)
+            return ret_list
 
     def predict(self, example, preds_dict, task_id):
         batch_size = example["anchors"][task_id].shape[0]
