@@ -105,7 +105,6 @@ class Accuracy(nn.Module):
         self.count += num_examples
         self.total += total
         return self.value.cpu()
-        # return (total /  num_examples.data).cpu()
     @property
     def value(self):
         return self.total / self.count
@@ -151,12 +150,10 @@ class Precision(nn.Module):
         false_positives = (weights * (falses & pred_trues).float()).sum()
         false_negatives = (weights * (trues & pred_falses).float()).sum()
         count = true_positives + false_positives
-        # print(count, true_positives)
         if count > 0:
             self.count += count
             self.total += true_positives
         return self.value.cpu()
-        # return (total /  num_examples.data).cpu()
     @property
     def value(self):
         return self.total / self.count
@@ -204,7 +201,6 @@ class Recall(nn.Module):
             self.count += count
             self.total += true_positives
         return self.value.cpu()
-        # return (total /  num_examples.data).cpu()
     @property
     def value(self):
         return self.total / self.count

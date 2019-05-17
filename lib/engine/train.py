@@ -127,8 +127,7 @@ def train(config, logger=None):
                 else:
                     num_anchors = int(data_device["anchors_mask"][idx].shape[1])
 
-
-                if step % 50 == 0:
+                if step % 100 == 0:
                     logger.info("Metrics for task: {}".format(class_names[idx]))
 
                     loc_loss_elem = [float(loc_loss[:,:,i].sum().detach().cpu().numpy() / batch_size) for i in range(loc_loss.shape[-1])]
@@ -139,7 +138,7 @@ def train(config, logger=None):
                     if config.model.decoder.auxiliary.use_direction_classifier:
                         metrics["dir_rt"] = float(dir_loss_reduced.sum().detach().cpu().numpy())
 
-                    logger.info("loss %2f loc_elements x %2f y %2f z %2f w  %2f h %2f l %2f alphs %2f cls_pos_rt %2f cls_neg_rt %2f dir_rt %2f"%(
+                    logger.info("Loss %2f loc_elements x %2f y %2f z %2f w  %2f h %2f l %2f dir %2f cls_pos_rt %2f cls_neg_rt %2f dir_rt %2f"%(
                                 loss, *(metrics["loc_elem"]), metrics["cls_pos_rt"], metrics["cls_neg_rt"], metrics["dir_rt"]))
                     auxi = {}
                     num_voxel = int(data_device["voxels"].shape[0])
@@ -147,11 +146,17 @@ def train(config, logger=None):
                     num_neg = int(num_neg)
                     num_anchors = int(num_anchors)
                     lr = float(optimizer.lr)
-                    logger.info("auxiliraries num_voxel %d num_pos %d num_neg %d num_anchors %d lr %4f"%(
-                                 num_voxel, num_pos, num_neg, num_anchors, lr))
+                    logger.info("Auxiliraries step %d num_voxel %d num_pos %d num_neg %d num_anchors %d lr %4f"%(
+                                 step, num_voxel, num_pos, num_neg, num_anchors, lr))
 
-        torch.save(model.state_dict(), )
-        if epoch % eval_epoch == 0:
+                    pr_metrics = net_metrics["pr"]
+                    logger.info("PrecRec prec@50 %f rec@50 %f prec@90 %f rec@90 %f"%(
+                                 pr_metrics["prec@50"], pr_metrics["rec@50"], pr_metrics["prec@90"], pr_metrics["rec@90"])) 
+
+
+
+        torch.save(model.state_dict(), config.output_dir+"/model_%d.pth"%epoch)
+        if epoch % 10 == 0:
             logger.info("Finish epoch %d, start eval ..." %(epoch))
             test(eval_dataloader, 
                  model, 
@@ -160,7 +165,3 @@ def train(config, logger=None):
                  distributed=distributed, 
                  logger=logger)
         synchronize()
-
-
-        import pdb;pdb.set_trace() 
-        print(1)
