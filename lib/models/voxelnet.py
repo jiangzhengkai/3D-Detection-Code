@@ -34,6 +34,7 @@ class VoxelNet(nn.Module):
         self._neg_cls_weight = config.model.loss.neg_class_weight
         self._loss_norm_type = config.model.loss.loss_norm_type
         self._direction_offset = config.model.decoder.auxiliary.direction_offset
+        self._use_sigmoid_score = config.model.loss.use_sigmoid_score
         self._use_direction_classifier = config.model.decoder.auxiliary.use_direction_classifier
         logger.info("Using direction offset %f to fix aoe" %(self._direction_offset))
         self._box_coders = [
@@ -244,7 +245,7 @@ class VoxelNet(nn.Module):
                 rets.append(ret)
             else:
                 with torch.no_grad():
-                    rets = self.predict(data_device, pred_dict, task_id)
+                    rets = self.predict(example, pred_dict, task_id)
 
         if self.training:
             return rets
@@ -276,7 +277,7 @@ class VoxelNet(nn.Module):
         else:
             meta_list = example["metadata"]
 
-        batch_anchors = example["anchors"][task_id].view(batch_size, -1, 9)
+        batch_anchors = example["anchors"][task_id].view(batch_size, -1, 7)
         
         if "anchors_mask" not in example:
             batch_anchors_mask = [None] * batch_size

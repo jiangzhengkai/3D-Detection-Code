@@ -124,7 +124,7 @@ def second_box_decode(box_encodings, anchors, encode_angle_to_vector=False, smoo
         vxg = vxt + vxa
         vyg = vyt + vya
 
-    ret.extend([vxg, vyg])
+        ret.extend([vxg, vyg])
     ret.append(rg)
 
     return torch.cat(ret, dim=-1)
