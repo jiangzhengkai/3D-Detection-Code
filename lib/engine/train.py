@@ -53,6 +53,8 @@ def train(config, logger=None):
     target_assigners = target_assigners_all_classes(config)
     num_classes = [len(target_assigner.classes) for target_assigner in target_assigners]
     class_names = [target_assigner.classes for target_assigner in target_assigners]
+
+    optimizer.zero_grad()
     for epoch in range(num_epochs):
         for i, data_batch in enumerate(train_dataloader):
             ######## data_device ########
@@ -84,7 +86,6 @@ def train(config, logger=None):
                 dir_loss_reduceds = []
             else:
                 dir_loss_reduceds = None
-
             for task_id, loss_dict in enumerate(losses_dict):
                 cls_pred = loss_dict["cls_preds"]
                 loss = loss_dict["loss"].mean()
@@ -111,14 +112,16 @@ def train(config, logger=None):
             loss_all = torch.Tensor(config.model.decoder.head.weights).to(device) * task_loss
             loss_mean = torch.mean(loss_all)
             
-            optimizer.zero_grad()
+           
             loss_mean.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 10.0)
             optimizer.step()
+            optimizer.zero_grad()
 
-            for idx, [cls_loss_reduced, loc_loss_reduced, cls_pred, labels, cared, loc_loss, cls_pos_loss, cls_neg_loss, loss] in enumerate(zip(cls_loss_reduceds, loc_loss_reduceds, cls_preds, data_device["labels"], careds, loc_losses, cls_pos_losses, cls_neg_losses, losses)):
+            for idx, [cls_loss_reduced, loc_loss_reduced, cls_pred, labels, cared, loc_loss, cls_pos_loss, cls_neg_loss, loss] in enumerate(
+                zip(cls_loss_reduceds, loc_loss_reduceds, cls_preds, data_device["labels"], careds, loc_losses, cls_pos_losses, cls_neg_losses, losses)):
+
                 net_metrics = get_metrics(config, cls_loss_reduced, loc_loss_reduced, cls_pred, labels, cared, num_classes[idx])
-
                 metrics = {}
                 num_pos = int((labels > 0)[0].float().sum().cpu().numpy())
                 num_neg = int((labels == 0)[0].float().sum().cpu().numpy())
@@ -127,7 +130,7 @@ def train(config, logger=None):
                 else:
                     num_anchors = int(data_device["anchors_mask"][idx].shape[1])
 
-                if step % 100 == 0:
+                if step % 50 == 0:
                     logger.info("Metrics for task: {}".format(class_names[idx]))
 
                     loc_loss_elem = [float(loc_loss[:,:,i].sum().detach().cpu().numpy() / batch_size) for i in range(loc_loss.shape[-1])]
@@ -138,20 +141,22 @@ def train(config, logger=None):
                     if config.model.decoder.auxiliary.use_direction_classifier:
                         metrics["dir_rt"] = float(dir_loss_reduced.sum().detach().cpu().numpy())
 
-                    logger.info("Loss %2f loc_elements x %2f y %2f z %2f w  %2f h %2f l %2f dir %2f cls_pos_rt %2f cls_neg_rt %2f dir_rt %2f"%(
-                                loss, *(metrics["loc_elem"]), metrics["cls_pos_rt"], metrics["cls_neg_rt"], metrics["dir_rt"]))
+                    logger.info("step: %d Loss_all: %2f, Loss_cls: %2f Loss_loc: %2f Loss_dir: %2f"%(
+                                 step, loss, metrics["cls_neg_rt"] + metrics["cls_pos_rt"], sum(metrics["loc_elem"]), metrics["dir_rt"]))
+                    logger.info("step: %d Loc_elements x: %2f y: %2f z: %2f w: %2f h: %2f l: %2f dir: %2f cls_pos_rt: %2f cls_neg_rt: %2f"%(
+                                step, *(metrics["loc_elem"]), metrics["cls_pos_rt"], metrics["cls_neg_rt"]))
                     auxi = {}
                     num_voxel = int(data_device["voxels"].shape[0])
                     num_pos = int(num_pos)
                     num_neg = int(num_neg)
                     num_anchors = int(num_anchors)
                     lr = float(optimizer.lr)
-                    logger.info("Auxiliraries step %d num_voxel %d num_pos %d num_neg %d num_anchors %d lr %4f"%(
+                    logger.info("step: %d Auxiliraries num_voxels: %d num_pos: %d num_neg: %d num_anchors: %d lr: %6f"%(
                                  step, num_voxel, num_pos, num_neg, num_anchors, lr))
 
                     pr_metrics = net_metrics["pr"]
-                    logger.info("PrecRec prec@50 %f rec@50 %f prec@90 %f rec@90 %f"%(
-                                 pr_metrics["prec@50"], pr_metrics["rec@50"], pr_metrics["prec@90"], pr_metrics["rec@90"])) 
+                    logger.info("step: %d PrecRec prec@50: %f rec@50: %f prec@90: %f rec@90: %f"%(
+                                 step, pr_metrics["prec@50"], pr_metrics["rec@50"], pr_metrics["prec@90"], pr_metrics["rec@90"])) 
 
 
 

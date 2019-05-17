@@ -46,8 +46,8 @@ class VoxelNet(nn.Module):
         ######## classifization and localization function ########
         cls_loss_function, loc_loss_function = build_losses.build(config)
         
-        self._loc_loss_function = cls_loss_function
-        self._cls_loss_function = loc_loss_function
+        self._loc_loss_function = loc_loss_function
+        self._cls_loss_function = cls_loss_function
         self._cls_loss_weight = config.model.loss.classification_loss_weight
         self._loc_loss_weight = config.model.loss.localization_loss_weight
         self._direction_loss_weight = config.model.loss.direction_loss_weight
@@ -206,7 +206,8 @@ class VoxelNet(nn.Module):
                                              encode_rad_error_by_sin=self._encode_rad_error_by_sin,
                                              encode_background_as_zeros=self._encode_background_as_zeros,
                                              box_code_size=self._box_coders[task_id].code_size)
-             
+            
+                
             loc_loss_reduced = loc_loss.sum() / batch_size_dev
             loc_loss_reduced *= self._loc_loss_weight
     
