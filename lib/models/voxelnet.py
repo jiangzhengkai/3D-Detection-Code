@@ -3,7 +3,7 @@ from torch import nn
 from lib.models import voxel_encoder
 from lib.models import middle, rpn
 from lib.solver import build_losses
-
+from lib.core.bbox import box_torch_ops
 from lib.core.loss.loss import prepare_loss_weights, create_loss, get_pos_neg_loss, get_direction_target
 from lib.solver.losses import (WeightedSigmoidClassificationLoss,
                                WeightedSmoothL1LocalizationLoss,
@@ -35,6 +35,14 @@ class VoxelNet(nn.Module):
         self._loss_norm_type = config.model.loss.loss_norm_type
         self._direction_offset = config.model.decoder.auxiliary.direction_offset
         self._use_sigmoid_score = config.model.loss.use_sigmoid_score
+        self._use_rotate_nms = config.model.post_process.use_rotate_nms
+        self._multiclass_nms = config.model.post_process.use_multi_class_nms
+        self._nms_score_threshold = config.model.post_process.nms_score_threshold
+
+        self._nms_pre_max_size = config.model.post_process.nms_pre_max_size
+        self._nms_post_max_size = config.model.post_process.nms_post_max_size
+        self._nms_iou_threshold = config.model.post_process.nms_iou_threshold
+
         self._use_direction_classifier = config.model.decoder.auxiliary.use_direction_classifier
         logger.info("Using direction offset %f to fix aoe" %(self._direction_offset))
         self._box_coders = [
@@ -245,8 +253,8 @@ class VoxelNet(nn.Module):
                 rets.append(ret)
             else:
                 with torch.no_grad():
-                    rets = self.predict(example, pred_dict, task_id)
-
+                    ret = self.predict(example, pred_dict, task_id)
+                    rets.append(ret)
         if self.training:
             return rets
         else:
@@ -300,6 +308,7 @@ class VoxelNet(nn.Module):
         else:
             batch_dir_preds = [None] * batch_size
 
+        predictions_dicts = []
         if len(self._post_center_range) > 0:
             post_center_range = torch.tensor(self._post_center_range,
                                              dtype=batch_box_preds.dtype,

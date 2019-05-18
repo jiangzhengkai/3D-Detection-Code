@@ -46,9 +46,10 @@ class KittiDataset(Dataset):
             rect = calib["R0_rect"]
             Trv2c = calib["Tr_velo_to_cam"]
             P2 = calib["P2"]
-            final_box_preds = det["box3d_lidar"].data().cpu().numpy()
-            label_preds = det["label_preds"].data().cpu().numpy()
-            scores = det["scores"].data().cpu().numpy()
+            
+            final_box_preds = det["box3d_lidar"].detach().cpu().numpy()
+            label_preds = det["label_preds"].detach().cpu().numpy()
+            scores = det["scores"].detach().cpu().numpy()
             if final_box_preds.shape[0] != 0:
                 final_box_preds[:, 2] -= final_box_preds[:, 5] / 2
                 box3d_camera = box_np_ops.box_lidar_to_camera(final_box_preds, rect, Trv2c)
@@ -100,7 +101,7 @@ class KittiDataset(Dataset):
         gt_annos = self.ground_truth_annotations
         if gt_annos is None:
             return None
-        dt_annos = self.convert_detection_kitti_annos(detections)
+        dt_annos = self.convert_detection_to_kitti_annos(detections)
         # firstly convert standard detection to kitti-format dt annos
         z_axis = 1  # KITTI camera format use y as regular "z" axis.
         z_center = 1.0  # KITTI camera box's center is [0.5, 1, 0.5]

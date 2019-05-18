@@ -22,7 +22,6 @@ def get_metrics(config, cls_loss, loc_loss, cls_preds, labels, sampled, num_clas
     rpn_cls_loss_function = Scalar()
     rpn_loc_loss_function = Scalar()
     rpn_metrics_thresholds = config.model.loss.rpn_thresholds    
-
     rpn_acc = rpn_acc_function(labels, cls_preds, sampled).numpy()[0]
     prec, recall = rpn_metrics_function(labels, cls_preds, sampled)
     prec = prec.numpy()

@@ -143,9 +143,9 @@ def train(config, logger=None):
                     if config.model.decoder.auxiliary.use_direction_classifier:
                         metrics["dir_rt"] = float(dir_loss_reduced.sum().detach().cpu().numpy())
 
-                    logger.info("step: %d time %4f Loss_all: %2f, Loss_cls: %2f Loss_loc: %2f Loss_dir: %2f"%(
+                    logger.info("step: %d time %4f Loss_all: %6f, Loss_cls: %6f Loss_loc: %6f Loss_dir: %6f"%(
                                  step, step_time, loss, cls_loss_reduced, loc_loss_reduced, dir_loss_reduced))
-                    logger.info("step: %d Loc_elements x: %2f y: %2f z: %2f w: %2f h: %2f l: %2f angle: %2f"%(
+                    logger.info("step: %d Loc_elements x: %6f y: %6f z: %6f w: %6f h: %6f l: %6f angle: %6f"%(
                                 step, *(metrics["loc_elem"])))
                     logger.info("step: %d Cls_elements cls_neg_rt: %2f cls_pos_rt: %2f"%(
                                 step, metrics["cls_neg_rt"], metrics["cls_pos_rt"]))
@@ -158,8 +158,8 @@ def train(config, logger=None):
                     logger.info("step: %d Auxiliraries num_voxels: %d num_pos: %d num_neg: %d num_anchors: %d lr: %6f"%(
                                  step, num_voxel, num_pos, num_neg, num_anchors, lr))
                     pr_metrics = net_metrics["pr"]
-                    logger.info("step: %d PrecRec prec@50: %f rec@50: %f prec@90: %f rec@90: %f"%(
-                                 step, pr_metrics["prec@50"], pr_metrics["rec@50"], pr_metrics["prec@90"], pr_metrics["rec@90"])) 
+                    logger.info("step: %d RpnAcc: %6f PrecRec prec@30: %6f rec@30: %6f prec@50: %6f rec@50: %6f"%(
+                                 step, net_metrics["rpn_acc"], pr_metrics["prec@30"], pr_metrics["rec@30"], pr_metrics["prec@50"], pr_metrics["rec@50"]))
                     logger.info("-------------------------------------------------------------------------------------------------------------------")
 
             torch.cuda.empty_cache()

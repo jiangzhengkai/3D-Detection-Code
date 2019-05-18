@@ -2,7 +2,7 @@ from tqdm import tqdm
 import torch
 from lib.engine.convert_batch_to_device import convert_batch_to_device
 from lib.utils.dist_common import synchronize
-from lib.utils.dist_common import get_world_size
+from lib.utils.dist_common import get_world_size, all_gather
 
 def compute_on_dataset(model, data_loader, device):
     model.eval()
@@ -49,6 +49,6 @@ def test(dataloader, model, save_dir=None, device='cuda', distributed=False, log
 
     predictions = accumulate_predictions_from_multiple_gpus(detections)
 
-    result_dict = dataset.dataset.evaluation(predictions, save_dir)
+    result_dict = dataset.evaluation(predictions, save_dir)
     for k, v in result_dict["results"].items():
-        looger.info("Evaluation {K}: {v}")
+        logger.info(f"Evaluation {k}: {v}")
