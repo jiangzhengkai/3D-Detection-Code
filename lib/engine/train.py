@@ -43,7 +43,7 @@ def train(config, logger=None):
     total_steps = int(num_epochs * len(train_dataloader.dataset) / config.input.train.batch_size * num_gpus)
     logger.info("total training steps: %s" %(total_steps))
 
-    lr_scheduler = build_lr_scheduler(config, model, total_steps)
+    lr_scheduler = build_lr_scheduler(config, optimizer, total_steps)
     
     device = torch.device('cuda')
     model = model.to(device)
@@ -71,12 +71,13 @@ def train(config, logger=None):
             #### reg_targets: [batch_size x num_anchors x 7]
             #### reg_weights: [batch_size x num_anchors]
             #### meta_data: [dict_0, dict_1, ... dict_batch_size]
-            step = int(epoch * len(train_dataloader.dataset) / config.input.train.batch_size) + i
-            lr_scheduler.step(step)
+            num_step = int(epoch * len(train_dataloader.dataset) / config.input.train.batch_size) + i
+            lr_scheduler.step(num_step)
+             
             data_device = convert_batch_to_device(data_batch, device=device)
             rpn_predict_dicts = model(data_device)
             losses_dict = model.loss(data_device, rpn_predict_dicts)
-
+  
             batch_size = data_device["anchors"][0].shape[0]
             losses = []
             cls_loss_reduceds, loc_loss_reduceds, dir_loss_reduceds, cls_preds, careds = [], [], [], [], []
@@ -132,7 +133,7 @@ def train(config, logger=None):
 
                 step_time = time.time() - t
                 t = time.time()
-                if step % 50 == 0:
+                if num_step % 50 == 0:
                     logger.info("Metrics for task: {}".format(class_names[idx]))
 
                     loc_loss_elem = [float(loc_loss[:,:,i].sum().detach().cpu().numpy() / batch_size) for i in range(loc_loss.shape[-1])]
@@ -144,11 +145,11 @@ def train(config, logger=None):
                         metrics["dir_rt"] = float(dir_loss_reduced.sum().detach().cpu().numpy())
 
                     logger.info("step: %d time %4f Loss_all: %6f, Loss_cls: %6f Loss_loc: %6f Loss_dir: %6f"%(
-                                 step, step_time, loss, cls_loss_reduced, loc_loss_reduced, dir_loss_reduced))
+                                 num_step, step_time, loss, cls_loss_reduced, loc_loss_reduced, dir_loss_reduced))
                     logger.info("step: %d Loc_elements x: %6f y: %6f z: %6f w: %6f h: %6f l: %6f angle: %6f"%(
-                                step, *(metrics["loc_elem"])))
+                                num_step, *(metrics["loc_elem"])))
                     logger.info("step: %d Cls_elements cls_neg_rt: %2f cls_pos_rt: %2f"%(
-                                step, metrics["cls_neg_rt"], metrics["cls_pos_rt"]))
+                                num_step, metrics["cls_neg_rt"], metrics["cls_pos_rt"]))
                     
                     num_voxel = int(data_device["voxels"].shape[0])
                     num_pos = int(num_pos)
@@ -156,16 +157,16 @@ def train(config, logger=None):
                     num_anchors = int(num_anchors)
                     lr = float(optimizer.lr)
                     logger.info("step: %d Auxiliraries num_voxels: %d num_pos: %d num_neg: %d num_anchors: %d lr: %6f"%(
-                                 step, num_voxel, num_pos, num_neg, num_anchors, lr))
+                                 num_step, num_voxel, num_pos, num_neg, num_anchors, lr))
                     pr_metrics = net_metrics["pr"]
                     logger.info("step: %d RpnAcc: %6f PrecRec prec@30: %6f rec@30: %6f prec@50: %6f rec@50: %6f"%(
-                                 step, net_metrics["rpn_acc"], pr_metrics["prec@30"], pr_metrics["rec@30"], pr_metrics["prec@50"], pr_metrics["rec@50"]))
+                                 num_step, net_metrics["rpn_acc"], pr_metrics["prec@30"], pr_metrics["rec@30"], pr_metrics["prec@50"], pr_metrics["rec@50"]))
                     logger.info("-------------------------------------------------------------------------------------------------------------------")
 
             torch.cuda.empty_cache()
 
         torch.save(model.state_dict(), config.output_dir+"/model_%d.pth"%epoch)
-        if epoch % 10 == 0:
+        if epoch % 5 == 0 or num_step == total_steps:
             logger.info("Finish epoch %d, start eval ..." %(epoch))
             distributed = len(config.gpus.split(',')) > 1
             test(val_dataloader, 
