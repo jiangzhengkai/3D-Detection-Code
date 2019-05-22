@@ -1,5 +1,6 @@
 import numpy as np
 import torch
+import math
 from torch import nn
 from torch.nn import functional as F
 
@@ -26,6 +27,11 @@ class RPNHead(nn.Module):
             self.conv_dir = nn.Conv2d(num_input, num_dir, 1)
         if self.use_rc:
             self.conv_dir = nn.Conv2d(num_input, num_pred, 1)
+        # initialization for focal loss
+        #prior_prob = 0.01
+        #bias_value = -math.log((1 - prior_prob) / prior_prob)
+        #torch.nn.init.constant_(self.conv_cls.bias, bias_value)
+  
 
     def forward(self, x):
         ret_list = []   

@@ -1,4 +1,5 @@
 import torch
+import os
 import torch.utils.data
 import itertools
 from functools import partial
@@ -103,9 +104,13 @@ def build_dataloader(config, training, logger=None):
     
     batch_size = config.input.train.batch_size if training else config.input.eval.batch_size
     num_workers = config.input.train.preprocess.num_workers if training else config.input.eval.preprocess.num_workers
-    distributed = len(config.gpus.split(',')) > 1
+    num_gpus = int(
+        os.environ["WORLD_SIZE"]) if "WORLD_SIZE" in os.environ else 1
+    logger.info(f"{num_gpus} gpus for dataloader")
+    distributed = num_gpus > 1
     if distributed:
-        sampler = DistributedSampler(dataset)
+        shuffle = True if training else False
+        sampler = DistributedSampler(dataset, shuffle=shuffle)
     else:
         sampler = None
 

@@ -22,7 +22,8 @@ from lib.engine.metrics import get_metrics
 from lib.engine.test import test
 from lib.utils.dist_common import synchronize
 
-def train(config, logger=None):
+from apex import parallel
+def train(config, logger=None, distributed=False):
     logger = setup_logger("Training", config.output_dir, get_rank())    
 
     ####### dataloader #######
@@ -37,18 +38,28 @@ def train(config, logger=None):
 
 
     num_epochs = config.input.train.num_epochs
-    num_gpus = len(config.gpus.split(','))
-
+    num_gpus = int(os.environ["WORLD_SIZE"]) if "WORLD_SIZE" in os.environ else 1
     
-    total_steps = int(num_epochs * len(train_dataloader.dataset) / config.input.train.batch_size * num_gpus)
+    total_steps = int(num_epochs * len(train_dataloader.dataset) / (config.input.train.batch_size * num_gpus))
     logger.info("total training steps: %s" %(total_steps))
 
     lr_scheduler = build_lr_scheduler(config, optimizer, total_steps)
     
     device = torch.device('cuda')
-    model = model.to(device)
     logger.info("Model Articutures: %s"%(model))
-
+    if distributed:
+        model = parallel.convert_syncbn_model(model)
+        logger.info("Using SyncBn")
+        model = torch.nn.parallel.DistributedDataParallel(
+            model.to(device),
+            device_ids=[config.local_rank],
+            output_device=config.local_rank,
+            broadcast_buffers=False,
+        )
+        net_module = model.module
+    else:
+        net_module = model.to(device)
+        logger.info("Training use Single-GPU")
     # num_classes 
     target_assigners = target_assigners_all_classes(config)
     num_classes = [len(target_assigner.classes) for target_assigner in target_assigners]
@@ -71,12 +82,12 @@ def train(config, logger=None):
             #### reg_targets: [batch_size x num_anchors x 7]
             #### reg_weights: [batch_size x num_anchors]
             #### meta_data: [dict_0, dict_1, ... dict_batch_size]
-            num_step = int(epoch * len(train_dataloader.dataset) / config.input.train.batch_size) + i
+            num_step = int(epoch * len(train_dataloader.dataset) / (num_gpus * config.input.train.batch_size)) + i
             lr_scheduler.step(num_step)
              
             data_device = convert_batch_to_device(data_batch, device=device)
-            rpn_predict_dicts = model(data_device)
-            losses_dict = model.loss(data_device, rpn_predict_dicts)
+            rpn_predict_dicts = net_module(data_device)
+            losses_dict = net_module.loss(data_device, rpn_predict_dicts)
   
             batch_size = data_device["anchors"][0].shape[0]
             losses = []
@@ -116,7 +127,7 @@ def train(config, logger=None):
 
             optimizer.zero_grad()                       
             loss_mean.backward()
-            torch.nn.utils.clip_grad_norm_(model.parameters(), 10.0)
+            torch.nn.utils.clip_grad_norm_(net_module.parameters(), 10.0)
             optimizer.step()
 
             for idx, [cls_loss_reduced, loc_loss_reduced, dir_loss_reduced, cls_pred, labels, cared, loc_loss, cls_pos_loss, cls_neg_loss, loss] in enumerate(
@@ -165,10 +176,9 @@ def train(config, logger=None):
 
             torch.cuda.empty_cache()
 
-        torch.save(model.state_dict(), config.output_dir+"/model_%d.pth"%epoch)
-        if epoch % 5 == 0 or num_step == total_steps:
+        if epoch % 1 == 0 or num_step == total_steps:
+            torch.save(model.state_dict(), config.output_dir+"/model_%d.pth"%epoch)
             logger.info("Finish epoch %d, start eval ..." %(epoch))
-            distributed = len(config.gpus.split(',')) > 1
             test(val_dataloader, 
                  model, 
                  save_dir=config.output_dir, 
