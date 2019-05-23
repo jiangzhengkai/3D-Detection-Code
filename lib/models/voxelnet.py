@@ -11,7 +11,7 @@ from lib.solver.losses import (WeightedSigmoidClassificationLoss,
                                WeightedSoftmaxClassificationLoss)
 
 class VoxelNet(nn.Module):
-    def __init__(self, 
+    def __init__(self,
                  output_shape,
                  config,
                  num_classes=[2],
@@ -22,6 +22,7 @@ class VoxelNet(nn.Module):
                  device=None,
                  logger=None):
         super().__init__()
+        self._config = config
         self.name = name
         self.logger = logger
         self._num_classes = num_classes
@@ -286,7 +287,8 @@ class VoxelNet(nn.Module):
         else:
             meta_list = example["metadata"]
 
-        batch_anchors = example["anchors"][task_id].view(batch_size, -1, 7)
+        anchor_dim = 7 if self._config.input.train.dataset.type == "KittiDataset" else 9
+        batch_anchors = example["anchors"][task_id].view(batch_size, -1, anchor_dim)
         
         if "anchors_mask" not in example:
             batch_anchors_mask = [None] * batch_size
@@ -300,7 +302,7 @@ class VoxelNet(nn.Module):
         if not self._encode_background_as_zeros:
             num_class_with_bg = self._num_classes[task_id] + 1
         batch_cls_preds = batch_cls_preds.view(batch_size, -1, num_class_with_bg)
-
+        
         batch_box_preds = self._box_coders[task_id].decode_torch(batch_box_preds, batch_anchors)
 
         if self._use_direction_classifier:
