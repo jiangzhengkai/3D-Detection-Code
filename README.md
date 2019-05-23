@@ -36,3 +36,22 @@ Download KITTI dataset and create some directories first:
         ├── velodyne
         └── velodyne_reduced <-- empty directory
 ```
+
+
+* [Nuscenes](https://www.nuscenes.org/) Dataset Preparation
+
+Download Nuscenes dataset and create some directories first:
+
+```plain
+# For nuScenes Dataset                                                                                                                                        │
+└── NUSCENES_TRAINVAL_DATASET_ROOT                                                                                                                            
+       ├── samples       <-- key frames                                                                                                                       
+       ├── sweeps        <-- frames without annotation                                                                                                        
+       ├── maps          <-- unused                                                                                                                           
+       └── v1.0-trainval <-- metadata and annotations                                                                                                         
+└── NUSCENES_TEST_DATASET_ROOT  
+       ├── samples       <-- key frames                                                                                                                       
+       ├── sweeps        <-- frames without annotation                                                                                                        
+       ├── maps          <-- unused    
+       └── v1.0-test     <-- metadata    
+```
