@@ -92,6 +92,7 @@ _C.input.eval.dataset.nsweeps = 1
 _C.box_coder = edict()
 _C.box_coder.type = "ground_box3d_coder"
 _C.box_coder.value = edict()
+_C.box_coder.value.n_dim = 0
 _C.box_coder.value.linear_dim = False
 _C.box_coder.value.encode_angle_vector = False
 # --------------------------------------------------------------------
@@ -101,6 +102,7 @@ _C.target_assigner = edict()
 _C.target_assigner.anchor_generators = edict()
 _C.target_assigner.anchor_generators.anchor_types = ["anchor_generator_range",]
 _C.target_assigner.anchor_generators.anchor_sizes = [[1.97, 4.63, 1.74],]
+_C.target_assigner.anchor_generators.anchor_dims = [7,]
 _C.target_assigner.anchor_generators.anchor_ranges = [[-51.2, -51.2, -0.92, 51.2, 51.2, -0.92],]
 _C.target_assigner.anchor_generators.anchor_rotations = [[0, 1.57],]
 _C.target_assigner.anchor_generators.anchor_velocities = [None,]

@@ -17,6 +17,7 @@ def anchor_generators(config):
                                 class_name=config.anchor_class_names[i])
         elif config.anchor_types[i] == "anchor_generator_range":
             anchor = AnchorGeneratorRange(
+                                anchor_dim=config.anchor_dims[i],
                                 ranges=config.anchor_ranges[i],
                                 velocities=config.anchor_velocities[i],
                                 rotations=config.anchor_rotations[i],
@@ -79,6 +80,7 @@ class AnchorGeneratorStride:
 
 class AnchorGeneratorRange:
     def __init__(self,
+                 anchor_dim,
                  ranges,
                  sizes=[1.6, 3.9, 1.56],
                  rotations=[0, np.pi / 2],
@@ -95,6 +97,7 @@ class AnchorGeneratorRange:
         self._class_name = class_name
         self._match_threshold = match_threshold
         self._unmatch_threshold = unmatch_threshold
+        self._anchor_dim = anchor_dim
 
     @property
     def class_name(self):
@@ -122,7 +125,7 @@ class AnchorGeneratorRange:
         self._anchors = box_np_ops.create_anchors_3d_range(
             feature_map_size, self._anchor_ranges, self._sizes,
             self._rotations, self._velocities, self._dtype)
-        
-        self._anchors = np.concatenate((self._anchors[...,:6], self._anchors[...,-1:]), axis=-1)
+        if self._anchor_dim == 7:
+            self._anchors = np.concatenate((self._anchors[...,:6], self._anchors[...,-1:]), axis=-1)
         return self._anchors
 

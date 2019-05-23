@@ -157,8 +157,13 @@ def train(config, logger=None, distributed=False):
 
                     logger.info("step: %d time %4f Loss_all: %6f, Loss_cls: %6f Loss_loc: %6f Loss_dir: %6f"%(
                                  num_step, step_time, loss, cls_loss_reduced, loc_loss_reduced, dir_loss_reduced))
-                    logger.info("step: %d Loc_elements x: %6f y: %6f z: %6f w: %6f h: %6f l: %6f angle: %6f"%(
-                                num_step, *(metrics["loc_elem"])))
+                    if config.input.train.dataset.type == "KittiDataset":
+                        logger.info("step: %d Loc_elements x: %6f y: %6f z: %6f w: %6f h: %6f l: %6f angle: %6f"%(
+                                    num_step, *(metrics["loc_elem"])))
+                    else:
+                        logger.info("step: %d Loc_elements x: %6f y: %6f z: %6f w: %6f h: %6f l: %6f vx: %6f vy: %6f angle: %6f"%(
+                                    num_step, *(metrics["loc_elem"])))
+
                     logger.info("step: %d Cls_elements cls_neg_rt: %2f cls_pos_rt: %2f"%(
                                 num_step, metrics["cls_neg_rt"], metrics["cls_pos_rt"]))
                     
@@ -176,7 +181,7 @@ def train(config, logger=None, distributed=False):
 
             torch.cuda.empty_cache()
 
-        if epoch % 1 == 0 or num_step == total_steps:
+        if epoch % 5 == 0 or num_step == total_steps:
             torch.save(model.state_dict(), config.output_dir+"/model_%d.pth"%epoch)
             logger.info("Finish epoch %d, start eval ..." %(epoch))
             test(val_dataloader, 

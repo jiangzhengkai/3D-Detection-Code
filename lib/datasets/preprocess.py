@@ -194,11 +194,9 @@ def prep_pointcloud(config,
                 gt_boxes_mask = np.concatenate(
                     [gt_boxes_mask, sampled_gt_masks], axis=0)
             
-            if remove_points_after_sample:
-                masks = box_np_ops.points_in_rbbox(points, sampled_gt_boxes)
-                points = points[np.logical_not(masks.any(-1))]
-
-            if sampled_dict is not None:
+                if remove_points_after_sample:
+                    masks = box_np_ops.points_in_rbbox(points, sampled_gt_boxes)
+                    points = points[np.logical_not(masks.any(-1))]
                 points = np.concatenate([sampled_points, points], axis=0)
 
         pc_range = voxel_generator.point_cloud_range
@@ -222,31 +220,31 @@ def prep_pointcloud(config,
             task_masks.append([np.where(gt_dict['gt_classes'] == class_name.index(i) + 1 + flag) for i in class_name])
             flag += len(class_name)
  
-            task_boxes = []
-            task_classes = []
-            task_names = []
-            flag2 = 0
-            for idx, mask in enumerate(task_masks):
-                task_box = []
-                task_class = []
-                task_name = []
-                for m in mask:
-                    task_box.append(gt_dict['gt_boxes'][m])
-                    task_class.append(gt_dict['gt_classes'][m] - flag2)
-                    task_name.append(gt_dict['gt_names'][m])
-                task_boxes.append(np.concatenate(task_box, axis=0))
-                task_classes.append(np.concatenate(task_class))
-                task_names.append(np.concatenate(task_name))
-                flag2 += len(mask)
+        task_boxes = []
+        task_classes = []
+        task_names = []
+        flag2 = 0
+        for idx, mask in enumerate(task_masks):
+            task_box = []
+            task_class = []
+            task_name = []
+            for m in mask:
+                task_box.append(gt_dict['gt_boxes'][m])
+                task_class.append(gt_dict['gt_classes'][m] - flag2)
+                task_name.append(gt_dict['gt_names'][m])
+            task_boxes.append(np.concatenate(task_box, axis=0))
+            task_classes.append(np.concatenate(task_class))
+            task_names.append(np.concatenate(task_name))
+            flag2 += len(mask)
 
-            for task_box in task_boxes:
-                # limit rad to [-pi, pi]
-                task_box[:, -1] = box_np_ops.limit_period(task_box[:, -1],
+        for task_box in task_boxes:
+            # limit rad to [-pi, pi]
+            task_box[:, -1] = box_np_ops.limit_period(task_box[:, -1],
                                                           offset=0.5,
                                                            period=2 * np.pi)
-            gt_dict["gt_classes"] = task_classes
-            gt_dict["gt_names"] = task_names
-            gt_dict["gt_boxes"] = task_boxes
+        gt_dict["gt_classes"] = task_classes
+        gt_dict["gt_names"] = task_names
+        gt_dict["gt_boxes"] = task_boxes
 
     voxel_size = voxel_generator.voxel_size
     pc_range = voxel_generator.point_cloud_range

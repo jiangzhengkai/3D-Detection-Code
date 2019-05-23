@@ -8,7 +8,7 @@ input:
         max_num_points: 5
         max_voxels: 17000
     train:
-        batch_size: 2
+        batch_size: 4
         num_epochs: 50
         dataset:
             type: "KittiDataset"
@@ -57,13 +57,14 @@ input:
         preprocess:
             max_num_voxels: 40000
             shuffle: False
-            num_workers: 0
+            num_workers: 3
             anchor_area_threshold: -1
             remove_environment: False
 
 box_coder:
     type: "ground_box3d_coder"
     value:
+        n_dim: 7
         linear_dim: False
         encode_angle_vector: False
 
@@ -71,6 +72,7 @@ target_assigner:
     anchor_generators:
         anchor_types: ["anchor_generator_range",]
         anchor_sizes: [[1.6, 3.9, 1.56],]
+        anchor_dims: [7,]
         anchor_ranges: [[0, -40.0, -1.0, 70.4, 40.0, -1.0],]
         anchor_rotations: [[0, 1.57],]
         anchor_matched_thresholds: [0.6,]
@@ -114,7 +116,7 @@ model:
             use_direction_classifier: True
             direction_offset: 0.0
     post_process:
-        post_center_limit_range: [-51.2, -51.2, -10.0, 51.2, 51.2, 10.0]
+        post_center_limit_range: [0, -40.0, -2.2, 70.4, 40.0, 0.8]
         use_rotate_nms: True
         use_multi_class_nms: False
         nms_pre_max_size: 1000

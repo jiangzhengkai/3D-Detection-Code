@@ -15,6 +15,7 @@ class RPNHead(nn.Module):
                  use_dir=False,
                  num_dir=0,
                  use_rc=False,
+                 use_focal_loss_init=True,
                  name='',
                  **kwargs):
         super(RPNHead, self).__init__(**kwargs)
@@ -28,9 +29,10 @@ class RPNHead(nn.Module):
         if self.use_rc:
             self.conv_dir = nn.Conv2d(num_input, num_pred, 1)
         # initialization for focal loss
-        #prior_prob = 0.01
-        #bias_value = -math.log((1 - prior_prob) / prior_prob)
-        #torch.nn.init.constant_(self.conv_cls.bias, bias_value)
+        if use_focal_loss_init:
+            prior_prob = 0.01
+            bias_value = -math.log((1 - prior_prob) / prior_prob)
+            torch.nn.init.constant_(self.conv_cls.bias, bias_value)
   
 
     def forward(self, x):

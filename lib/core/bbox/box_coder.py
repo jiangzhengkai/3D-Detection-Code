@@ -9,11 +9,12 @@ import numpy as np
 def box_coder(config):
     box_coder_type = config.box_coder.type
     cfg = config.box_coder.value
+    
     if box_coder_type == 'ground_box3d_coder':
-        return GroundBox3dCoderTorch(cfg.linear_dim, cfg.encode_angle_vector)
+        return GroundBox3dCoderTorch(cfg.linear_dim, cfg.encode_angle_vector, n_dim=cfg.n_dim)
     elif box_coder_type == 'bev_box_coder':
         cfg = box_coder_config.VALUE
-        return BevBoxCoderTorch(cfg.linear_dim, cfg.encode_angle_vector, cfg.z_fixed, cfg.h_fixed)
+        return BevBoxCoderTorch(cfg.linear_dim, cfg.encode_angle_vector, cfg.z_fixed, cfg.h_fixed, n_dim=cfg.n_dim)
     else:
         raise ValueError("unknown box_coder type")
 

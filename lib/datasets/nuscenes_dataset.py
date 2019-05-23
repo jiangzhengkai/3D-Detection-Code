@@ -1,22 +1,19 @@
 import os
-import os.path as osp
 from functools import reduce
 from pathlib import Path
-import pickle
-import time
-from functools import partial
-from copy import deepcopy
 import numpy as np
+import pickle
 import json
-
 import random
+import time
+import operator
 
-from lib.core.bbox import box_np_ops
-from lib.core import preprocess as prep
-from lib.datasets import kitti_common as kitti
 from torch.utils.data import Dataset
-from utils.eval import get_coco_eval_result, get_official_eval_result
-from utils.progress_bar import progress_bar_iter as prog_bar
+from lib.core.bbox import box_np_ops
+from lib.datasets import preprocess as prep
+from lib.datasets import kitti_common as kitti
+from lib.utils.eval import get_coco_eval_result, get_official_eval_result
+from lib.utils.progress_bar import progress_bar_iter as prog_bar
 
 import pyquaternion
 from pyquaternion import Quaternion
@@ -26,12 +23,10 @@ from lib.deps.nuscenes.utils.data_classes import LidarPointCloud
 from lib.deps.nuscenes.eval.detection.config import eval_detection_configs
 from lib.deps.nuscenes.utils.geometry_utils import view_points, transform_matrix
 from lib.deps.nuscenes.utils.data_classes import Box
-
 from lib.deps.nuscenes.eval.detection.config import config_factory
 from lib.deps.nuscenes.eval.detection.evaluate import NuScenesEval
 
 from typing import Tuple, List
-
 
 def eval_main(nusc, eval_version, res_path, eval_set, output_dir):
     # nusc = NuScenes(version=version, dataroot=str(root_path), verbose=True)
@@ -46,202 +41,52 @@ def eval_main(nusc, eval_version, res_path, eval_set, output_dir):
     metrics_summary = nusc_eval.main(plot_examples=10, )
 
 
-import nori2 as nori
-
-import time
-
-import operator
-
-general_to_detection = {
-    'human.pedestrian.adult': 'pedestrian',
-    'human.pedestrian.child': 'pedestrian',
-    'human.pedestrian.wheelchair': 'ignore',
-    'human.pedestrian.stroller': 'ignore',
-    'human.pedestrian.personal_mobility': 'ignore',
-    'human.pedestrian.police_officer': 'pedestrian',
-    'human.pedestrian.construction_worker': 'pedestrian',
-    'animal': 'ignore',
-    'vehicle.car': 'car',
-    'vehicle.motorcycle': 'motorcycle',
-    'vehicle.bicycle': 'bicycle',
-    'vehicle.bus.bendy': 'bus',
-    'vehicle.bus.rigid': 'bus',
-    'vehicle.truck': 'truck',
-    'vehicle.construction': 'construction_vehicle',
-    'vehicle.emergency.ambulance': 'ignore',
-    'vehicle.emergency.police': 'ignore',
-    'vehicle.trailer': 'trailer',
-    'movable_object.barrier': 'barrier',
-    'movable_object.trafficcone': 'traffic_cone',
-    'movable_object.pushable_pullable': 'ignore',
-    'movable_object.debris': 'ignore',
-    'static_object.bicycle_rack': 'ignore',
-}
-
-cls_attr_dist = {
-    'barrier': {
-        'cycle.with_rider': 0,
-        'cycle.without_rider': 0,
-        'pedestrian.moving': 0,
-        'pedestrian.sitting_lying_down': 0,
-        'pedestrian.standing': 0,
-        'vehicle.moving': 0,
-        'vehicle.parked': 0,
-        'vehicle.stopped': 0
-    },
-    'bicycle': {
-        'cycle.with_rider': 2791,
-        'cycle.without_rider': 8946,
-        'pedestrian.moving': 0,
-        'pedestrian.sitting_lying_down': 0,
-        'pedestrian.standing': 0,
-        'vehicle.moving': 0,
-        'vehicle.parked': 0,
-        'vehicle.stopped': 0
-    },
-    'bus': {
-        'cycle.with_rider': 0,
-        'cycle.without_rider': 0,
-        'pedestrian.moving': 0,
-        'pedestrian.sitting_lying_down': 0,
-        'pedestrian.standing': 0,
-        'vehicle.moving': 9092,
-        'vehicle.parked': 3294,
-        'vehicle.stopped': 3881
-    },
-    'car': {
-        'cycle.with_rider': 0,
-        'cycle.without_rider': 0,
-        'pedestrian.moving': 0,
-        'pedestrian.sitting_lying_down': 0,
-        'pedestrian.standing': 0,
-        'vehicle.moving': 114304,
-        'vehicle.parked': 330133,
-        'vehicle.stopped': 46898
-    },
-    'construction_vehicle': {
-        'cycle.with_rider': 0,
-        'cycle.without_rider': 0,
-        'pedestrian.moving': 0,
-        'pedestrian.sitting_lying_down': 0,
-        'pedestrian.standing': 0,
-        'vehicle.moving': 882,
-        'vehicle.parked': 11549,
-        'vehicle.stopped': 2102
-    },
-    'ignore': {
-        'cycle.with_rider': 307,
-        'cycle.without_rider': 73,
-        'pedestrian.moving': 0,
-        'pedestrian.sitting_lying_down': 0,
-        'pedestrian.standing': 0,
-        'vehicle.moving': 165,
-        'vehicle.parked': 400,
-        'vehicle.stopped': 102
-    },
-    'motorcycle': {
-        'cycle.with_rider': 4233,
-        'cycle.without_rider': 8326,
-        'pedestrian.moving': 0,
-        'pedestrian.sitting_lying_down': 0,
-        'pedestrian.standing': 0,
-        'vehicle.moving': 0,
-        'vehicle.parked': 0,
-        'vehicle.stopped': 0
-    },
-    'pedestrian': {
-        'cycle.with_rider': 0,
-        'cycle.without_rider': 0,
-        'pedestrian.moving': 157444,
-        'pedestrian.sitting_lying_down': 13939,
-        'pedestrian.standing': 46530,
-        'vehicle.moving': 0,
-        'vehicle.parked': 0,
-        'vehicle.stopped': 0
-    },
-    'traffic_cone': {
-        'cycle.with_rider': 0,
-        'cycle.without_rider': 0,
-        'pedestrian.moving': 0,
-        'pedestrian.sitting_lying_down': 0,
-        'pedestrian.standing': 0,
-        'vehicle.moving': 0,
-        'vehicle.parked': 0,
-        'vehicle.stopped': 0
-    },
-    'trailer': {
-        'cycle.with_rider': 0,
-        'cycle.without_rider': 0,
-        'pedestrian.moving': 0,
-        'pedestrian.sitting_lying_down': 0,
-        'pedestrian.standing': 0,
-        'vehicle.moving': 3421,
-        'vehicle.parked': 19224,
-        'vehicle.stopped': 1895
-    },
-    'truck': {
-        'cycle.with_rider': 0,
-        'cycle.without_rider': 0,
-        'pedestrian.moving': 0,
-        'pedestrian.sitting_lying_down': 0,
-        'pedestrian.standing': 0,
-        'vehicle.moving': 21339,
-        'vehicle.parked': 55626,
-        'vehicle.stopped': 11097
-    }
-}
-
 
 class NuScenesDataset(Dataset):
-    NumPointFeatures = 5
     def __init__(self,
                  root_path,
                  info_path,
                  class_names=None,
-                 minor_classes=None,
+                 minir_classes=None,
                  prep_func=None,
-                 num_point_features=None,
                  subset=False,
+                 num_point_features=None,
                  **kwargs):
-        if 'nsweeps' in kwargs:
+        if "nsweeps" in kwargs:
             self.nsweeps = kwargs['nsweeps']
         else:
             self.nsweeps = 1
+
         assert self.nsweeps > 0, "At least input one sweep please!"
         self.logger = None
         if 'logger' in kwargs:
             self.logger = kwargs['logger']
             if self.logger is not None:
-                self.logger.info(
-                    f"{NuScenesDataset}'s traning with {self.nsweeps} nsweeps")
+                self.logger.info(f"NuScenesDataset's training with {self.nsweeps} nsweeps")
 
         self._root_path = Path(root_path)
         with open(info_path, 'rb') as f:
             self._nusc_infos_all = pickle.load(f)
-
-        if subset:  # if training
+    
+        if subset: # if training
             self.frac = int(len(self._nusc_infos_all) * 0.25)
-
             self._cls_infos = {name: [] for name in class_names}
             for info in self._nusc_infos_all:
                 for name in set(info["gt_names"]):
                     if name in class_names:
                         self._cls_infos[name].append(info)
-
-            self.duplicated_samples = sum(
-                [len(v) for _, v in self._cls_infos.items()])
-            self._cls_dist = {
+    
+            self.duplicated_samples = sum([len(v) for _, v in self._cls_infos.items()])
+            self._cls_dict = {
                 k: len(v) / self.duplicated_samples
                 for k, v in self._cls_infos.items()
             }
-
+   
             self._nusc_infos = []
+            frac = 1.0 / len(class_names)
+            ratios = [frac / v for v in self._cls_dict.values()]
 
-            frac = 1. / len(class_names)
-            ratios = [frac / v for v in self._cls_dist.values()]
-
-            for cls_infos, ratio in zip(list(self._cls_infos.values()),
-                                        ratios):
+            for cls_infos, ratio in zip(list(self._cls_infos.values()), ratios):
                 self._nusc_infos += np.random.choice(
                     cls_infos, int(len(cls_infos) * ratio)).tolist()
 
@@ -263,53 +108,43 @@ class NuScenesDataset(Dataset):
 
         self._num_point_features = 5
         self._class_names = class_names
+
         self._prep_func = prep_func
         self._name_mapping = general_to_detection
         self._kitti_name_mapping = {}
         for k, v in self._name_mapping.items():
-            if v.lower() in ["car", "pedestrian"
-                             ]:  # we only eval these classes in kitti
+            if v.lower() in ["car", "pedestrian"]:
                 self._kitti_name_mapping[k] = v
 
         self.version = "v1.0-trainval"
-        # self.version = "v1.0-mini"
-
-        # self.nusc = NuScenes(version=self.version, dataroot=self._root_path, verbose=True)
-
-        # self.nori_path = "/unsullied/sharefs/_research_detection/GeneralDetection/NuScenes/full_data/samples_10sweeps.nori"
-        # self.nw = nori.open(self.nori_path, "r")
-        # self.nid2token = pickle.load(open(osp.join(self.nori_path, "nid2token.pkl"), "rb"))
-        # self.token2nid = {v:k for k, v in self.nid2token.items()}
-
         self.eval_version = "cvpr_2019"
 
     def reset(self):
         self.logger.info(f"re-sample {self.frac} frames from full set")
         random.shuffle(self._nusc_infos_all)
-        self._nusc_infos = self._nusc_infos_all[:self.frac]
+        self._nusc_infos = self._nusc_infos_all[:sekf.frac]
 
     def __len__(self):
         return len(self._nusc_infos)
 
     def box_velocity(self,
                      nusc,
-                     sample_annotation_token: str,
-                     max_time_diff: float = 1.5) -> np.ndarray:
+                     sample_annotation_token="",
+                     max_time_diff=1.5):
         """
         Estimate the velocity for an annotation.
         If possible, we compute the centered difference between the previous and next frame.
         Otherwise we use the difference between the current and previous/next frame.
-        If the velocity cannot be estimated, values are set to np.nan.
-        :param sample_annotation_token: Unique sample_annotation identifier.
+        If the velocity cannot be estimatd, values are set to np.nan.
+        :param sampple_annotation_token: Unique sample_annotation identifier.
         :param max_time_diff: Max allowed time diff between consecutive samples that are used to estimate velocities.
-        :return: <np.float: 3>. Velocity in x/y/z direction in m/s.
+        :return <np.float: 3>. Velocity in x/y/z direction in m/s.
         """
-
         current = nusc.get('sample_annotation', sample_annotation_token)
         has_prev = current['prev'] != ''
         has_next = current['next'] != ''
 
-        # Cannot estimate velocity for a single annotation.
+        # Cannot estimate velocity for a single annotation
         if not has_prev and not has_next:
             return np.array([np.nan, np.nan, np.nan])
 
@@ -327,10 +162,8 @@ class NuScenesDataset(Dataset):
         pos_first = np.array(first['translation'])
         pos_diff = pos_last - pos_first
 
-        time_last = 1e-6 * nusc.get('sample',
-                                    last['sample_token'])['timestamp']
-        time_first = 1e-6 * nusc.get('sample',
-                                     first['sample_token'])['timestamp']
+        time_last = 1e-6 * nusc.get('sample', last['sample_token'])['timestamp']
+        time_first = 1e-6 * nusc.get('sample', first['sample_token'])['timestamp']
         time_diff = time_last - time_first
 
         if has_next and has_prev:
@@ -343,7 +176,7 @@ class NuScenesDataset(Dataset):
         else:
             return pos_diff / time_diff
 
-    def remove_close(self, points, radius: float) -> None:
+    def remove_close(self, points, radius):
         """
         Removes point too close within a certain radius from origin.
         :param radius: Radius below which points are removed.
@@ -358,18 +191,15 @@ class NuScenesDataset(Dataset):
     def ground_truth_annotations(self):
         if "gt_boxes" not in self._nusc_infos[0]:
             return None
-        cls_range_map = eval_detection_configs[
-            self.eval_version]["class_range"]
+        cls_range_map = eval_detection_configs[self.eval_version]["class_range"]
         gt_annos = []
         for info in self._nusc_infos:
             gt_names = np.array(info["gt_names"])
             gt_boxes = info["gt_boxes"]
-            # mask = np.array([n in self._kitti_name_mapping for n in gt_names], dtype=np.bool_)
             mask = np.array([n != "ignore" for n in gt_names], dtype=np.bool_)
             gt_names = gt_names[mask]
             gt_boxes = gt_boxes[mask]
-            # gt_names_mapped = [self._kitti_name_mapping[n] for n in gt_names]
-            # det_range = np.array([cls_range_map[n] for n in gt_names_mapped])
+
             det_range = np.array([cls_range_map[n] for n in gt_names])
             det_range = det_range[..., np.newaxis] @ np.array([[-1, -1, 1, 1]])
             mask = (gt_boxes[:, :2] >= det_range[:, :2]).all(1)
@@ -387,7 +217,6 @@ class NuScenesDataset(Dataset):
                 "token": info['token'],
             })
         return gt_annos
-
     def __getitem__(self, idx):
         input_dict = self.get_sensor_data(idx, self.nsweeps)
         example = self._prep_func(input_dict=input_dict, logger=self.logger)
@@ -402,8 +231,8 @@ class NuScenesDataset(Dataset):
         sensor_datas = []
         for i in range(1, nsweeps + 1):
             data = self.get_sensor_data(query, i)
-            sensor_datas.append(data)
-        return sensor_datas
+            sensor_data.append(data)
+        return sensor_data
 
     def get_sensor_data(self, query, nsweeps=10):
         idx = query
@@ -423,19 +252,11 @@ class NuScenesDataset(Dataset):
                 "token": info["token"]
             },
         }
-        """ offline read """
-        # lidar_path = Path(info['lidar_path'])
-        # points = np.fromfile(
-        #     str(lidar_path), dtype=np.float32, count=-1).reshape([4, -1]).T
-        """ nori read """
-        # token = info["lidar_path"].split("/")[-1].split(".")[0]
-        # nid = self.token2nid[token]
-        # points = np.frombuffer(self.nw.get(nid), dtype=np.float32).reshape(4, -1).T
+
         """ online read """
         lidar_path = Path(info['lidar_path'])
         points = np.fromfile(str(lidar_path), dtype=np.float32,
                              count=-1).reshape([-1, 5])[:, :4]
-        # points[:, 3] /= 255
         sweep_points_list = [points]
         sweep_times_list = [np.zeros((points.shape[0], 1))]
 
@@ -454,7 +275,6 @@ class NuScenesDataset(Dataset):
                 points_sweep[:3, :] = sweep["transform_matrix"].dot(
                     np.vstack(
                         (points_sweep[:3, :], np.ones(nbr_points))))[:3, :]
-            # points_sweep[3, :] /= 255
             points_sweep = self.remove_close(points_sweep, min_distance)
             curr_times = sweep["time_lag"] * np.ones(
                 (1, points_sweep.shape[1]))
@@ -470,23 +290,6 @@ class NuScenesDataset(Dataset):
         points = np.concatenate(sweep_points_list, axis=0)
         times = np.concatenate(sweep_times_list, axis=0).astype(points.dtype)
 
-        """ multi thread attempt """
-        # if nsweeps-1 > 0:
-        #     with concurrent.futures.ThreadPoolExecutor(nsweeps-1) as executor:
-        #         sweeps = info["sweeps"][:nsweeps-1]
-        #         sweep_iter = executor.map(read_sweep, sweeps)
-        #
-        #     for i in sweep_iter:
-        #         sweep_points_list.append(i)
-
-        # if nsweeps-1 > 0:
-        #     num_cores = multiprocessing.cpu_count()
-        #     results = Parallel(n_jobs=num_cores)(delayed(read_sweep)(sweep) for sweep in info["sweeps"][:nsweeps-1])
-
-        # print(f"one sample read time: {time.time() - ft}, sweeps list length: {len(sweep_points_list)}")
-        # sweep_points_list.extend(results)
-        # print(points.shape)
-
         if read_test_image:
             if Path(info["cam_front_path"]).exists():
                 with open(str(info["cam_front_path"]), 'rb') as f:
@@ -496,11 +299,8 @@ class NuScenesDataset(Dataset):
             res["cam"] = {
                 "type": "camera",
                 "data": image_str,
-                # "datatype": "jpg",
                 "datatype": Path(info["cam_front_path"]).suffix[1:],
             }
-        # mask = box_np_ops.points_in_rbbox(points, info["gt_boxes"]).any(-1)
-        # points = points[~mask]
         res["lidar"]["points"] = points
         res["lidar"]["times"] = times
         res["lidar"]["combined"] = np.hstack([points, times])
@@ -514,7 +314,6 @@ class NuScenesDataset(Dataset):
             }
 
         return res
-
     def evaluation_kitti(self, detections, output_dir):
         """eval by kitti evaluation tool
         """
@@ -523,8 +322,6 @@ class NuScenesDataset(Dataset):
         if gt_annos is None:
             return None
 
-        # gt_annos = deepcopy(gt_annos)
-        # dets = deepcopy(detections)
         dets = detections
         detections = []
 
@@ -612,7 +409,6 @@ class NuScenesDataset(Dataset):
                 "coco": result_coco["detail"],
             },
         }
-
     def evaluation_nusc(self, detections, output_dir):
         version = self.version
         eval_set_map = {
@@ -717,7 +513,6 @@ class NuScenesDataset(Dataset):
                 "nusc": detail
             },
         }
-
     def evaluation(self, detections, output_dir):
         # res_kitti = self.evaluation_kitti(detections, output_dir)
         res_nusc = self.evaluation_nusc(detections, output_dir)
@@ -736,9 +531,7 @@ class NuScenesDataset(Dataset):
                 # },
             },
         }
-
         return res
-
 
 def _second_det_to_nusc_box(detection):
     box3d = detection["box3d_lidar"].detach().cpu().numpy()
@@ -858,7 +651,6 @@ def get_sample_data(nusc,
 
     return data_path, box_list, cam_intrinsic
 
-
 def _fill_trainval_infos(nusc,
                          train_scenes,
                          val_scenes,
@@ -971,31 +763,6 @@ def _fill_trainval_infos(nusc,
         assert len(
             info["sweeps"]
         ) == nsweeps - 1, f"sweep {curr_sd_rec['token']} only has {len(info['sweeps'])} sweeps, you should duplicate to sweep num {nsweeps-1}"
-        """ read from api """
-        # sd_record = nusc.get('sample_data', sample['data']['LIDAR_TOP'])
-        #
-        # # Get boxes in lidar frame.
-        # lidar_path, boxes, cam_intrinsic = nusc.get_sample_data(
-        #     sample['data']['LIDAR_TOP'])
-        #
-        # # Get aggregated point cloud in lidar frame.
-        # sample_rec = nusc.get('sample', sd_record['sample_token'])
-        # chan = sd_record['channel']
-        # ref_chan = 'LIDAR_TOP'
-        # pc, times = LidarPointCloud.from_file_multisweep(nusc,
-        #                                                  sample_rec,
-        #                                                  chan,
-        #                                                  ref_chan,
-        #                                                  nsweeps=nsweeps)
-        # lidar_path = osp.join(nusc.dataroot, "sample_10sweeps/LIDAR_TOP",
-        #                       sample['data']['LIDAR_TOP'] + ".bin")
-        # pc.points.astype('float32').tofile(open(lidar_path, "wb"))
-        #
-        # info = {
-        #     "lidar_path": lidar_path,
-        #     "token": sample["token"],
-        #     # "timestamp": times,
-        # }
 
         if not test:
             annotations = [
@@ -1005,14 +772,12 @@ def _fill_trainval_infos(nusc,
 
             locs = np.array([b.center for b in ref_boxes]).reshape(-1, 3)
             dims = np.array([b.wlh for b in ref_boxes]).reshape(-1, 3)
-            # rots = np.array([b.orientation.yaw_pitch_roll[0] for b in ref_boxes]).reshape(-1, 1)
             velocity = np.array([b.velocity for b in ref_boxes]).reshape(-1, 3)
             rots = np.array([quaternion_yaw(b.orientation)
                              for b in ref_boxes]).reshape(-1, 1)
             names = np.array([b.name for b in ref_boxes])
             tokens = np.array([b.token for b in ref_boxes])
             gt_boxes = np.concatenate([locs, dims, velocity[:, :2], -rots - np.pi / 2], axis=1)
-            # gt_boxes = np.concatenate([locs, dims, rots], axis=1)
 
             assert len(annotations) == len(gt_boxes) == len(velocity)
 
@@ -1028,7 +793,6 @@ def _fill_trainval_infos(nusc,
             val_nusc_infos.append(info)
 
     return train_nusc_infos, val_nusc_infos
-
 
 def quaternion_yaw(q: Quaternion) -> float:
     """
@@ -1046,7 +810,6 @@ def quaternion_yaw(q: Quaternion) -> float:
     yaw = np.arctan2(v[1], v[0])
 
     return yaw
-
 
 def create_nuscenes_infos(root_path, version="v1.0-trainval", nsweeps=10):
     nusc = NuScenes(version=version, dataroot=root_path, verbose=True)
@@ -1109,7 +872,6 @@ def create_nuscenes_infos(root_path, version="v1.0-trainval", nsweeps=10):
                   'wb') as f:
             pickle.dump(val_nusc_infos, f)
 
-
 def get_box_mean(info_path, class_name="vehicle.car"):
     with open(info_path, 'rb') as f:
         nusc_infos = pickle.load(f)
@@ -1121,3 +883,147 @@ def get_box_mean(info_path, class_name="vehicle.car"):
         gt_boxes_list.append(info["gt_boxes"][mask].reshape(-1, 7))
     gt_boxes_list = np.concatenate(gt_boxes_list, axis=0)
     print(gt_boxes_list.mean(0))
+                                    
+
+general_to_detection = {
+    'human.pedestrian.adult': 'pedestrian',
+    'human.pedestrian.child': 'pedestrian',
+    'human.pedestrian.wheelchair': 'ignore',
+    'human.pedestrian.stroller': 'ignore',
+    'human.pedestrian.personal_mobility': 'ignore',
+    'human.pedestrian.police_officer': 'pedestrian',
+    'human.pedestrian.construction_worker': 'pedestrian',
+    'animal': 'ignore',
+    'vehicle.car': 'car',
+    'vehicle.motorcycle': 'motorcycle',
+    'vehicle.bicycle': 'bicycle',
+    'vehicle.bus.bendy': 'bus',
+    'vehicle.bus.rigid': 'bus',
+    'vehicle.truck': 'truck',
+    'vehicle.construction': 'construction_vehicle',
+    'vehicle.emergency.ambulance': 'ignore',
+    'vehicle.emergency.police': 'ignore',
+    'vehicle.trailer': 'trailer',
+    'movable_object.barrier': 'barrier',
+    'movable_object.trafficcone': 'traffic_cone',
+    'movable_object.pushable_pullable': 'ignore',
+    'movable_object.debris': 'ignore',
+    'static_object.bicycle_rack': 'ignore',
+}
+
+
+
+cls_attr_dist = {
+    'barrier': {
+        'cycle.with_rider': 0,
+        'cycle.without_rider': 0,
+        'pedestrian.moving': 0,
+        'pedestrian.sitting_lying_down': 0,
+        'pedestrian.standing': 0,
+        'vehicle.moving': 0,
+        'vehicle.parked': 0,
+        'vehicle.stopped': 0
+    },
+    'bicycle': {
+        'cycle.with_rider': 2791,
+        'cycle.without_rider': 8946,
+        'pedestrian.moving': 0,
+        'pedestrian.sitting_lying_down': 0,
+        'pedestrian.standing': 0,
+        'vehicle.moving': 0,
+        'vehicle.parked': 0,
+        'vehicle.stopped': 0
+    },
+    'bus': {
+        'cycle.with_rider': 0,
+        'cycle.without_rider': 0,
+        'pedestrian.moving': 0,
+        'pedestrian.sitting_lying_down': 0,
+        'pedestrian.standing': 0,
+        'vehicle.moving': 9092,
+        'vehicle.parked': 3294,
+        'vehicle.stopped': 3881
+    },
+    'car': {
+        'cycle.with_rider': 0,
+        'cycle.without_rider': 0,
+        'pedestrian.moving': 0,
+        'pedestrian.sitting_lying_down': 0,
+        'pedestrian.standing': 0,
+        'vehicle.moving': 114304,
+        'vehicle.parked': 330133,
+        'vehicle.stopped': 46898
+    },
+    'construction_vehicle': {
+        'cycle.with_rider': 0,
+        'cycle.without_rider': 0,
+        'pedestrian.moving': 0,
+        'pedestrian.sitting_lying_down': 0,
+        'pedestrian.standing': 0,
+        'vehicle.moving': 882,
+        'vehicle.parked': 11549,
+        'vehicle.stopped': 2102
+    },
+    'ignore': {
+        'cycle.with_rider': 307,
+        'cycle.without_rider': 73,
+        'pedestrian.moving': 0,
+        'pedestrian.sitting_lying_down': 0,
+        'pedestrian.standing': 0,
+        'vehicle.moving': 165,
+        'vehicle.parked': 400,
+        'vehicle.stopped': 102
+    },
+    'motorcycle': {
+        'cycle.with_rider': 4233,
+        'cycle.without_rider': 8326,
+        'pedestrian.moving': 0,
+        'pedestrian.sitting_lying_down': 0,
+        'pedestrian.standing': 0,
+        'vehicle.moving': 0,
+        'vehicle.parked': 0,
+        'vehicle.stopped': 0
+    },
+    'pedestrian': {
+        'cycle.with_rider': 0,
+        'cycle.without_rider': 0,
+        'pedestrian.moving': 157444,
+        'pedestrian.sitting_lying_down': 13939,
+        'pedestrian.standing': 46530,
+        'vehicle.moving': 0,
+        'vehicle.parked': 0,
+        'vehicle.stopped': 0
+    },
+    'traffic_cone': {
+        'cycle.with_rider': 0,
+        'cycle.without_rider': 0,
+        'pedestrian.moving': 0,
+        'pedestrian.sitting_lying_down': 0,
+        'pedestrian.standing': 0,
+        'vehicle.moving': 0,
+        'vehicle.parked': 0,
+        'vehicle.stopped': 0
+    },
+    'trailer': {
+        'cycle.with_rider': 0,
+        'cycle.without_rider': 0,
+        'pedestrian.moving': 0,
+        'pedestrian.sitting_lying_down': 0,
+        'pedestrian.standing': 0,
+        'vehicle.moving': 3421,
+        'vehicle.parked': 19224,
+        'vehicle.stopped': 1895
+    },
+    'truck': {
+        'cycle.with_rider': 0,
+        'cycle.without_rider': 0,
+        'pedestrian.moving': 0,
+        'pedestrian.sitting_lying_down': 0,
+        'pedestrian.standing': 0,
+        'vehicle.moving': 21339,
+        'vehicle.parked': 55626,
+        'vehicle.stopped': 11097
+    }
+}
+
+ 
