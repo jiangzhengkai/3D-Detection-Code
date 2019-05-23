@@ -9,7 +9,7 @@ import numpy as np
 from lib.core.bbox import box_np_ops
 from lib.datasets import preprocess as prep
 from lib.core.sampler import db_sampler
-from utils.check import shape_mergeable
+from lib.utils.check import shape_mergeable
 
 
 class DataBaseSampler:
