@@ -258,7 +258,7 @@ class NuScenes:
         :param sample_annotation_token: Unique sample_annotation identifier.
         """
         record = self.get('sample_annotation', sample_annotation_token)
-        velocity=self.box_velocity(record['token'])
+        velocity = self.box_velocity(record['token'])
         return Box(record['translation'], record['size'], Quaternion(record['rotation']),
                    name=record['category_name'], token=record['token'], velocity=velocity)
 
@@ -314,7 +314,6 @@ class NuScenes:
                     velocity = self.box_velocity(curr_ann_rec['token'])
                     box = Box(center, curr_ann_rec['size'], rotation, name=curr_ann_rec['category_name'],
                               token=curr_ann_rec['token'], velocity=velocity)
-
                 else:
                     # If not, simply grab the current annotation.
                     box = self.get_box(curr_ann_rec['token'])
@@ -340,7 +339,7 @@ class NuScenes:
         # Cannot estimate velocity for a single annotation.
         if not has_prev and not has_next:
             # return np.array([np.nan, np.nan, np.nan])
-            return np.array([0, 0, 0])
+            return np.array([0.0, 0.0, 0.0])
 
         if has_prev:
             first = self.get('sample_annotation', current['prev'])
@@ -367,7 +366,7 @@ class NuScenes:
         if time_diff > max_time_diff:
             # If time_diff is too big, don't return an estimate.
             # return np.array([np.nan, np.nan, np.nan])
-            return np.array([0, 0, 0])
+            return np.array([0.0, 0.0, 0.0])
         else:
             return pos_diff / time_diff
 
@@ -493,6 +492,8 @@ class NuScenesExplorer:
             desc = record['name'] + ', ' + record['description']
             if len(desc) > 55:
                 desc = desc[:51] + "..."
+            if len(location) > 18:
+                location = location[:18]
 
             print('{:16} [{}] {:4.0f}s, {}, #anns:{}'.format(
                 desc, datetime.utcfromtimestamp(start_time).strftime('%y-%m-%d %H:%M:%S'),
@@ -555,8 +556,8 @@ class NuScenesExplorer:
         # Grab the depths (camera frame z axis points away from the camera).
         depths = pc.points[2, :]
 
-        # Set the height to be the coloring.
-        coloring = pc.points[2, :]
+        # Retrieve the color from the depth.
+        coloring = depths
 
         # Take the actual picture (matrix multiplication with camera-matrix + renormalization).
         points = view_points(pc.points[:3, :], np.array(cs_record['camera_intrinsic']), normalize=True)
@@ -653,7 +654,7 @@ class NuScenesExplorer:
                            sample_data_token: str,
                            with_anns: bool = True,
                            box_vis_level: BoxVisibility = BoxVisibility.ANY,
-                           axes_limit: float = 50,
+                           axes_limit: float = 40,
                            ax: Axes = None,
                            nsweeps: int = 1,
                            out_path: str = None) -> None:

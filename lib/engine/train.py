@@ -65,7 +65,6 @@ def train(config, logger=None, distributed=False):
     num_classes = [len(target_assigner.classes) for target_assigner in target_assigners]
     class_names = [target_assigner.classes for target_assigner in target_assigners]
     t = time.time()
-
     for epoch in range(num_epochs):
         for i, data_batch in enumerate(train_dataloader):
             ######## data_device ########

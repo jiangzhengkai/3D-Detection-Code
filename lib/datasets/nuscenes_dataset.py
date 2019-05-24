@@ -29,9 +29,7 @@ from lib.deps.nuscenes.eval.detection.evaluate import NuScenesEval
 from typing import Tuple, List
 
 def eval_main(nusc, eval_version, res_path, eval_set, output_dir):
-    # nusc = NuScenes(version=version, dataroot=str(root_path), verbose=True)
     cfg = config_factory(eval_version)
-
     nusc_eval = NuScenesEval(nusc,
                              config=cfg,
                              result_path=res_path,

@@ -57,7 +57,7 @@ input:
         preprocess:
             max_num_voxels: 60000
             shuffle: False
-            num_workers: 3
+            num_workers: 0
             anchor_area_threshold: -1
             remove_environment: False
 
@@ -73,7 +73,7 @@ target_assigner:
         anchor_types: ["anchor_generator_range","anchor_generator_range","anchor_generator_range","anchor_generator_range","anchor_generator_range","anchor_generator_range","anchor_generator_range","anchor_generator_range","anchor_generator_range","anchor_generator_range"]
         anchor_dims: [9,9,9,9,9,9,9,9,9,9]
         anchor_sizes: [[1.97, 4.63, 1.74],[2.51, 6.93, 2.84],[2.85, 6.37, 3.19],[2.94, 10.5, 3.47],[2.90, 12.29, 3.87],[2.53, 0.50, 0.98],[0.77, 2.11, 1.47],[0.60, 1.70, 1.28],[0.67, 0.73, 1.77],[0.41, 0.41, 1.07]]
-        anchor_ranges: [[-51.2, -51.2, -0.92, 51.2, 51.2, -0.92],[-51.2, -51.2, -0.36, 51.2, 51.2, -0.36],[-51.2, -51.2, -0.185, 51.2, 51.2, -0.185], [-51.2, -51.2, -0.045, 51.2, 51.2, -0.045], [-51.2, -51.2, 0.155, 51.2, 51.2, 0.155],[-51.2, -51.2, -1.29, 51.2, 51.2, -1.29],[-51.2, -51.2, -1.045, 51.2, 51.2, -1.045], [-51.2, -51.2, -1.14, 51.2, 51.2, -1.14], [-51.2, -51.2, -0.895, 51.2, 51.2, -0.895],[-51.2, -51.2, -1.25, 51.2, 51.2, -1.25]]
+        anchor_ranges: [[-50.4, -50.4, -0.95, 50.4, 50.4, -0.95],[-50.4, -50.4, -0.40, 50.4, 50.4, -0.40],[-50.4, -50.4, -0.225, 50.4, 50.4, -0.225],[-50.4, -50.4, -0.085, 50.4, 50.4, -0.085],[-50.4, -50.4, 0.115, 50.4, 50.4, 0.115],[-50.4, -50.4, -1.33, 50.4, 50.4, -1.33],[-50.4, -50.4, -1.085, 50.4, 50.4, -1.085],[-50.4, -50.4, -1.18, 50.4, 50.4, -1.18],[-50.4, -50.4, -0.935, 50.4, 50.4, -0.935],[-50.4, -50.4, -1.285, 50.4, 50.4, -1.285]]
         anchor_rotations: [[0, 1.57],[0, 1.57],[0, 1.57],[0, 1.57],[0, 1.57],[0, 1.57],[0, 1.57],[0, 1.57],[0, 1.57],[0, 1.57]]
         anchor_velocities: [[0, 0],[0, 0],[0, 0],[0, 0],[0, 0],[0, 0],[0, 0],[0, 0],[0, 0],[0, 0]]
         anchor_matched_thresholds: [0.6,0.55,0.5,0.55,0.5,0.55,0.55,0.5,0.6,0.5]
@@ -117,13 +117,13 @@ model:
             use_direction_classifier: True
             direction_offset: 0.785
     post_process:
-        post_center_limit_range: [0, -40.0, -2.2, 70.4, 40.0, 0.8]
+        post_center_limit_range: [-61.2, -61.2, -10.0, 61.2, 61.2, 10.0]
         use_rotate_nms: True
         use_multi_class_nms: False
         nms_pre_max_size: 1000
-        nms_post_max_size: 100
-        nms_score_threshold: 0.3
-        nms_iou_threshold: 0.01
+        nms_post_max_size: 80
+        nms_score_threshold: 0.1
+        nms_iou_threshold: 0.2
 
     loss:
         loss_scale_factor: -1
