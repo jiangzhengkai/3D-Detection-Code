@@ -163,6 +163,6 @@ class SimpleVoxel(nn.Module):
         self.name = name
     def forward(self, features, num_voxels, coordinates):
         points_mean = features[:, :, :self.num_input_features].sum(dim=1, keepdim=False) / num_voxels.type_as(features).view(-1, 1)
-        features = torch.norm(points_mean[:, :2], p=2, dim=1, keep_dim=True)
-        res = torch.cat([features. points_mean[: 2:self.num_input_features]], dim=1)
+        features = torch.norm(points_mean[:, :2], p=2, dim=1, keepdim=True)
+        res = torch.cat([features, points_mean[: 2:self.num_input_features]], dim=1)
         return res

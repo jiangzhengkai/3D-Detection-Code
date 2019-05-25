@@ -154,33 +154,42 @@ def train(config, logger=None, distributed=False):
                     if config.model.decoder.auxiliary.use_direction_classifier:
                         metrics["dir_rt"] = float(dir_loss_reduced.sum().detach().cpu().numpy())
 
-                    logger.info("step: %d time %4f Loss_all: %6f, Loss_cls: %6f Loss_loc: %6f Loss_dir: %6f"%(
-                                 num_step, step_time, loss, cls_loss_reduced, loc_loss_reduced, dir_loss_reduced))
+                    logger.info("epoch: %d step: %d time %4f Loss_all: %6f"%(
+                                 epoch, num_step, step_time, loss))
+                    logger.info("epoch: %d step: %d Loss_cls: %6f Loss_loc: %6f Loss_dir: %6f"%(
+                                 epoch, num_step, cls_loss_reduced, loc_loss_reduced, dir_loss_reduced))
                     if config.input.train.dataset.type == "KittiDataset":
-                        logger.info("step: %d Loc_elements x: %6f y: %6f z: %6f w: %6f h: %6f l: %6f angle: %6f"%(
-                                    num_step, *(metrics["loc_elem"])))
+                        logger.info("epoch: %d step: %d Loc_elements x: %6f y: %6f z: %6f w: %6f h: %6f l: %6f angle: %6f"%(
+                                    epoch, num_step, *(metrics["loc_elem"])))
                     else:
-                        logger.info("step: %d Loc_elements x: %6f y: %6f z: %6f w: %6f h: %6f l: %6f vx: %6f vy: %6f angle: %6f"%(
-                                    num_step, *(metrics["loc_elem"])))
+                        logger.info("epoch: %d step: %d Loc_elements x: %6f y: %6f z: %6f w: %6f h: %6f l: %6f vx: %6f vy: %6f angle: %6f"%(
+                                    epoch, num_step, *(metrics["loc_elem"])))
 
-                    logger.info("step: %d Cls_elements cls_neg_rt: %2f cls_pos_rt: %2f"%(
-                                num_step, metrics["cls_neg_rt"], metrics["cls_pos_rt"]))
+                    logger.info("epoch: %d step: %d Cls_elements cls_neg_rt: %2f cls_pos_rt: %2f"%(
+                                epoch, num_step, metrics["cls_neg_rt"], metrics["cls_pos_rt"]))
                     
                     num_voxel = int(data_device["voxels"].shape[0])
                     num_pos = int(num_pos)
                     num_neg = int(num_neg)
                     num_anchors = int(num_anchors)
                     lr = float(optimizer.lr)
-                    logger.info("step: %d Auxiliraries num_voxels: %d num_pos: %d num_neg: %d num_anchors: %d lr: %6f"%(
-                                 num_step, num_voxel, num_pos, num_neg, num_anchors, lr))
+                    logger.info("epoch: %d step: %d Auxiliraries num_voxels: %d num_pos: %d num_neg: %d num_anchors: %d lr: %6f"%(
+                                 epoch, num_step, num_voxel, num_pos, num_neg, num_anchors, lr))
                     pr_metrics = net_metrics["pr"]
-                    logger.info("step: %d RpnAcc: %6f PrecRec prec@30: %6f rec@30: %6f prec@50: %6f rec@50: %6f"%(
-                                 num_step, net_metrics["rpn_acc"], pr_metrics["prec@30"], pr_metrics["rec@30"], pr_metrics["prec@50"], pr_metrics["rec@50"]))
+                    logger.info("epoch: %d step: %d RpnAcc: %6f"%(epoch, num_step, net_metrics["rpn_acc"]))
+
+                    logger.info("epoch: %d step: %d Prec prec@10: %6f prec@30: %6f prec@50: %6f prec@70: %6f prec@90: %6f"%(
+                                 epoch, num_step, pr_metrics["prec@10"], pr_metrics["prec@30"], pr_metrics["prec@50"], 
+                                 pr_metrics["prec@70"], pr_metrics["prec@90"]))
+
+                    logger.info("epoch: %d step: %d Reca reca@10: %6f reca@30: %6f reca@50: %6f reca@70: %6f reca@90: %6f"%(
+                                 epoch, num_step, pr_metrics["rec@10"], pr_metrics["rec@30"], pr_metrics["rec@50"], 
+                                 pr_metrics["rec@70"], pr_metrics["rec@90"]))
                     logger.info("-------------------------------------------------------------------------------------------------------------------")
 
             torch.cuda.empty_cache()
 
-        if epoch % 5 == 0 or num_step == total_steps:
+        if epoch % 1 == 0 or num_step == total_steps-1:
             torch.save(model.state_dict(), config.output_dir+"/model_%d.pth"%epoch)
             logger.info("Finish epoch %d, start eval ..." %(epoch))
             test(val_dataloader, 
