@@ -96,8 +96,8 @@ def train(config, logger=None, distributed=False):
             #### reg_targets: [batch_size x num_anchors x 7]
             #### reg_weights: [batch_size x num_anchors]
             #### meta_data: [dict_0, dict_1, ... dict_batch_size]
-            num_step = int(epoch * len(train_dataloader.dataset) / (num_gpus * config.input.train.batch_size)) + i
-            lr_scheduler.step(num_step)
+            step = int(epoch * len(train_dataloader.dataset) / (num_gpus * config.input.train.batch_size)) + i
+            lr_scheduler.step(step)
             arguments["iteration"] += 1
              
             data_device = convert_batch_to_device(data_batch, device=device)
@@ -159,9 +159,8 @@ def train(config, logger=None, distributed=False):
 
                 step_time = time.time() - t
                 t = time.time()
-                if num_step % 50 == 0:
-                    logger.info(f"Metrics for task: class_names[idx], saved to: {model_dir}")
-
+                if step % 50 == 0:
+                    logger.info(f"Metrics for task: {class_names[idx]}, saved to: {model_dir}")
                     loc_loss_elem = [float(loc_loss[:,:,i].sum().detach().cpu().numpy() / batch_size) for i in range(loc_loss.shape[-1])]
                     metrics["loss"] = loss
                     metrics["loc_elem"] = loc_loss_elem
@@ -169,43 +168,38 @@ def train(config, logger=None, distributed=False):
                     metrics["cls_neg_rt"] = float(cls_neg_loss.sum().detach().cpu().numpy())
                     if config.model.decoder.auxiliary.use_direction_classifier:
                         metrics["dir_rt"] = float(dir_loss_reduced.sum().detach().cpu().numpy())
-
                     logger.info("epoch: %d step: %d time %4f Loss_all: %6f"%(
-                                 epoch, num_step, step_time, loss))
+                                 epoch, step, step_time, loss))
                     logger.info("epoch: %d step: %d Loss_cls: %6f Loss_loc: %6f Loss_dir: %6f"%(
-                                 epoch, num_step, cls_loss_reduced, loc_loss_reduced, dir_loss_reduced))
+                                 epoch, step, cls_loss_reduced, loc_loss_reduced, dir_loss_reduced))
                     if config.input.train.dataset.type == "KittiDataset":
                         logger.info("epoch: %d step: %d Loc_elements x: %6f y: %6f z: %6f w: %6f h: %6f l: %6f angle: %6f"%(
-                                    epoch, num_step, *(metrics["loc_elem"])))
+                                    epoch, step, *(metrics["loc_elem"])))
                     else:
                         logger.info("epoch: %d step: %d Loc_elements x: %6f y: %6f z: %6f w: %6f h: %6f l: %6f vx: %6f vy: %6f angle: %6f"%(
-                                    epoch, num_step, *(metrics["loc_elem"])))
-
+                                    epoch, step, *(metrics["loc_elem"])))
                     logger.info("epoch: %d step: %d Cls_elements cls_neg_rt: %2f cls_pos_rt: %2f"%(
-                                epoch, num_step, metrics["cls_neg_rt"], metrics["cls_pos_rt"]))
-                    
+                                epoch, step, metrics["cls_neg_rt"], metrics["cls_pos_rt"]))                
                     num_voxel = int(data_device["voxels"].shape[0])
                     num_pos = int(num_pos)
                     num_neg = int(num_neg)
                     num_anchors = int(num_anchors)
                     lr = float(optimizer.lr)
                     logger.info("epoch: %d step: %d Auxiliraries num_voxels: %d num_pos: %d num_neg: %d num_anchors: %d lr: %6f"%(
-                                 epoch, num_step, num_voxel, num_pos, num_neg, num_anchors, lr))
+                                 epoch, step, num_voxel, num_pos, num_neg, num_anchors, lr))
                     pr_metrics = net_metrics["pr"]
-                    logger.info("epoch: %d step: %d RpnAcc: %6f"%(epoch, num_step, net_metrics["rpn_acc"]))
-
+                    logger.info("epoch: %d step: %d RpnAcc: %6f"%(epoch, step, net_metrics["rpn_acc"]))
                     logger.info("epoch: %d step: %d Prec prec@10: %6f prec@30: %6f prec@50: %6f prec@70: %6f prec@90: %6f"%(
-                                 epoch, num_step, pr_metrics["prec@10"], pr_metrics["prec@30"], pr_metrics["prec@50"], 
+                                 epoch, step, pr_metrics["prec@10"], pr_metrics["prec@30"], pr_metrics["prec@50"], 
                                  pr_metrics["prec@70"], pr_metrics["prec@90"]))
-
                     logger.info("epoch: %d step: %d Reca reca@10: %6f reca@30: %6f reca@50: %6f reca@70: %6f reca@90: %6f"%(
-                                 epoch, num_step, pr_metrics["rec@10"], pr_metrics["rec@30"], pr_metrics["rec@50"], 
+                                 epoch, step, pr_metrics["rec@10"], pr_metrics["rec@30"], pr_metrics["rec@50"], 
                                  pr_metrics["rec@70"], pr_metrics["rec@90"]))
                     logger.info("-------------------------------------------------------------------------------------------------------------------")
 
             torch.cuda.empty_cache()
 
-        if epoch % 1 == 0 or num_step == total_steps-1:
+        if epoch % 1 == 0 or step == total_steps-1:
             checkpoint.save("model_epoch_{:03d}_step_{:06d}".format(
                 epoch, step, **arguments))
             #torch.save(model.state_dict(), config.output_dir+"/model_%d.pth"%epoch)
