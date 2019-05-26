@@ -223,7 +223,7 @@ class Det3DCheckpointer(Checkpointer):
 
     def _load_file(self, f):
         # load native detectron.pytorch checkpoint
-        loaded = super(MegDet3DCheckpointer, self)._load_file(f)
+        loaded = super(Det3DCheckpointer, self)._load_file(f)
         if "model" not in loaded:
             loaded = dict(model=loaded)
         return loaded

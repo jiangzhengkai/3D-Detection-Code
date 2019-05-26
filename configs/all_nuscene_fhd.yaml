@@ -1,4 +1,3 @@
-output_dir: 'output_nusc'
 local_rank: 0
 input:
     num_point_features: 5
@@ -8,7 +7,7 @@ input:
         max_num_points: 20
         max_num_voxels: 40000
     train:
-        batch_size: 4
+        batch_size: 5
         num_epochs: 40
         dataset:
             type: "NuScenesDataset"

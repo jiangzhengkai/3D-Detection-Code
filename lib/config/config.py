@@ -2,8 +2,6 @@ from easydict import EasyDict as edict
 import numpy as np
 
 _C = edict()
-_C.output_dir = ''
-_C.devices = [0, 1]
 _C.local_rank = 0
 # --------------------------------------------------------------------
 # Input

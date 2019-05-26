@@ -12,11 +12,11 @@ def main():
     parser = argparse.ArgumentParser(description='3d object detection train')
     parser.add_argument('--cfg', default="", metavar="FILE", help="path to config file", type=str)
     parser.add_argument('--local_rank', type=int, default=0)
-    parser.add_argument('--gpus', type=int, help="number of gpus to use")
+    parser.add_argument('--model_dir', default="default", type=str, help="model to save dir")
     args = parser.parse_args()
 
     cfg_from_file(args.cfg)
-    output_dir = cfg.output_dir
+    output_dir = args.model_dir
     num_gpus = int(
         os.environ["WORLD_SIZE"]) if "WORLD_SIZE" in os.environ else 1
     args.distributed = num_gpus > 1
@@ -34,7 +34,7 @@ def main():
     with open(args.cfg, "r") as cf:
         config_str = "\n" + cf.read()
         logger.info(config_str)
-    train(cfg, logger=logger, distributed=args.distributed)
+    train(cfg, logger=logger, model_dir=output_dir, distributed=args.distributed)
 
 if __name__ == "__main__":
     main()

@@ -1,0 +1,1185 @@
+2019-05-26 12:29:10,280 3d-object-detection INFO: Using 1 GPUs
+2019-05-26 12:29:10,280 3d-object-detection INFO: Namespace(cfg='configs/car_fhd_kitti.yaml', distributed=False, local_rank=0, model_dir='kitti_output')
+2019-05-26 12:29:10,280 3d-object-detection INFO: Collecting env info (might take some time)
+2019-05-26 12:29:16,274 3d-object-detection INFO: 
+PyTorch version: 1.1.0
+Is debug build: No
+CUDA used to build PyTorch: 9.0.176
+
+OS: Ubuntu 16.04.6 LTS
+GCC version: (Ubuntu 5.4.0-6ubuntu1~16.04.11) 5.4.0 20160609
+CMake version: version 3.13.4
+
+Python version: 3.6
+Is CUDA available: Yes
+CUDA runtime version: 9.0.176
+GPU models and configuration: GPU 0: GeForce GTX 1080 Ti
+Nvidia driver version: 390.30
+cuDNN version: /unsullied/sharefs/_admin/cuda/cuda-9.0/cudnn/v7.4.1/lib64/libcudnn.so.7.4.1
+
+Versions of relevant libraries:
+[pip3] numpy==1.14.5
+[pip3] numpydoc==0.8.0
+[pip3] torch==1.1.0
+[pip3] torchvision==0.2.2.post3
+[conda] blas                      1.0                         mkl  
+[conda] mkl                       2018.0.2                      1  
+[conda] mkl-service               1.1.2            py36h17a0993_4  
+[conda] mkl_fft                   1.0.1            py36h3010b51_0  
+[conda] mkl_random                1.0.1            py36h629b387_0  
+[conda] torch                     1.1.0                    pypi_0    pypi
+[conda] torchvision               0.2.2.post3              pypi_0    pypi
+        Pillow (5.2.0)
+2019-05-26 12:29:16,276 3d-object-detection INFO: 
+local_rank: 0
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_num_voxels: 17000
+    train:
+        batch_size: 4
+        num_epochs: 120
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            shuffle: True
+            num_workers: 3
+            gt_location_noise: [1.0, 1.0, 0.5]
+            gt_rotation_noise: [-0.3141592654, 0.3141592654]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0, 0, 0]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+            db_sampler:
+                enable: True
+                db_info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/dbinfos_train.pkl"
+                db_preprocess_steps:
+                    filter_by_min_num_points:
+                        type: "filter_by_min_num_points"
+                        classes: ["Car",] 
+                        values: [5,]
+                    filter_by_difficulty:
+                        type: "filter_by_difficulty"
+                        value: [-1,]
+                global_random_rotation_range_per_object: [0, 0]
+                rate: 1.0
+                sample_groups:
+                     classes: ["Car",] 
+                     values: [15, ]
+
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_val.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 3
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        n_dim: 7
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [[1.6, 3.9, 1.56],]
+        anchor_dims: [7,]
+        anchor_ranges: [[0, -40.0, -1.0, 70.4, 40.0, -1.0],]
+        anchor_rotations: [[0, 1.57],]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["Car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+model:
+    encoder:
+        vfe:
+            type: "VoxelFeatureExtractorV3"
+            num_filters: [16,]
+            with_distance: False
+            num_input_features: 4
+        middle:
+            type: "SpMiddleFHD"
+            num_filters_down1: []
+            num_filters_down2: []
+            downsample_factor: 8
+            num_input_features: 4
+    decoder:
+        rpn:
+            type: "RPNV2"
+            layer_nums: [5, 5]
+            downsample_layer_strides: [1, 2]
+            downsample_num_filters: [128, 256]
+            upsample_layer_strides: [1, 2]
+            upsample_num_filters: [128, 128]
+            group_norm: False
+            num_groups: 32
+            num_input_features: 128
+        head:
+            tasks:
+                num_classes: [1]
+                class_names: [["car"],]
+            weights: [1,]
+        auxiliary:
+            use_direction_classifier: True
+            direction_offset: 0.0
+    post_process:
+        post_center_limit_range: [0, -40.0, -2.2, 70.4, 40.0, 0.8]
+        use_rotate_nms: True
+        use_multi_class_nms: False
+        nms_pre_max_size: 1000
+        nms_post_max_size: 100
+        nms_score_threshold: 0.3
+        nms_iou_threshold: 0.01
+
+    loss:
+        loss_scale_factor: -1
+        loss_norm_type: "NormByNumPositives"
+        pos_class_weight: 1.0
+        neg_class_weight: 1.0
+        use_sigmoid_score: True
+        encode_background_as_zeros: True
+        encode_rad_error_by_sin: True
+        classification_loss:
+            type: "weighted_sigmoid_focal"
+            value: 
+                alpha: 0.25
+                gamma: 2.0
+                anchorwise_output: True
+        localization_loss:
+            type: "weighted_smooth_l1"
+            value: 
+                sigma: 3.0
+                code_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+        classification_loss_weight: 1.0
+        localization_loss_weight: 1.0
+        direction_loss_weight: 0.2
+        rpn_thresholds: [0.1,0.3,0.5,0.7,0.8,0.9]
+
+optimizer:
+    type: "adam"
+    value: 
+        lr:
+            type: "one_cycle"
+            value: 
+                lr_max: 2.25e-3
+                moms: [0.95, 0.85]
+                div_factor: 10.0
+                pct_start: 0.4
+        amsgrad: 0.0
+        wd: 0.01
+    fixed_wd: True
+    moving_average: False
+
+2019-05-26 12:29:16,277 Training INFO: Enable db sampler: db_sampler
+2019-05-26 12:29:16,277 Training INFO: db_filter_by_min_num_points
+2019-05-26 12:29:16,277 Training INFO: db_filter_by_removed_difficulties
+2019-05-26 12:29:16,385 Training INFO: load 2207 Pedestrian database infos
+2019-05-26 12:29:16,385 Training INFO: load 14357 Car database infos
+2019-05-26 12:29:16,385 Training INFO: load 734 Cyclist database infos
+2019-05-26 12:29:16,385 Training INFO: load 1297 Van database infos
+2019-05-26 12:29:16,385 Training INFO: load 488 Truck database infos
+2019-05-26 12:29:16,385 Training INFO: load 224 Tram database infos
+2019-05-26 12:29:16,385 Training INFO: load 337 Misc database infos
+2019-05-26 12:29:16,385 Training INFO: load 56 Person_sitting database infos
+2019-05-26 12:29:16,414 Training INFO: After filter database:
+2019-05-26 12:29:16,414 Training INFO: load 2207 Pedestrian database infos
+2019-05-26 12:29:16,414 Training INFO: load 13442 Car database infos
+2019-05-26 12:29:16,414 Training INFO: load 734 Cyclist database infos
+2019-05-26 12:29:16,414 Training INFO: load 1297 Van database infos
+2019-05-26 12:29:16,414 Training INFO: load 488 Truck database infos
+2019-05-26 12:29:16,414 Training INFO: load 224 Tram database infos
+2019-05-26 12:29:16,414 Training INFO: load 337 Misc database infos
+2019-05-26 12:29:16,414 Training INFO: load 56 Person_sitting database infos
+2019-05-26 12:29:16,415 Training INFO: feature_map_size: [1, 200, 176]
+2019-05-26 12:29:16,589 Training INFO: 1 gpus for dataloader
+2019-05-26 12:29:16,589 Training INFO: feature_map_size: [1, 200, 176]
+2019-05-26 12:29:16,768 Training INFO: 1 gpus for dataloader
+2019-05-26 12:29:16,769 Training INFO: Using direction offset 0.000000 to fix aoe
+2019-05-26 12:29:16,769 Training INFO: Voxel Feature Encoder: VoxelFeatureExtractorV3
+2019-05-26 12:29:16,770 Training INFO: Middle class name: SpMiddleFHD
+2019-05-26 12:29:16,785 Training INFO: RPN class name: RPNV2
+2019-05-26 12:29:16,834 Training INFO: num_classes: [1]
+2019-05-26 12:29:16,834 Training INFO: num_preds: [14]
+2019-05-26 12:29:16,834 Training INFO: num_dirs: [4]
+2019-05-26 12:29:16,835 Training INFO: Finish RPNBase Initialization
+2019-05-26 12:29:16,836 Training INFO: Model Articutures: VoxelNet(
+  (_voxel_feature_extractor): VoxelFeatureExtractorV3()
+  (_middle_feature_extractor): SpMiddleFHD(
+    (middle_conv): SparseSequential(
+      (0): DefaultArgLayer()
+      (1): BatchNorm1d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): ReLU()
+      (3): DefaultArgLayer()
+      (4): BatchNorm1d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (5): ReLU()
+      (6): DefaultArgLayer()
+      (7): DefaultArgLayer(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (8): ReLU()
+      (9): DefaultArgLayer()
+      (10): DefaultArgLayer(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (11): ReLU()
+      (12): DefaultArgLayer()
+      (13): DefaultArgLayer(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (14): ReLU()
+      (15): DefaultArgLayer()
+      (16): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (17): ReLU()
+      (18): DefaultArgLayer()
+      (19): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (20): ReLU()
+      (21): DefaultArgLayer()
+      (22): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (23): ReLU()
+      (24): DefaultArgLayer()
+      (25): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (26): ReLU()
+      (27): DefaultArgLayer()
+      (28): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (29): ReLU()
+      (30): DefaultArgLayer()
+      (31): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (32): ReLU()
+      (33): DefaultArgLayer()
+      (34): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (35): ReLU()
+      (36): DefaultArgLayer()
+      (37): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (38): ReLU()
+      (39): DefaultArgLayer()
+      (40): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (41): ReLU()
+    )
+  )
+  (_rpn): RPNV2(
+    (blocks): ModuleList(
+      (0): Sequential(
+        (0): ZeroPad2d(padding=(1, 1, 1, 1), value=0.0)
+        (1): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), bias=False)
+        (2): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (3): ReLU()
+        (4): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (5): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (6): ReLU()
+        (7): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (8): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (9): ReLU()
+        (10): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (11): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (12): ReLU()
+        (13): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (14): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (15): ReLU()
+        (16): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (17): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (18): ReLU()
+      )
+      (1): Sequential(
+        (0): ZeroPad2d(padding=(1, 1, 1, 1), value=0.0)
+        (1): DefaultArgLayer(128, 256, kernel_size=(3, 3), stride=(2, 2), bias=False)
+        (2): DefaultArgLayer(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (3): ReLU()
+        (4): DefaultArgLayer(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (5): DefaultArgLayer(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (6): ReLU()
+        (7): DefaultArgLayer(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (8): DefaultArgLayer(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (9): ReLU()
+        (10): DefaultArgLayer(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (11): DefaultArgLayer(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (12): ReLU()
+        (13): DefaultArgLayer(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (14): DefaultArgLayer(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (15): ReLU()
+        (16): DefaultArgLayer(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (17): DefaultArgLayer(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (18): ReLU()
+      )
+    )
+    (deblocks): ModuleList(
+      (0): Sequential(
+        (0): DefaultArgLayer(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+      (1): Sequential(
+        (0): DefaultArgLayer(256, 128, kernel_size=(2, 2), stride=(2, 2), bias=False)
+        (1): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+    )
+    (tasks): ModuleList(
+      (0): RPNHead(
+        (conv_box): Conv2d(256, 14, kernel_size=(1, 1), stride=(1, 1))
+        (conv_cls): Conv2d(256, 2, kernel_size=(1, 1), stride=(1, 1))
+        (conv_dir): Conv2d(256, 4, kernel_size=(1, 1), stride=(1, 1))
+      )
+    )
+  )
+)
+2019-05-26 12:29:28,769 Training INFO: Training use Single-GPU
+2019-05-26 12:29:28,773 Training INFO: No checkpoint found. Initializing model from scratch
+2019-05-26 12:29:28,773 Training INFO: extra arguments: {'iteration': 0, 'epoch': 0}
+2019-05-26 12:29:28,773 Training INFO: total training steps: 111360
+2019-05-26 12:29:49,206 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:29:49,209 Training INFO: epoch: 1 step: 950 time 0.625086 Loss_all: 1.895072
+2019-05-26 12:29:49,209 Training INFO: epoch: 1 step: 950 Loss_cls: 1.081149 Loss_loc: 0.676205 Loss_dir: 0.137717
+2019-05-26 12:29:49,209 Training INFO: epoch: 1 step: 950 Loc_elements x: 0.049174 y: 0.034564 z: 0.108808 w: 0.039474 h: 0.067699 l: 0.049242 angle: 0.327244
+2019-05-26 12:29:49,209 Training INFO: epoch: 1 step: 950 Cls_elements cls_neg_rt: 0.001869 cls_pos_rt: 1.079280
+2019-05-26 12:29:49,209 Training INFO: epoch: 1 step: 950 Auxiliraries num_voxels: 66171 num_pos: 75 num_neg: 70217 num_anchors: 70400 lr: 0.000227
+2019-05-26 12:29:49,210 Training INFO: epoch: 1 step: 950 RpnAcc: 0.999022
+2019-05-26 12:29:49,210 Training INFO: epoch: 1 step: 950 Prec prec@10: 0.000000 prec@30: 0.000000 prec@50: 0.000000 prec@70: 0.000000 prec@90: 0.000000
+2019-05-26 12:29:49,210 Training INFO: epoch: 1 step: 950 Reca reca@10: 0.000000 reca@30: 0.000000 reca@50: 0.000000 reca@70: 0.000000 reca@90: 0.000000
+2019-05-26 12:29:49,210 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:30:20,086 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:30:20,088 Training INFO: epoch: 1 step: 1000 time 0.589416 Loss_all: 1.396022
+2019-05-26 12:30:20,088 Training INFO: epoch: 1 step: 1000 Loss_cls: 0.592936 Loss_loc: 0.649382 Loss_dir: 0.153705
+2019-05-26 12:30:20,089 Training INFO: epoch: 1 step: 1000 Loc_elements x: 0.054142 y: 0.036559 z: 0.102510 w: 0.042618 h: 0.073698 l: 0.067786 angle: 0.272069
+2019-05-26 12:30:20,089 Training INFO: epoch: 1 step: 1000 Cls_elements cls_neg_rt: 0.042318 cls_pos_rt: 0.550618
+2019-05-26 12:30:20,089 Training INFO: epoch: 1 step: 1000 Auxiliraries num_voxels: 64136 num_pos: 72 num_neg: 70205 num_anchors: 70400 lr: 0.000228
+2019-05-26 12:30:20,089 Training INFO: epoch: 1 step: 1000 RpnAcc: 0.999033
+2019-05-26 12:30:20,089 Training INFO: epoch: 1 step: 1000 Prec prec@10: 0.047458 prec@30: 0.240000 prec@50: 0.000000 prec@70: 0.000000 prec@90: 0.000000
+2019-05-26 12:30:20,089 Training INFO: epoch: 1 step: 1000 Reca reca@10: 0.463235 reca@30: 0.022059 reca@50: 0.000000 reca@70: 0.000000 reca@90: 0.000000
+2019-05-26 12:30:20,089 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:30:51,130 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:30:51,132 Training INFO: epoch: 1 step: 1050 time 0.563483 Loss_all: 1.107000
+2019-05-26 12:30:51,133 Training INFO: epoch: 1 step: 1050 Loss_cls: 0.526474 Loss_loc: 0.443160 Loss_dir: 0.137365
+2019-05-26 12:30:51,133 Training INFO: epoch: 1 step: 1050 Loc_elements x: 0.030110 y: 0.020198 z: 0.087985 w: 0.025928 h: 0.046874 l: 0.038946 angle: 0.193121
+2019-05-26 12:30:51,133 Training INFO: epoch: 1 step: 1050 Cls_elements cls_neg_rt: 0.077934 cls_pos_rt: 0.448540
+2019-05-26 12:30:51,133 Training INFO: epoch: 1 step: 1050 Auxiliraries num_voxels: 66368 num_pos: 47 num_neg: 70275 num_anchors: 70400 lr: 0.000228
+2019-05-26 12:30:51,133 Training INFO: epoch: 1 step: 1050 RpnAcc: 0.999157
+2019-05-26 12:30:51,133 Training INFO: epoch: 1 step: 1050 Prec prec@10: 0.032448 prec@30: 0.312500 prec@50: 0.000000 prec@70: 0.000000 prec@90: 0.000000
+2019-05-26 12:30:51,133 Training INFO: epoch: 1 step: 1050 Reca reca@10: 0.603376 reca@30: 0.021097 reca@50: 0.000000 reca@70: 0.000000 reca@90: 0.000000
+2019-05-26 12:30:51,134 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:31:22,094 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:31:22,096 Training INFO: epoch: 1 step: 1100 time 0.604992 Loss_all: 1.015452
+2019-05-26 12:31:22,097 Training INFO: epoch: 1 step: 1100 Loss_cls: 0.488317 Loss_loc: 0.383597 Loss_dir: 0.143539
+2019-05-26 12:31:22,097 Training INFO: epoch: 1 step: 1100 Loc_elements x: 0.021078 y: 0.016125 z: 0.043835 w: 0.024557 h: 0.056171 l: 0.041005 angle: 0.180828
+2019-05-26 12:31:22,097 Training INFO: epoch: 1 step: 1100 Cls_elements cls_neg_rt: 0.130546 cls_pos_rt: 0.357771
+2019-05-26 12:31:22,097 Training INFO: epoch: 1 step: 1100 Auxiliraries num_voxels: 63410 num_pos: 40 num_neg: 70280 num_anchors: 70400 lr: 0.000228
+2019-05-26 12:31:22,097 Training INFO: epoch: 1 step: 1100 RpnAcc: 0.999225
+2019-05-26 12:31:22,097 Training INFO: epoch: 1 step: 1100 Prec prec@10: 0.028205 prec@30: 0.322835 prec@50: 1.000000 prec@70: 0.000000 prec@90: 0.000000
+2019-05-26 12:31:22,097 Training INFO: epoch: 1 step: 1100 Reca reca@10: 0.703196 reca@30: 0.187215 reca@50: 0.004566 reca@70: 0.000000 reca@90: 0.000000
+2019-05-26 12:31:22,097 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:31:53,731 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:31:53,733 Training INFO: epoch: 1 step: 1150 time 0.664912 Loss_all: 0.868667
+2019-05-26 12:31:53,733 Training INFO: epoch: 1 step: 1150 Loss_cls: 0.384859 Loss_loc: 0.347479 Loss_dir: 0.136329
+2019-05-26 12:31:53,733 Training INFO: epoch: 1 step: 1150 Loc_elements x: 0.023342 y: 0.011206 z: 0.056650 w: 0.021430 h: 0.046272 l: 0.048623 angle: 0.139956
+2019-05-26 12:31:53,733 Training INFO: epoch: 1 step: 1150 Cls_elements cls_neg_rt: 0.075434 cls_pos_rt: 0.309425
+2019-05-26 12:31:53,733 Training INFO: epoch: 1 step: 1150 Auxiliraries num_voxels: 67810 num_pos: 67 num_neg: 70242 num_anchors: 70400 lr: 0.000228
+2019-05-26 12:31:53,734 Training INFO: epoch: 1 step: 1150 RpnAcc: 0.999033
+2019-05-26 12:31:53,734 Training INFO: epoch: 1 step: 1150 Prec prec@10: 0.050216 prec@30: 0.642857 prec@50: 1.000000 prec@70: 0.000000 prec@90: 0.000000
+2019-05-26 12:31:53,734 Training INFO: epoch: 1 step: 1150 Reca reca@10: 0.792115 reca@30: 0.225806 reca@50: 0.025090 reca@70: 0.000000 reca@90: 0.000000
+2019-05-26 12:31:53,734 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:32:24,911 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:32:24,913 Training INFO: epoch: 1 step: 1200 time 0.560219 Loss_all: 0.873244
+2019-05-26 12:32:24,913 Training INFO: epoch: 1 step: 1200 Loss_cls: 0.392881 Loss_loc: 0.350559 Loss_dir: 0.129804
+2019-05-26 12:32:24,914 Training INFO: epoch: 1 step: 1200 Loc_elements x: 0.023728 y: 0.029153 z: 0.059421 w: 0.020077 h: 0.051822 l: 0.036720 angle: 0.129638
+2019-05-26 12:32:24,914 Training INFO: epoch: 1 step: 1200 Cls_elements cls_neg_rt: 0.111022 cls_pos_rt: 0.281859
+2019-05-26 12:32:24,914 Training INFO: epoch: 1 step: 1200 Auxiliraries num_voxels: 65014 num_pos: 63 num_neg: 70249 num_anchors: 70400 lr: 0.000229
+2019-05-26 12:32:24,914 Training INFO: epoch: 1 step: 1200 RpnAcc: 0.999225
+2019-05-26 12:32:24,914 Training INFO: epoch: 1 step: 1200 Prec prec@10: 0.040336 prec@30: 0.390728 prec@50: 0.888889 prec@70: 1.000000 prec@90: 0.000000
+2019-05-26 12:32:24,914 Training INFO: epoch: 1 step: 1200 Reca reca@10: 0.849138 reca@30: 0.254310 reca@50: 0.068966 reca@70: 0.004310 reca@90: 0.000000
+2019-05-26 12:32:24,914 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:32:55,228 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:32:55,230 Training INFO: epoch: 1 step: 1250 time 0.672505 Loss_all: 0.767284
+2019-05-26 12:32:55,231 Training INFO: epoch: 1 step: 1250 Loss_cls: 0.361321 Loss_loc: 0.281895 Loss_dir: 0.124068
+2019-05-26 12:32:55,231 Training INFO: epoch: 1 step: 1250 Loc_elements x: 0.013437 y: 0.012590 z: 0.057927 w: 0.016786 h: 0.043784 l: 0.023930 angle: 0.113439
+2019-05-26 12:32:55,231 Training INFO: epoch: 1 step: 1250 Cls_elements cls_neg_rt: 0.100800 cls_pos_rt: 0.260521
+2019-05-26 12:32:55,231 Training INFO: epoch: 1 step: 1250 Auxiliraries num_voxels: 65404 num_pos: 63 num_neg: 70237 num_anchors: 70400 lr: 0.000229
+2019-05-26 12:32:55,231 Training INFO: epoch: 1 step: 1250 RpnAcc: 0.999221
+2019-05-26 12:32:55,231 Training INFO: epoch: 1 step: 1250 Prec prec@10: 0.053462 prec@30: 0.423529 prec@50: 0.731707 prec@70: 0.750000 prec@90: 0.000000
+2019-05-26 12:32:55,231 Training INFO: epoch: 1 step: 1250 Reca reca@10: 0.882353 reca@30: 0.302521 reca@50: 0.126050 reca@70: 0.025210 reca@90: 0.000000
+2019-05-26 12:32:55,231 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:33:25,779 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:33:25,781 Training INFO: epoch: 1 step: 1300 time 0.604873 Loss_all: 0.742617
+2019-05-26 12:33:25,782 Training INFO: epoch: 1 step: 1300 Loss_cls: 0.343505 Loss_loc: 0.277303 Loss_dir: 0.121809
+2019-05-26 12:33:25,782 Training INFO: epoch: 1 step: 1300 Loc_elements x: 0.009990 y: 0.016558 z: 0.049814 w: 0.025409 h: 0.052823 l: 0.028263 angle: 0.094446
+2019-05-26 12:33:25,782 Training INFO: epoch: 1 step: 1300 Cls_elements cls_neg_rt: 0.058460 cls_pos_rt: 0.285045
+2019-05-26 12:33:25,782 Training INFO: epoch: 1 step: 1300 Auxiliraries num_voxels: 65314 num_pos: 61 num_neg: 70255 num_anchors: 70400 lr: 0.000229
+2019-05-26 12:33:25,782 Training INFO: epoch: 1 step: 1300 RpnAcc: 0.999239
+2019-05-26 12:33:25,782 Training INFO: epoch: 1 step: 1300 Prec prec@10: 0.061329 prec@30: 0.694444 prec@50: 1.000000 prec@70: 1.000000 prec@90: 0.000000
+2019-05-26 12:33:25,782 Training INFO: epoch: 1 step: 1300 Reca reca@10: 0.740741 reca@30: 0.308642 reca@50: 0.119342 reca@70: 0.020576 reca@90: 0.000000
+2019-05-26 12:33:25,783 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:33:56,257 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:33:56,259 Training INFO: epoch: 1 step: 1350 time 0.567098 Loss_all: 0.704209
+2019-05-26 12:33:56,259 Training INFO: epoch: 1 step: 1350 Loss_cls: 0.324816 Loss_loc: 0.267617 Loss_dir: 0.111776
+2019-05-26 12:33:56,259 Training INFO: epoch: 1 step: 1350 Loc_elements x: 0.015491 y: 0.013531 z: 0.048182 w: 0.020670 h: 0.042269 l: 0.031539 angle: 0.095935
+2019-05-26 12:33:56,260 Training INFO: epoch: 1 step: 1350 Cls_elements cls_neg_rt: 0.082954 cls_pos_rt: 0.241862
+2019-05-26 12:33:56,260 Training INFO: epoch: 1 step: 1350 Auxiliraries num_voxels: 60707 num_pos: 59 num_neg: 70256 num_anchors: 70400 lr: 0.000230
+2019-05-26 12:33:56,260 Training INFO: epoch: 1 step: 1350 RpnAcc: 0.999232
+2019-05-26 12:33:56,260 Training INFO: epoch: 1 step: 1350 Prec prec@10: 0.063257 prec@30: 0.513661 prec@50: 0.816327 prec@70: 0.888889 prec@90: 0.000000
+2019-05-26 12:33:56,260 Training INFO: epoch: 1 step: 1350 Reca reca@10: 0.846154 reca@30: 0.380567 reca@50: 0.161943 reca@70: 0.032389 reca@90: 0.000000
+2019-05-26 12:33:56,260 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:34:26,921 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:34:26,923 Training INFO: epoch: 1 step: 1400 time 0.585558 Loss_all: 0.719129
+2019-05-26 12:34:26,923 Training INFO: epoch: 1 step: 1400 Loss_cls: 0.325762 Loss_loc: 0.292196 Loss_dir: 0.101171
+2019-05-26 12:34:26,923 Training INFO: epoch: 1 step: 1400 Loc_elements x: 0.021516 y: 0.012321 z: 0.040982 w: 0.020430 h: 0.042336 l: 0.035106 angle: 0.119504
+2019-05-26 12:34:26,923 Training INFO: epoch: 1 step: 1400 Cls_elements cls_neg_rt: 0.099416 cls_pos_rt: 0.226345
+2019-05-26 12:34:26,924 Training INFO: epoch: 1 step: 1400 Auxiliraries num_voxels: 62618 num_pos: 80 num_neg: 70213 num_anchors: 70400 lr: 0.000230
+2019-05-26 12:34:26,924 Training INFO: epoch: 1 step: 1400 RpnAcc: 0.999228
+2019-05-26 12:34:26,924 Training INFO: epoch: 1 step: 1400 Prec prec@10: 0.059144 prec@30: 0.423221 prec@50: 0.833333 prec@70: 1.000000 prec@90: 0.000000
+2019-05-26 12:34:26,924 Training INFO: epoch: 1 step: 1400 Reca reca@10: 0.915709 reca@30: 0.432950 reca@50: 0.210728 reca@70: 0.091954 reca@90: 0.000000
+2019-05-26 12:34:26,924 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:34:58,119 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:34:58,121 Training INFO: epoch: 1 step: 1450 time 0.666383 Loss_all: 0.634032
+2019-05-26 12:34:58,122 Training INFO: epoch: 1 step: 1450 Loss_cls: 0.292532 Loss_loc: 0.239350 Loss_dir: 0.102150
+2019-05-26 12:34:58,122 Training INFO: epoch: 1 step: 1450 Loc_elements x: 0.018152 y: 0.007021 z: 0.036825 w: 0.018081 h: 0.043962 l: 0.029243 angle: 0.086067
+2019-05-26 12:34:58,122 Training INFO: epoch: 1 step: 1450 Cls_elements cls_neg_rt: 0.081642 cls_pos_rt: 0.210890
+2019-05-26 12:34:58,122 Training INFO: epoch: 1 step: 1450 Auxiliraries num_voxels: 64917 num_pos: 72 num_neg: 70217 num_anchors: 70400 lr: 0.000230
+2019-05-26 12:34:58,122 Training INFO: epoch: 1 step: 1450 RpnAcc: 0.999278
+2019-05-26 12:34:58,122 Training INFO: epoch: 1 step: 1450 Prec prec@10: 0.066929 prec@30: 0.548523 prec@50: 0.885714 prec@70: 0.800000 prec@90: 0.000000
+2019-05-26 12:34:58,122 Training INFO: epoch: 1 step: 1450 Reca reca@10: 0.859922 reca@30: 0.505837 reca@50: 0.241245 reca@70: 0.046693 reca@90: 0.000000
+2019-05-26 12:34:58,123 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:35:28,903 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:35:28,905 Training INFO: epoch: 1 step: 1500 time 0.585786 Loss_all: 0.628579
+2019-05-26 12:35:28,905 Training INFO: epoch: 1 step: 1500 Loss_cls: 0.304982 Loss_loc: 0.242147 Loss_dir: 0.081449
+2019-05-26 12:35:28,905 Training INFO: epoch: 1 step: 1500 Loc_elements x: 0.009172 y: 0.010177 z: 0.046042 w: 0.020001 h: 0.034074 l: 0.041950 angle: 0.080730
+2019-05-26 12:35:28,905 Training INFO: epoch: 1 step: 1500 Cls_elements cls_neg_rt: 0.092986 cls_pos_rt: 0.211997
+2019-05-26 12:35:28,906 Training INFO: epoch: 1 step: 1500 Auxiliraries num_voxels: 61847 num_pos: 65 num_neg: 70228 num_anchors: 70400 lr: 0.000231
+2019-05-26 12:35:28,906 Training INFO: epoch: 1 step: 1500 RpnAcc: 0.999353
+2019-05-26 12:35:28,906 Training INFO: epoch: 1 step: 1500 Prec prec@10: 0.072132 prec@30: 0.547009 prec@50: 0.813187 prec@70: 0.906250 prec@90: 1.000000
+2019-05-26 12:35:28,906 Training INFO: epoch: 1 step: 1500 Reca reca@10: 0.857741 reca@30: 0.535565 reca@50: 0.309623 reca@70: 0.121339 reca@90: 0.020921
+2019-05-26 12:35:28,906 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:35:59,607 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:35:59,609 Training INFO: epoch: 1 step: 1550 time 0.648585 Loss_all: 0.534079
+2019-05-26 12:35:59,609 Training INFO: epoch: 1 step: 1550 Loss_cls: 0.216228 Loss_loc: 0.241563 Loss_dir: 0.076288
+2019-05-26 12:35:59,609 Training INFO: epoch: 1 step: 1550 Loc_elements x: 0.013315 y: 0.007688 z: 0.055127 w: 0.022253 h: 0.033533 l: 0.021910 angle: 0.087737
+2019-05-26 12:35:59,609 Training INFO: epoch: 1 step: 1550 Cls_elements cls_neg_rt: 0.038113 cls_pos_rt: 0.178115
+2019-05-26 12:35:59,609 Training INFO: epoch: 1 step: 1550 Auxiliraries num_voxels: 63159 num_pos: 53 num_neg: 70264 num_anchors: 70400 lr: 0.000231
+2019-05-26 12:35:59,610 Training INFO: epoch: 1 step: 1550 RpnAcc: 0.999285
+2019-05-26 12:35:59,610 Training INFO: epoch: 1 step: 1550 Prec prec@10: 0.131678 prec@30: 0.778409 prec@50: 0.942857 prec@70: 1.000000 prec@90: 1.000000
+2019-05-26 12:35:59,610 Training INFO: epoch: 1 step: 1550 Reca reca@10: 0.927757 reca@30: 0.520913 reca@50: 0.250951 reca@70: 0.091255 reca@90: 0.015209
+2019-05-26 12:35:59,610 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:36:30,710 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:36:30,712 Training INFO: epoch: 1 step: 1600 time 0.617113 Loss_all: 0.708193
+2019-05-26 12:36:30,712 Training INFO: epoch: 1 step: 1600 Loss_cls: 0.312552 Loss_loc: 0.295446 Loss_dir: 0.100195
+2019-05-26 12:36:30,712 Training INFO: epoch: 1 step: 1600 Loc_elements x: 0.014124 y: 0.010129 z: 0.052505 w: 0.022569 h: 0.045916 l: 0.026200 angle: 0.124003
+2019-05-26 12:36:30,712 Training INFO: epoch: 1 step: 1600 Cls_elements cls_neg_rt: 0.038954 cls_pos_rt: 0.273598
+2019-05-26 12:36:30,713 Training INFO: epoch: 1 step: 1600 Auxiliraries num_voxels: 63948 num_pos: 58 num_neg: 70248 num_anchors: 70400 lr: 0.000231
+2019-05-26 12:36:30,713 Training INFO: epoch: 1 step: 1600 RpnAcc: 0.999164
+2019-05-26 12:36:30,713 Training INFO: epoch: 1 step: 1600 Prec prec@10: 0.109780 prec@30: 0.731034 prec@50: 0.963636 prec@70: 1.000000 prec@90: 0.000000
+2019-05-26 12:36:30,713 Training INFO: epoch: 1 step: 1600 Reca reca@10: 0.769231 reca@30: 0.370629 reca@50: 0.185315 reca@70: 0.059441 reca@90: 0.000000
+2019-05-26 12:36:30,713 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:37:02,093 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:37:02,096 Training INFO: epoch: 1 step: 1650 time 0.603914 Loss_all: 0.640316
+2019-05-26 12:37:02,096 Training INFO: epoch: 1 step: 1650 Loss_cls: 0.269824 Loss_loc: 0.263360 Loss_dir: 0.107131
+2019-05-26 12:37:02,096 Training INFO: epoch: 1 step: 1650 Loc_elements x: 0.010720 y: 0.009736 z: 0.043266 w: 0.033510 h: 0.053642 l: 0.036668 angle: 0.075818
+2019-05-26 12:37:02,096 Training INFO: epoch: 1 step: 1650 Cls_elements cls_neg_rt: 0.047872 cls_pos_rt: 0.221953
+2019-05-26 12:37:02,096 Training INFO: epoch: 1 step: 1650 Auxiliraries num_voxels: 63168 num_pos: 69 num_neg: 70226 num_anchors: 70400 lr: 0.000232
+2019-05-26 12:37:02,096 Training INFO: epoch: 1 step: 1650 RpnAcc: 0.999378
+2019-05-26 12:37:02,097 Training INFO: epoch: 1 step: 1650 Prec prec@10: 0.095215 prec@30: 0.723926 prec@50: 1.000000 prec@70: 1.000000 prec@90: 1.000000
+2019-05-26 12:37:02,097 Training INFO: epoch: 1 step: 1650 Reca reca@10: 0.829167 reca@30: 0.491667 reca@50: 0.270833 reca@70: 0.137500 reca@90: 0.012500
+2019-05-26 12:37:02,097 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:37:33,126 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:37:33,128 Training INFO: epoch: 1 step: 1700 time 0.587999 Loss_all: 0.590775
+2019-05-26 12:37:33,128 Training INFO: epoch: 1 step: 1700 Loss_cls: 0.239769 Loss_loc: 0.258586 Loss_dir: 0.092420
+2019-05-26 12:37:33,128 Training INFO: epoch: 1 step: 1700 Loc_elements x: 0.013596 y: 0.007031 z: 0.051057 w: 0.025884 h: 0.028485 l: 0.054552 angle: 0.077981
+2019-05-26 12:37:33,129 Training INFO: epoch: 1 step: 1700 Cls_elements cls_neg_rt: 0.053770 cls_pos_rt: 0.185999
+2019-05-26 12:37:33,129 Training INFO: epoch: 1 step: 1700 Auxiliraries num_voxels: 63446 num_pos: 62 num_neg: 70233 num_anchors: 70400 lr: 0.000232
+2019-05-26 12:37:33,129 Training INFO: epoch: 1 step: 1700 RpnAcc: 0.999388
+2019-05-26 12:37:33,129 Training INFO: epoch: 1 step: 1700 Prec prec@10: 0.106693 prec@30: 0.692661 prec@50: 0.911765 prec@70: 1.000000 prec@90: 1.000000
+2019-05-26 12:37:33,129 Training INFO: epoch: 1 step: 1700 Reca reca@10: 0.859375 reca@30: 0.589844 reca@50: 0.363281 reca@70: 0.167969 reca@90: 0.011719
+2019-05-26 12:37:33,129 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:38:04,040 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:38:04,042 Training INFO: epoch: 1 step: 1750 time 0.606718 Loss_all: 0.490020
+2019-05-26 12:38:04,043 Training INFO: epoch: 1 step: 1750 Loss_cls: 0.197249 Loss_loc: 0.221276 Loss_dir: 0.071496
+2019-05-26 12:38:04,043 Training INFO: epoch: 1 step: 1750 Loc_elements x: 0.011479 y: 0.007068 z: 0.039161 w: 0.019796 h: 0.048910 l: 0.038366 angle: 0.056496
+2019-05-26 12:38:04,043 Training INFO: epoch: 1 step: 1750 Cls_elements cls_neg_rt: 0.065471 cls_pos_rt: 0.131778
+2019-05-26 12:38:04,043 Training INFO: epoch: 1 step: 1750 Auxiliraries num_voxels: 63628 num_pos: 67 num_neg: 70240 num_anchors: 70400 lr: 0.000233
+2019-05-26 12:38:04,043 Training INFO: epoch: 1 step: 1750 RpnAcc: 0.999399
+2019-05-26 12:38:04,044 Training INFO: epoch: 1 step: 1750 Prec prec@10: 0.113688 prec@30: 0.636364 prec@50: 0.900901 prec@70: 1.000000 prec@90: 1.000000
+2019-05-26 12:38:04,044 Training INFO: epoch: 1 step: 1750 Reca reca@10: 0.968992 reca@30: 0.678295 reca@50: 0.387597 reca@70: 0.178295 reca@90: 0.011628
+2019-05-26 12:38:04,044 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:38:34,994 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:38:34,997 Training INFO: epoch: 1 step: 1800 time 0.595164 Loss_all: 0.479682
+2019-05-26 12:38:34,997 Training INFO: epoch: 1 step: 1800 Loss_cls: 0.208152 Loss_loc: 0.191078 Loss_dir: 0.080452
+2019-05-26 12:38:34,997 Training INFO: epoch: 1 step: 1800 Loc_elements x: 0.012252 y: 0.007322 z: 0.023838 w: 0.015889 h: 0.040464 l: 0.019617 angle: 0.071696
+2019-05-26 12:38:34,997 Training INFO: epoch: 1 step: 1800 Cls_elements cls_neg_rt: 0.091529 cls_pos_rt: 0.116623
+2019-05-26 12:38:34,997 Training INFO: epoch: 1 step: 1800 Auxiliraries num_voxels: 60020 num_pos: 71 num_neg: 70232 num_anchors: 70400 lr: 0.000233
+2019-05-26 12:38:34,998 Training INFO: epoch: 1 step: 1800 RpnAcc: 0.999516
+2019-05-26 12:38:34,998 Training INFO: epoch: 1 step: 1800 Prec prec@10: 0.079871 prec@30: 0.608856 prec@50: 0.894309 prec@70: 1.000000 prec@90: 1.000000
+2019-05-26 12:38:34,998 Training INFO: epoch: 1 step: 1800 Reca reca@10: 0.957082 reca@30: 0.708154 reca@50: 0.472103 reca@70: 0.210300 reca@90: 0.034335
+2019-05-26 12:38:34,998 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:39:06,108 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:39:06,110 Training INFO: epoch: 1 step: 1850 time 0.628625 Loss_all: 0.491609
+2019-05-26 12:39:06,110 Training INFO: epoch: 1 step: 1850 Loss_cls: 0.212384 Loss_loc: 0.210788 Loss_dir: 0.068437
+2019-05-26 12:39:06,110 Training INFO: epoch: 1 step: 1850 Loc_elements x: 0.012815 y: 0.014695 z: 0.032325 w: 0.019572 h: 0.037388 l: 0.018419 angle: 0.075574
+2019-05-26 12:39:06,110 Training INFO: epoch: 1 step: 1850 Cls_elements cls_neg_rt: 0.058255 cls_pos_rt: 0.154129
+2019-05-26 12:39:06,110 Training INFO: epoch: 1 step: 1850 Auxiliraries num_voxels: 68000 num_pos: 59 num_neg: 70253 num_anchors: 70400 lr: 0.000234
+2019-05-26 12:39:06,110 Training INFO: epoch: 1 step: 1850 RpnAcc: 0.999406
+2019-05-26 12:39:06,110 Training INFO: epoch: 1 step: 1850 Prec prec@10: 0.102720 prec@30: 0.707207 prec@50: 0.890110 prec@70: 1.000000 prec@90: 1.000000
+2019-05-26 12:39:06,110 Training INFO: epoch: 1 step: 1850 Reca reca@10: 0.920168 reca@30: 0.659664 reca@50: 0.340336 reca@70: 0.155462 reca@90: 0.012605
+2019-05-26 12:39:06,111 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:39:09,240 Training INFO: model_epoch_001_step_001855
+2019-05-26 12:39:09,242 Training INFO: Saving checkpoint to kitti_output/model_epoch_001_step_001855.pth
+2019-05-26 12:39:09,430 Training INFO: Finish epoch 1, start eval ...
+2019-05-26 12:39:09,430 Training INFO: Start evaluation on dataset for 3769 samples.
+2019-05-26 12:46:47,152 Training INFO: Evaluation official: car AP(Average Precision)@0.70, 0.70, 0.70:
+bbox AP:84.73, 73.78, 67.11
+bev  AP:70.01, 62.26, 56.01
+3d   AP:32.75, 29.54, 29.32
+aos  AP:82.53, 70.55, 63.38
+car AP(Average Precision)@0.70, 0.50, 0.50:
+bbox AP:84.73, 73.78, 67.11
+bev  AP:89.08, 84.96, 77.68
+3d   AP:88.65, 78.33, 76.31
+aos  AP:82.53, 70.55, 63.38
+
+2019-05-26 12:46:47,155 Training INFO: Evaluation coco: car coco AP@0.50:0.05:0.95:
+bbox AP:57.25, 51.98, 48.48
+bev  AP:49.13, 44.83, 41.88
+3d   AP:35.47, 31.77, 29.95
+aos  AP:55.75, 49.64, 45.67
+
+2019-05-26 12:47:22,054 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:47:22,057 Training INFO: epoch: 2 step: 1900 time 0.593534 Loss_all: 0.512052
+2019-05-26 12:47:22,057 Training INFO: epoch: 2 step: 1900 Loss_cls: 0.222973 Loss_loc: 0.203097 Loss_dir: 0.085982
+2019-05-26 12:47:22,057 Training INFO: epoch: 2 step: 1900 Loc_elements x: 0.010288 y: 0.005619 z: 0.039909 w: 0.019211 h: 0.049292 l: 0.029271 angle: 0.049507
+2019-05-26 12:47:22,057 Training INFO: epoch: 2 step: 1900 Cls_elements cls_neg_rt: 0.079183 cls_pos_rt: 0.143789
+2019-05-26 12:47:22,057 Training INFO: epoch: 2 step: 1900 Auxiliraries num_voxels: 63350 num_pos: 65 num_neg: 70233 num_anchors: 70400 lr: 0.000234
+2019-05-26 12:47:22,058 Training INFO: epoch: 2 step: 1900 RpnAcc: 0.999452
+2019-05-26 12:47:22,058 Training INFO: epoch: 2 step: 1900 Prec prec@10: 0.114567 prec@30: 0.643636 prec@50: 0.874016 prec@70: 0.919355 prec@90: 1.000000
+2019-05-26 12:47:22,058 Training INFO: epoch: 2 step: 1900 Reca reca@10: 0.887550 reca@30: 0.710843 reca@50: 0.445783 reca@70: 0.228916 reca@90: 0.036145
+2019-05-26 12:47:22,058 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:47:53,598 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:47:53,599 Training INFO: epoch: 2 step: 1950 time 0.587076 Loss_all: 0.480863
+2019-05-26 12:47:53,599 Training INFO: epoch: 2 step: 1950 Loss_cls: 0.215360 Loss_loc: 0.192835 Loss_dir: 0.072668
+2019-05-26 12:47:53,600 Training INFO: epoch: 2 step: 1950 Loc_elements x: 0.009977 y: 0.008168 z: 0.017580 w: 0.019507 h: 0.031734 l: 0.041345 angle: 0.064523
+2019-05-26 12:47:53,600 Training INFO: epoch: 2 step: 1950 Cls_elements cls_neg_rt: 0.057393 cls_pos_rt: 0.157967
+2019-05-26 12:47:53,600 Training INFO: epoch: 2 step: 1950 Auxiliraries num_voxels: 64808 num_pos: 55 num_neg: 70264 num_anchors: 70400 lr: 0.000235
+2019-05-26 12:47:53,600 Training INFO: epoch: 2 step: 1950 RpnAcc: 0.999449
+2019-05-26 12:47:53,600 Training INFO: epoch: 2 step: 1950 Prec prec@10: 0.089989 prec@30: 0.694444 prec@50: 0.966102 prec@70: 1.000000 prec@90: 1.000000
+2019-05-26 12:47:53,600 Training INFO: epoch: 2 step: 1950 Reca reca@10: 0.905660 reca@30: 0.660377 reca@50: 0.430189 reca@70: 0.147170 reca@90: 0.007547
+2019-05-26 12:47:53,600 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:48:24,060 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:48:24,061 Training INFO: epoch: 2 step: 2000 time 0.556114 Loss_all: 0.483991
+2019-05-26 12:48:24,062 Training INFO: epoch: 2 step: 2000 Loss_cls: 0.211260 Loss_loc: 0.215732 Loss_dir: 0.056998
+2019-05-26 12:48:24,062 Training INFO: epoch: 2 step: 2000 Loc_elements x: 0.013608 y: 0.006525 z: 0.026730 w: 0.018150 h: 0.059533 l: 0.029115 angle: 0.062070
+2019-05-26 12:48:24,062 Training INFO: epoch: 2 step: 2000 Cls_elements cls_neg_rt: 0.059084 cls_pos_rt: 0.152177
+2019-05-26 12:48:24,062 Training INFO: epoch: 2 step: 2000 Auxiliraries num_voxels: 56392 num_pos: 71 num_neg: 70225 num_anchors: 70400 lr: 0.000235
+2019-05-26 12:48:24,062 Training INFO: epoch: 2 step: 2000 RpnAcc: 0.999527
+2019-05-26 12:48:24,062 Training INFO: epoch: 2 step: 2000 Prec prec@10: 0.122581 prec@30: 0.660079 prec@50: 0.926230 prec@70: 0.944444 prec@90: 1.000000
+2019-05-26 12:48:24,062 Training INFO: epoch: 2 step: 2000 Reca reca@10: 0.881857 reca@30: 0.704641 reca@50: 0.476793 reca@70: 0.215190 reca@90: 0.025316
+2019-05-26 12:48:24,063 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:48:56,200 3d-object-detection INFO: Using 1 GPUs
+2019-05-26 12:48:56,200 3d-object-detection INFO: Namespace(cfg='configs/car_fhd_kitti.yaml', distributed=False, local_rank=0, model_dir='kitti_output')
+2019-05-26 12:48:56,201 3d-object-detection INFO: Collecting env info (might take some time)
+2019-05-26 12:49:01,780 3d-object-detection INFO: 
+PyTorch version: 1.1.0
+Is debug build: No
+CUDA used to build PyTorch: 9.0.176
+
+OS: Ubuntu 16.04.6 LTS
+GCC version: (Ubuntu 5.4.0-6ubuntu1~16.04.11) 5.4.0 20160609
+CMake version: version 3.13.4
+
+Python version: 3.6
+Is CUDA available: Yes
+CUDA runtime version: 9.0.176
+GPU models and configuration: GPU 0: GeForce GTX 1080 Ti
+Nvidia driver version: 390.30
+cuDNN version: /unsullied/sharefs/_admin/cuda/cuda-9.0/cudnn/v7.4.1/lib64/libcudnn.so.7.4.1
+
+Versions of relevant libraries:
+[pip3] numpy==1.14.5
+[pip3] numpydoc==0.8.0
+[pip3] torch==1.1.0
+[pip3] torchvision==0.2.2.post3
+[conda] blas                      1.0                         mkl  
+[conda] mkl                       2018.0.2                      1  
+[conda] mkl-service               1.1.2            py36h17a0993_4  
+[conda] mkl_fft                   1.0.1            py36h3010b51_0  
+[conda] mkl_random                1.0.1            py36h629b387_0  
+[conda] torch                     1.1.0                    pypi_0    pypi
+[conda] torchvision               0.2.2.post3              pypi_0    pypi
+        Pillow (5.2.0)
+2019-05-26 12:49:01,781 3d-object-detection INFO: 
+local_rank: 0
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_num_voxels: 17000
+    train:
+        batch_size: 4
+        num_epochs: 120
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            shuffle: True
+            num_workers: 3
+            gt_location_noise: [1.0, 1.0, 0.5]
+            gt_rotation_noise: [-0.3141592654, 0.3141592654]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0, 0, 0]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+            db_sampler:
+                enable: True
+                db_info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/dbinfos_train.pkl"
+                db_preprocess_steps:
+                    filter_by_min_num_points:
+                        type: "filter_by_min_num_points"
+                        classes: ["Car",] 
+                        values: [5,]
+                    filter_by_difficulty:
+                        type: "filter_by_difficulty"
+                        value: [-1,]
+                global_random_rotation_range_per_object: [0, 0]
+                rate: 1.0
+                sample_groups:
+                     classes: ["Car",] 
+                     values: [15, ]
+
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_val.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 3
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        n_dim: 7
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [[1.6, 3.9, 1.56],]
+        anchor_dims: [7,]
+        anchor_ranges: [[0, -40.0, -1.0, 70.4, 40.0, -1.0],]
+        anchor_rotations: [[0, 1.57],]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["Car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+model:
+    encoder:
+        vfe:
+            type: "VoxelFeatureExtractorV3"
+            num_filters: [16,]
+            with_distance: False
+            num_input_features: 4
+        middle:
+            type: "SpMiddleFHD"
+            num_filters_down1: []
+            num_filters_down2: []
+            downsample_factor: 8
+            num_input_features: 4
+    decoder:
+        rpn:
+            type: "RPNV2"
+            layer_nums: [5, 5]
+            downsample_layer_strides: [1, 2]
+            downsample_num_filters: [128, 256]
+            upsample_layer_strides: [1, 2]
+            upsample_num_filters: [128, 128]
+            group_norm: False
+            num_groups: 32
+            num_input_features: 128
+        head:
+            tasks:
+                num_classes: [1]
+                class_names: [["car"],]
+            weights: [1,]
+        auxiliary:
+            use_direction_classifier: True
+            direction_offset: 0.0
+    post_process:
+        post_center_limit_range: [0, -40.0, -2.2, 70.4, 40.0, 0.8]
+        use_rotate_nms: True
+        use_multi_class_nms: False
+        nms_pre_max_size: 1000
+        nms_post_max_size: 100
+        nms_score_threshold: 0.3
+        nms_iou_threshold: 0.01
+
+    loss:
+        loss_scale_factor: -1
+        loss_norm_type: "NormByNumPositives"
+        pos_class_weight: 1.0
+        neg_class_weight: 1.0
+        use_sigmoid_score: True
+        encode_background_as_zeros: True
+        encode_rad_error_by_sin: True
+        classification_loss:
+            type: "weighted_sigmoid_focal"
+            value: 
+                alpha: 0.25
+                gamma: 2.0
+                anchorwise_output: True
+        localization_loss:
+            type: "weighted_smooth_l1"
+            value: 
+                sigma: 3.0
+                code_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+        classification_loss_weight: 1.0
+        localization_loss_weight: 1.0
+        direction_loss_weight: 0.2
+        rpn_thresholds: [0.1,0.3,0.5,0.7,0.8,0.9]
+
+optimizer:
+    type: "adam"
+    value: 
+        lr:
+            type: "one_cycle"
+            value: 
+                lr_max: 2.25e-3
+                moms: [0.95, 0.85]
+                div_factor: 10.0
+                pct_start: 0.4
+        amsgrad: 0.0
+        wd: 0.01
+    fixed_wd: True
+    moving_average: False
+
+2019-05-26 12:49:01,783 Training INFO: Enable db sampler: db_sampler
+2019-05-26 12:49:01,783 Training INFO: db_filter_by_min_num_points
+2019-05-26 12:49:01,783 Training INFO: db_filter_by_removed_difficulties
+2019-05-26 12:49:01,897 Training INFO: load 2207 Pedestrian database infos
+2019-05-26 12:49:01,897 Training INFO: load 14357 Car database infos
+2019-05-26 12:49:01,898 Training INFO: load 734 Cyclist database infos
+2019-05-26 12:49:01,898 Training INFO: load 1297 Van database infos
+2019-05-26 12:49:01,898 Training INFO: load 488 Truck database infos
+2019-05-26 12:49:01,898 Training INFO: load 224 Tram database infos
+2019-05-26 12:49:01,898 Training INFO: load 337 Misc database infos
+2019-05-26 12:49:01,898 Training INFO: load 56 Person_sitting database infos
+2019-05-26 12:49:01,927 Training INFO: After filter database:
+2019-05-26 12:49:01,927 Training INFO: load 2207 Pedestrian database infos
+2019-05-26 12:49:01,927 Training INFO: load 13442 Car database infos
+2019-05-26 12:49:01,927 Training INFO: load 734 Cyclist database infos
+2019-05-26 12:49:01,927 Training INFO: load 1297 Van database infos
+2019-05-26 12:49:01,927 Training INFO: load 488 Truck database infos
+2019-05-26 12:49:01,927 Training INFO: load 224 Tram database infos
+2019-05-26 12:49:01,927 Training INFO: load 337 Misc database infos
+2019-05-26 12:49:01,927 Training INFO: load 56 Person_sitting database infos
+2019-05-26 12:49:01,928 Training INFO: feature_map_size: [1, 200, 176]
+2019-05-26 12:49:02,110 Training INFO: 1 gpus for dataloader
+2019-05-26 12:49:02,111 Training INFO: feature_map_size: [1, 200, 176]
+2019-05-26 12:49:02,291 Training INFO: 1 gpus for dataloader
+2019-05-26 12:49:02,291 Training INFO: Using direction offset 0.000000 to fix aoe
+2019-05-26 12:49:02,292 Training INFO: Voxel Feature Encoder: VoxelFeatureExtractorV3
+2019-05-26 12:49:02,292 Training INFO: Middle class name: SpMiddleFHD
+2019-05-26 12:49:02,307 Training INFO: RPN class name: RPNV2
+2019-05-26 12:49:02,356 Training INFO: num_classes: [1]
+2019-05-26 12:49:02,356 Training INFO: num_preds: [14]
+2019-05-26 12:49:02,356 Training INFO: num_dirs: [4]
+2019-05-26 12:49:02,357 Training INFO: Finish RPNBase Initialization
+2019-05-26 12:49:02,358 Training INFO: Model Articutures: VoxelNet(
+  (_voxel_feature_extractor): VoxelFeatureExtractorV3()
+  (_middle_feature_extractor): SpMiddleFHD(
+    (middle_conv): SparseSequential(
+      (0): DefaultArgLayer()
+      (1): BatchNorm1d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): ReLU()
+      (3): DefaultArgLayer()
+      (4): BatchNorm1d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (5): ReLU()
+      (6): DefaultArgLayer()
+      (7): DefaultArgLayer(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (8): ReLU()
+      (9): DefaultArgLayer()
+      (10): DefaultArgLayer(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (11): ReLU()
+      (12): DefaultArgLayer()
+      (13): DefaultArgLayer(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (14): ReLU()
+      (15): DefaultArgLayer()
+      (16): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (17): ReLU()
+      (18): DefaultArgLayer()
+      (19): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (20): ReLU()
+      (21): DefaultArgLayer()
+      (22): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (23): ReLU()
+      (24): DefaultArgLayer()
+      (25): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (26): ReLU()
+      (27): DefaultArgLayer()
+      (28): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (29): ReLU()
+      (30): DefaultArgLayer()
+      (31): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (32): ReLU()
+      (33): DefaultArgLayer()
+      (34): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (35): ReLU()
+      (36): DefaultArgLayer()
+      (37): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (38): ReLU()
+      (39): DefaultArgLayer()
+      (40): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (41): ReLU()
+    )
+  )
+  (_rpn): RPNV2(
+    (blocks): ModuleList(
+      (0): Sequential(
+        (0): ZeroPad2d(padding=(1, 1, 1, 1), value=0.0)
+        (1): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), bias=False)
+        (2): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (3): ReLU()
+        (4): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (5): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (6): ReLU()
+        (7): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (8): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (9): ReLU()
+        (10): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (11): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (12): ReLU()
+        (13): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (14): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (15): ReLU()
+        (16): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (17): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (18): ReLU()
+      )
+      (1): Sequential(
+        (0): ZeroPad2d(padding=(1, 1, 1, 1), value=0.0)
+        (1): DefaultArgLayer(128, 256, kernel_size=(3, 3), stride=(2, 2), bias=False)
+        (2): DefaultArgLayer(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (3): ReLU()
+        (4): DefaultArgLayer(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (5): DefaultArgLayer(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (6): ReLU()
+        (7): DefaultArgLayer(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (8): DefaultArgLayer(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (9): ReLU()
+        (10): DefaultArgLayer(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (11): DefaultArgLayer(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (12): ReLU()
+        (13): DefaultArgLayer(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (14): DefaultArgLayer(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (15): ReLU()
+        (16): DefaultArgLayer(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (17): DefaultArgLayer(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (18): ReLU()
+      )
+    )
+    (deblocks): ModuleList(
+      (0): Sequential(
+        (0): DefaultArgLayer(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+      (1): Sequential(
+        (0): DefaultArgLayer(256, 128, kernel_size=(2, 2), stride=(2, 2), bias=False)
+        (1): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+    )
+    (tasks): ModuleList(
+      (0): RPNHead(
+        (conv_box): Conv2d(256, 14, kernel_size=(1, 1), stride=(1, 1))
+        (conv_cls): Conv2d(256, 2, kernel_size=(1, 1), stride=(1, 1))
+        (conv_dir): Conv2d(256, 4, kernel_size=(1, 1), stride=(1, 1))
+      )
+    )
+  )
+)
+2019-05-26 12:49:12,503 Training INFO: Training use Single-GPU
+2019-05-26 12:49:12,508 Training INFO: Loading checkpoint from kitti_output/model_epoch_001_step_001855.pth
+2019-05-26 12:49:12,647 Training INFO: Loading optimizer from kitti_output/model_epoch_001_step_001855.pth
+2019-05-26 12:49:12,714 Training INFO: extra arguments: {'iteration': 0, 'epoch': 0}
+2019-05-26 12:49:12,714 Training INFO: total training steps: 111360
+2019-05-26 12:49:19,484 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:49:19,487 Training INFO: epoch: 1 step: 0 time 6.770166 Loss_all: 0.542909
+2019-05-26 12:49:19,487 Training INFO: epoch: 1 step: 0 Loss_cls: 0.244855 Loss_loc: 0.216964 Loss_dir: 0.081090
+2019-05-26 12:49:19,488 Training INFO: epoch: 1 step: 0 Loc_elements x: 0.012898 y: 0.009341 z: 0.039638 w: 0.018771 h: 0.035757 l: 0.033006 angle: 0.067554
+2019-05-26 12:49:19,488 Training INFO: epoch: 1 step: 0 Cls_elements cls_neg_rt: 0.057471 cls_pos_rt: 0.187384
+2019-05-26 12:49:19,488 Training INFO: epoch: 1 step: 0 Auxiliraries num_voxels: 66573 num_pos: 58 num_neg: 70257 num_anchors: 70400 lr: 0.000225
+2019-05-26 12:49:19,488 Training INFO: epoch: 1 step: 0 RpnAcc: 0.999363
+2019-05-26 12:49:19,488 Training INFO: epoch: 1 step: 0 Prec prec@10: 0.100217 prec@30: 0.616667 prec@50: 0.954023 prec@70: 1.000000 prec@90: 1.000000
+2019-05-26 12:49:19,488 Training INFO: epoch: 1 step: 0 Reca reca@10: 0.895349 reca@30: 0.573643 reca@50: 0.321705 reca@70: 0.104651 reca@90: 0.003876
+2019-05-26 12:49:19,488 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:49:50,869 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:49:50,871 Training INFO: epoch: 1 step: 50 time 0.660380 Loss_all: 0.483337
+2019-05-26 12:49:50,872 Training INFO: epoch: 1 step: 50 Loss_cls: 0.186814 Loss_loc: 0.230167 Loss_dir: 0.066355
+2019-05-26 12:49:50,872 Training INFO: epoch: 1 step: 50 Loc_elements x: 0.017994 y: 0.014345 z: 0.036382 w: 0.020992 h: 0.036096 l: 0.043871 angle: 0.060488
+2019-05-26 12:49:50,872 Training INFO: epoch: 1 step: 50 Cls_elements cls_neg_rt: 0.046374 cls_pos_rt: 0.140440
+2019-05-26 12:49:50,872 Training INFO: epoch: 1 step: 50 Auxiliraries num_voxels: 66972 num_pos: 62 num_neg: 70231 num_anchors: 70400 lr: 0.000225
+2019-05-26 12:49:50,872 Training INFO: epoch: 1 step: 50 RpnAcc: 0.999470
+2019-05-26 12:49:50,872 Training INFO: epoch: 1 step: 50 Prec prec@10: 0.137594 prec@30: 0.721116 prec@50: 0.952000 prec@70: 1.000000 prec@90: 1.000000
+2019-05-26 12:49:50,873 Training INFO: epoch: 1 step: 50 Reca reca@10: 0.912214 reca@30: 0.690840 reca@50: 0.454198 reca@70: 0.244275 reca@90: 0.019084
+2019-05-26 12:49:50,873 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:50:21,681 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:50:21,683 Training INFO: epoch: 1 step: 100 time 0.597922 Loss_all: 0.475031
+2019-05-26 12:50:21,683 Training INFO: epoch: 1 step: 100 Loss_cls: 0.204888 Loss_loc: 0.217362 Loss_dir: 0.052781
+2019-05-26 12:50:21,683 Training INFO: epoch: 1 step: 100 Loc_elements x: 0.011763 y: 0.008324 z: 0.035661 w: 0.016199 h: 0.049980 l: 0.035187 angle: 0.060248
+2019-05-26 12:50:21,684 Training INFO: epoch: 1 step: 100 Cls_elements cls_neg_rt: 0.051187 cls_pos_rt: 0.153701
+2019-05-26 12:50:21,684 Training INFO: epoch: 1 step: 100 Auxiliraries num_voxels: 67637 num_pos: 54 num_neg: 70254 num_anchors: 70400 lr: 0.000225
+2019-05-26 12:50:21,684 Training INFO: epoch: 1 step: 100 RpnAcc: 0.999406
+2019-05-26 12:50:21,684 Training INFO: epoch: 1 step: 100 Prec prec@10: 0.117184 prec@30: 0.697872 prec@50: 0.925926 prec@70: 1.000000 prec@90: 1.000000
+2019-05-26 12:50:21,684 Training INFO: epoch: 1 step: 100 Reca reca@10: 0.918919 reca@30: 0.633205 reca@50: 0.386100 reca@70: 0.196911 reca@90: 0.019305
+2019-05-26 12:50:21,684 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:50:52,085 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:50:52,087 Training INFO: epoch: 1 step: 150 time 0.633783 Loss_all: 0.563215
+2019-05-26 12:50:52,088 Training INFO: epoch: 1 step: 150 Loss_cls: 0.256526 Loss_loc: 0.245700 Loss_dir: 0.060988
+2019-05-26 12:50:52,088 Training INFO: epoch: 1 step: 150 Loc_elements x: 0.015154 y: 0.006208 z: 0.035190 w: 0.021983 h: 0.048526 l: 0.024124 angle: 0.094514
+2019-05-26 12:50:52,088 Training INFO: epoch: 1 step: 150 Cls_elements cls_neg_rt: 0.050000 cls_pos_rt: 0.206526
+2019-05-26 12:50:52,088 Training INFO: epoch: 1 step: 150 Auxiliraries num_voxels: 66299 num_pos: 67 num_neg: 70229 num_anchors: 70400 lr: 0.000225
+2019-05-26 12:50:52,088 Training INFO: epoch: 1 step: 150 RpnAcc: 0.999267
+2019-05-26 12:50:52,088 Training INFO: epoch: 1 step: 150 Prec prec@10: 0.096480 prec@30: 0.664865 prec@50: 0.983051 prec@70: 1.000000 prec@90: 0.000000
+2019-05-26 12:50:52,088 Training INFO: epoch: 1 step: 150 Reca reca@10: 0.885932 reca@30: 0.467681 reca@50: 0.220532 reca@70: 0.060837 reca@90: 0.000000
+2019-05-26 12:50:52,089 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:51:22,304 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:51:22,306 Training INFO: epoch: 1 step: 200 time 0.610361 Loss_all: 0.500073
+2019-05-26 12:51:22,306 Training INFO: epoch: 1 step: 200 Loss_cls: 0.235936 Loss_loc: 0.206121 Loss_dir: 0.058017
+2019-05-26 12:51:22,307 Training INFO: epoch: 1 step: 200 Loc_elements x: 0.011318 y: 0.007071 z: 0.038444 w: 0.017620 h: 0.031048 l: 0.036306 angle: 0.064314
+2019-05-26 12:51:22,307 Training INFO: epoch: 1 step: 200 Cls_elements cls_neg_rt: 0.086058 cls_pos_rt: 0.149878
+2019-05-26 12:51:22,307 Training INFO: epoch: 1 step: 200 Auxiliraries num_voxels: 65886 num_pos: 68 num_neg: 70225 num_anchors: 70400 lr: 0.000225
+2019-05-26 12:51:22,307 Training INFO: epoch: 1 step: 200 RpnAcc: 0.999452
+2019-05-26 12:51:22,307 Training INFO: epoch: 1 step: 200 Prec prec@10: 0.089069 prec@30: 0.524590 prec@50: 0.901786 prec@70: 0.981818 prec@90: 1.000000
+2019-05-26 12:51:22,307 Training INFO: epoch: 1 step: 200 Reca reca@10: 0.901639 reca@30: 0.655738 reca@50: 0.413934 reca@70: 0.221311 reca@90: 0.036885
+2019-05-26 12:51:22,307 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:51:53,284 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:51:53,286 Training INFO: epoch: 1 step: 250 time 0.571855 Loss_all: 0.557277
+2019-05-26 12:51:53,286 Training INFO: epoch: 1 step: 250 Loss_cls: 0.247237 Loss_loc: 0.224521 Loss_dir: 0.085519
+2019-05-26 12:51:53,286 Training INFO: epoch: 1 step: 250 Loc_elements x: 0.009405 y: 0.007382 z: 0.062263 w: 0.015443 h: 0.029635 l: 0.026991 angle: 0.073403
+2019-05-26 12:51:53,286 Training INFO: epoch: 1 step: 250 Cls_elements cls_neg_rt: 0.069278 cls_pos_rt: 0.177958
+2019-05-26 12:51:53,286 Training INFO: epoch: 1 step: 250 Auxiliraries num_voxels: 65553 num_pos: 54 num_neg: 70255 num_anchors: 70400 lr: 0.000225
+2019-05-26 12:51:53,286 Training INFO: epoch: 1 step: 250 RpnAcc: 0.999410
+2019-05-26 12:51:53,286 Training INFO: epoch: 1 step: 250 Prec prec@10: 0.109164 prec@30: 0.554817 prec@50: 0.876106 prec@70: 0.973684 prec@90: 1.000000
+2019-05-26 12:51:53,286 Training INFO: epoch: 1 step: 250 Reca reca@10: 0.868526 reca@30: 0.665339 reca@50: 0.394422 reca@70: 0.147410 reca@90: 0.023904
+2019-05-26 12:51:53,286 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:52:23,776 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:52:23,778 Training INFO: epoch: 1 step: 300 time 0.532515 Loss_all: 0.483974
+2019-05-26 12:52:23,778 Training INFO: epoch: 1 step: 300 Loss_cls: 0.213903 Loss_loc: 0.199147 Loss_dir: 0.070924
+2019-05-26 12:52:23,778 Training INFO: epoch: 1 step: 300 Loc_elements x: 0.010935 y: 0.011227 z: 0.037549 w: 0.011922 h: 0.036913 l: 0.030562 angle: 0.060039
+2019-05-26 12:52:23,778 Training INFO: epoch: 1 step: 300 Cls_elements cls_neg_rt: 0.061654 cls_pos_rt: 0.152249
+2019-05-26 12:52:23,779 Training INFO: epoch: 1 step: 300 Auxiliraries num_voxels: 67980 num_pos: 68 num_neg: 70213 num_anchors: 70400 lr: 0.000225
+2019-05-26 12:52:23,779 Training INFO: epoch: 1 step: 300 RpnAcc: 0.999435
+2019-05-26 12:52:23,779 Training INFO: epoch: 1 step: 300 Prec prec@10: 0.123994 prec@30: 0.613240 prec@50: 0.913043 prec@70: 0.964912 prec@90: 1.000000
+2019-05-26 12:52:23,779 Training INFO: epoch: 1 step: 300 Reca reca@10: 0.909449 reca@30: 0.692913 reca@50: 0.413386 reca@70: 0.216535 reca@90: 0.035433
+2019-05-26 12:52:23,779 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:52:53,453 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:52:53,454 Training INFO: epoch: 1 step: 350 time 0.595210 Loss_all: 0.436259
+2019-05-26 12:52:53,455 Training INFO: epoch: 1 step: 350 Loss_cls: 0.199344 Loss_loc: 0.187411 Loss_dir: 0.049504
+2019-05-26 12:52:53,455 Training INFO: epoch: 1 step: 350 Loc_elements x: 0.009424 y: 0.006835 z: 0.023444 w: 0.017573 h: 0.035380 l: 0.037719 angle: 0.057037
+2019-05-26 12:52:53,455 Training INFO: epoch: 1 step: 350 Cls_elements cls_neg_rt: 0.060403 cls_pos_rt: 0.138941
+2019-05-26 12:52:53,455 Training INFO: epoch: 1 step: 350 Auxiliraries num_voxels: 66671 num_pos: 70 num_neg: 70224 num_anchors: 70400 lr: 0.000225
+2019-05-26 12:52:53,455 Training INFO: epoch: 1 step: 350 RpnAcc: 0.999395
+2019-05-26 12:52:53,456 Training INFO: epoch: 1 step: 350 Prec prec@10: 0.133825 prec@30: 0.627586 prec@50: 0.888889 prec@70: 1.000000 prec@90: 1.000000
+2019-05-26 12:52:53,456 Training INFO: epoch: 1 step: 350 Reca reca@10: 0.947761 reca@30: 0.679105 reca@50: 0.417910 reca@70: 0.164179 reca@90: 0.003731
+2019-05-26 12:52:53,456 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:53:23,891 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:53:23,893 Training INFO: epoch: 1 step: 400 time 0.561536 Loss_all: 0.440462
+2019-05-26 12:53:23,893 Training INFO: epoch: 1 step: 400 Loss_cls: 0.169914 Loss_loc: 0.212355 Loss_dir: 0.058193
+2019-05-26 12:53:23,893 Training INFO: epoch: 1 step: 400 Loc_elements x: 0.007530 y: 0.007994 z: 0.030577 w: 0.020756 h: 0.034351 l: 0.042478 angle: 0.068670
+2019-05-26 12:53:23,894 Training INFO: epoch: 1 step: 400 Cls_elements cls_neg_rt: 0.030618 cls_pos_rt: 0.139296
+2019-05-26 12:53:23,894 Training INFO: epoch: 1 step: 400 Auxiliraries num_voxels: 62356 num_pos: 60 num_neg: 70233 num_anchors: 70400 lr: 0.000225
+2019-05-26 12:53:23,894 Training INFO: epoch: 1 step: 400 RpnAcc: 0.999356
+2019-05-26 12:53:23,894 Training INFO: epoch: 1 step: 400 Prec prec@10: 0.213457 prec@30: 0.782609 prec@50: 0.949580 prec@70: 1.000000 prec@90: 1.000000
+2019-05-26 12:53:23,894 Training INFO: epoch: 1 step: 400 Reca reca@10: 0.958333 reca@30: 0.625000 reca@50: 0.392361 reca@70: 0.229167 reca@90: 0.024306
+2019-05-26 12:53:23,894 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:53:54,379 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:53:54,381 Training INFO: epoch: 1 step: 450 time 0.613692 Loss_all: 0.416580
+2019-05-26 12:53:54,382 Training INFO: epoch: 1 step: 450 Loss_cls: 0.190087 Loss_loc: 0.173396 Loss_dir: 0.053097
+2019-05-26 12:53:54,382 Training INFO: epoch: 1 step: 450 Loc_elements x: 0.009187 y: 0.005873 z: 0.042575 w: 0.016549 h: 0.029756 l: 0.023759 angle: 0.045696
+2019-05-26 12:53:54,382 Training INFO: epoch: 1 step: 450 Cls_elements cls_neg_rt: 0.036988 cls_pos_rt: 0.153099
+2019-05-26 12:53:54,382 Training INFO: epoch: 1 step: 450 Auxiliraries num_voxels: 68000 num_pos: 56 num_neg: 70266 num_anchors: 70400 lr: 0.000226
+2019-05-26 12:53:54,382 Training INFO: epoch: 1 step: 450 RpnAcc: 0.999474
+2019-05-26 12:53:54,382 Training INFO: epoch: 1 step: 450 Prec prec@10: 0.131729 prec@30: 0.786070 prec@50: 0.977012 prec@70: 1.000000 prec@90: 0.000000
+2019-05-26 12:53:54,382 Training INFO: epoch: 1 step: 450 Reca reca@10: 0.900433 reca@30: 0.683983 reca@50: 0.367965 reca@70: 0.116883 reca@90: 0.000000
+2019-05-26 12:53:54,382 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:54:25,011 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:54:25,013 Training INFO: epoch: 1 step: 500 time 0.561477 Loss_all: 0.495814
+2019-05-26 12:54:25,013 Training INFO: epoch: 1 step: 500 Loss_cls: 0.212769 Loss_loc: 0.224563 Loss_dir: 0.058481
+2019-05-26 12:54:25,013 Training INFO: epoch: 1 step: 500 Loc_elements x: 0.013363 y: 0.006440 z: 0.044187 w: 0.020931 h: 0.037661 l: 0.023880 angle: 0.078101
+2019-05-26 12:54:25,014 Training INFO: epoch: 1 step: 500 Cls_elements cls_neg_rt: 0.027434 cls_pos_rt: 0.185335
+2019-05-26 12:54:25,014 Training INFO: epoch: 1 step: 500 Auxiliraries num_voxels: 63793 num_pos: 75 num_neg: 70208 num_anchors: 70400 lr: 0.000226
+2019-05-26 12:54:25,014 Training INFO: epoch: 1 step: 500 RpnAcc: 0.999431
+2019-05-26 12:54:25,014 Training INFO: epoch: 1 step: 500 Prec prec@10: 0.171799 prec@30: 0.824561 prec@50: 0.986842 prec@70: 1.000000 prec@90: 1.000000
+2019-05-26 12:54:25,014 Training INFO: epoch: 1 step: 500 Reca reca@10: 0.905983 reca@30: 0.602564 reca@50: 0.320513 reca@70: 0.081197 reca@90: 0.004274
+2019-05-26 12:54:25,014 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:54:55,959 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:54:55,961 Training INFO: epoch: 1 step: 550 time 0.573128 Loss_all: 0.504248
+2019-05-26 12:54:55,961 Training INFO: epoch: 1 step: 550 Loss_cls: 0.242331 Loss_loc: 0.192723 Loss_dir: 0.069193
+2019-05-26 12:54:55,961 Training INFO: epoch: 1 step: 550 Loc_elements x: 0.006236 y: 0.007984 z: 0.025646 w: 0.018642 h: 0.038991 l: 0.032125 angle: 0.063099
+2019-05-26 12:54:55,961 Training INFO: epoch: 1 step: 550 Cls_elements cls_neg_rt: 0.055416 cls_pos_rt: 0.186915
+2019-05-26 12:54:55,961 Training INFO: epoch: 1 step: 550 Auxiliraries num_voxels: 65923 num_pos: 69 num_neg: 70235 num_anchors: 70400 lr: 0.000226
+2019-05-26 12:54:55,961 Training INFO: epoch: 1 step: 550 RpnAcc: 0.999342
+2019-05-26 12:54:55,962 Training INFO: epoch: 1 step: 550 Prec prec@10: 0.121651 prec@30: 0.606870 prec@50: 0.895833 prec@70: 1.000000 prec@90: 0.000000
+2019-05-26 12:54:55,962 Training INFO: epoch: 1 step: 550 Reca reca@10: 0.869732 reca@30: 0.609195 reca@50: 0.329502 reca@70: 0.134100 reca@90: 0.000000
+2019-05-26 12:54:55,962 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:55:26,338 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:55:26,340 Training INFO: epoch: 1 step: 600 time 0.585249 Loss_all: 0.468465
+2019-05-26 12:55:26,341 Training INFO: epoch: 1 step: 600 Loss_cls: 0.201855 Loss_loc: 0.215459 Loss_dir: 0.051150
+2019-05-26 12:55:26,341 Training INFO: epoch: 1 step: 600 Loc_elements x: 0.007910 y: 0.008061 z: 0.031825 w: 0.031482 h: 0.030210 l: 0.032214 angle: 0.073759
+2019-05-26 12:55:26,341 Training INFO: epoch: 1 step: 600 Cls_elements cls_neg_rt: 0.043572 cls_pos_rt: 0.158283
+2019-05-26 12:55:26,341 Training INFO: epoch: 1 step: 600 Auxiliraries num_voxels: 61677 num_pos: 72 num_neg: 70227 num_anchors: 70400 lr: 0.000226
+2019-05-26 12:55:26,341 Training INFO: epoch: 1 step: 600 RpnAcc: 0.999417
+2019-05-26 12:55:26,341 Training INFO: epoch: 1 step: 600 Prec prec@10: 0.139481 prec@30: 0.739130 prec@50: 0.957627 prec@70: 0.977273 prec@90: 1.000000
+2019-05-26 12:55:26,341 Training INFO: epoch: 1 step: 600 Reca reca@10: 0.889706 reca@30: 0.687500 reca@50: 0.415441 reca@70: 0.158088 reca@90: 0.007353
+2019-05-26 12:55:26,341 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:55:56,781 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:55:56,783 Training INFO: epoch: 1 step: 650 time 0.621155 Loss_all: 0.418103
+2019-05-26 12:55:56,783 Training INFO: epoch: 1 step: 650 Loss_cls: 0.171268 Loss_loc: 0.196386 Loss_dir: 0.050448
+2019-05-26 12:55:56,783 Training INFO: epoch: 1 step: 650 Loc_elements x: 0.008797 y: 0.004870 z: 0.039028 w: 0.015843 h: 0.034520 l: 0.025181 angle: 0.068148
+2019-05-26 12:55:56,783 Training INFO: epoch: 1 step: 650 Cls_elements cls_neg_rt: 0.049576 cls_pos_rt: 0.121693
+2019-05-26 12:55:56,783 Training INFO: epoch: 1 step: 650 Auxiliraries num_voxels: 67690 num_pos: 71 num_neg: 70223 num_anchors: 70400 lr: 0.000226
+2019-05-26 12:55:56,784 Training INFO: epoch: 1 step: 650 RpnAcc: 0.999463
+2019-05-26 12:55:56,784 Training INFO: epoch: 1 step: 650 Prec prec@10: 0.113595 prec@30: 0.761364 prec@50: 0.923077 prec@70: 1.000000 prec@90: 1.000000
+2019-05-26 12:55:56,784 Training INFO: epoch: 1 step: 650 Reca reca@10: 0.915441 reca@30: 0.738971 reca@50: 0.485294 reca@70: 0.264706 reca@90: 0.014706
+2019-05-26 12:55:56,784 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:56:27,514 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:56:27,516 Training INFO: epoch: 1 step: 700 time 0.644999 Loss_all: 0.408399
+2019-05-26 12:56:27,517 Training INFO: epoch: 1 step: 700 Loss_cls: 0.176040 Loss_loc: 0.193070 Loss_dir: 0.039289
+2019-05-26 12:56:27,517 Training INFO: epoch: 1 step: 700 Loc_elements x: 0.012056 y: 0.009828 z: 0.025638 w: 0.021695 h: 0.032589 l: 0.032968 angle: 0.058296
+2019-05-26 12:56:27,517 Training INFO: epoch: 1 step: 700 Cls_elements cls_neg_rt: 0.045405 cls_pos_rt: 0.130634
+2019-05-26 12:56:27,517 Training INFO: epoch: 1 step: 700 Auxiliraries num_voxels: 65907 num_pos: 61 num_neg: 70255 num_anchors: 70400 lr: 0.000226
+2019-05-26 12:56:27,517 Training INFO: epoch: 1 step: 700 RpnAcc: 0.999424
+2019-05-26 12:56:27,517 Training INFO: epoch: 1 step: 700 Prec prec@10: 0.123950 prec@30: 0.728033 prec@50: 0.966292 prec@70: 1.000000 prec@90: 1.000000
+2019-05-26 12:56:27,518 Training INFO: epoch: 1 step: 700 Reca reca@10: 0.963265 reca@30: 0.710204 reca@50: 0.351020 reca@70: 0.093878 reca@90: 0.004082
+2019-05-26 12:56:27,518 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:56:57,837 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:56:57,839 Training INFO: epoch: 1 step: 750 time 0.577463 Loss_all: 0.459475
+2019-05-26 12:56:57,840 Training INFO: epoch: 1 step: 750 Loss_cls: 0.210490 Loss_loc: 0.185235 Loss_dir: 0.063750
+2019-05-26 12:56:57,840 Training INFO: epoch: 1 step: 750 Loc_elements x: 0.007631 y: 0.004487 z: 0.024368 w: 0.015664 h: 0.036538 l: 0.040480 angle: 0.056066
+2019-05-26 12:56:57,840 Training INFO: epoch: 1 step: 750 Cls_elements cls_neg_rt: 0.067073 cls_pos_rt: 0.143417
+2019-05-26 12:56:57,840 Training INFO: epoch: 1 step: 750 Auxiliraries num_voxels: 61888 num_pos: 71 num_neg: 70222 num_anchors: 70400 lr: 0.000226
+2019-05-26 12:56:57,840 Training INFO: epoch: 1 step: 750 RpnAcc: 0.999456
+2019-05-26 12:56:57,840 Training INFO: epoch: 1 step: 750 Prec prec@10: 0.110161 prec@30: 0.639706 prec@50: 0.896825 prec@70: 0.938776 prec@90: 1.000000
+2019-05-26 12:56:57,840 Training INFO: epoch: 1 step: 750 Reca reca@10: 0.916996 reca@30: 0.687747 reca@50: 0.446640 reca@70: 0.181818 reca@90: 0.023715
+2019-05-26 12:56:57,840 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:57:28,594 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:57:28,599 Training INFO: epoch: 1 step: 800 time 0.644770 Loss_all: 0.426933
+2019-05-26 12:57:28,599 Training INFO: epoch: 1 step: 800 Loss_cls: 0.193121 Loss_loc: 0.161619 Loss_dir: 0.072193
+2019-05-26 12:57:28,599 Training INFO: epoch: 1 step: 800 Loc_elements x: 0.006867 y: 0.006631 z: 0.025724 w: 0.013076 h: 0.028234 l: 0.026312 angle: 0.054775
+2019-05-26 12:57:28,599 Training INFO: epoch: 1 step: 800 Cls_elements cls_neg_rt: 0.054455 cls_pos_rt: 0.138666
+2019-05-26 12:57:28,600 Training INFO: epoch: 1 step: 800 Auxiliraries num_voxels: 63973 num_pos: 73 num_neg: 70214 num_anchors: 70400 lr: 0.000227
+2019-05-26 12:57:28,600 Training INFO: epoch: 1 step: 800 RpnAcc: 0.999538
+2019-05-26 12:57:28,600 Training INFO: epoch: 1 step: 800 Prec prec@10: 0.131980 prec@30: 0.610759 prec@50: 0.950704 prec@70: 1.000000 prec@90: 1.000000
+2019-05-26 12:57:28,600 Training INFO: epoch: 1 step: 800 Reca reca@10: 0.906977 reca@30: 0.748062 reca@50: 0.523256 reca@70: 0.259690 reca@90: 0.031008
+2019-05-26 12:57:28,600 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:57:59,673 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:57:59,675 Training INFO: epoch: 1 step: 850 time 0.602372 Loss_all: 0.482369
+2019-05-26 12:57:59,675 Training INFO: epoch: 1 step: 850 Loss_cls: 0.241328 Loss_loc: 0.191880 Loss_dir: 0.049160
+2019-05-26 12:57:59,675 Training INFO: epoch: 1 step: 850 Loc_elements x: 0.010093 y: 0.005586 z: 0.044354 w: 0.024712 h: 0.032991 l: 0.025764 angle: 0.048380
+2019-05-26 12:57:59,675 Training INFO: epoch: 1 step: 850 Cls_elements cls_neg_rt: 0.055644 cls_pos_rt: 0.185684
+2019-05-26 12:57:59,675 Training INFO: epoch: 1 step: 850 Auxiliraries num_voxels: 64753 num_pos: 56 num_neg: 70238 num_anchors: 70400 lr: 0.000227
+2019-05-26 12:57:59,675 Training INFO: epoch: 1 step: 850 RpnAcc: 0.999509
+2019-05-26 12:57:59,675 Training INFO: epoch: 1 step: 850 Prec prec@10: 0.113769 prec@30: 0.657258 prec@50: 0.949580 prec@70: 1.000000 prec@90: 1.000000
+2019-05-26 12:57:59,676 Training INFO: epoch: 1 step: 850 Reca reca@10: 0.873469 reca@30: 0.665306 reca@50: 0.461224 reca@70: 0.175510 reca@90: 0.008163
+2019-05-26 12:57:59,676 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:58:30,380 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 12:58:30,382 Training INFO: epoch: 1 step: 900 time 0.612970 Loss_all: 0.454711
+2019-05-26 12:58:30,383 Training INFO: epoch: 1 step: 900 Loss_cls: 0.226830 Loss_loc: 0.200723 Loss_dir: 0.027158
+2019-05-26 12:58:30,383 Training INFO: epoch: 1 step: 900 Loc_elements x: 0.009243 y: 0.006341 z: 0.023439 w: 0.022945 h: 0.037328 l: 0.031100 angle: 0.070328
+2019-05-26 12:58:30,383 Training INFO: epoch: 1 step: 900 Cls_elements cls_neg_rt: 0.089067 cls_pos_rt: 0.137763
+2019-05-26 12:58:30,383 Training INFO: epoch: 1 step: 900 Auxiliraries num_voxels: 61249 num_pos: 68 num_neg: 70216 num_anchors: 70400 lr: 0.000227
+2019-05-26 12:58:30,383 Training INFO: epoch: 1 step: 900 RpnAcc: 0.999502
+2019-05-26 12:58:30,384 Training INFO: epoch: 1 step: 900 Prec prec@10: 0.104518 prec@30: 0.514950 prec@50: 0.844037 prec@70: 0.916667 prec@90: 1.000000
+2019-05-26 12:58:30,384 Training INFO: epoch: 1 step: 900 Reca reca@10: 0.893023 reca@30: 0.720930 reca@50: 0.427907 reca@70: 0.204651 reca@90: 0.018605
+2019-05-26 12:58:30,384 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 12:58:46,738 Training INFO: model_epoch_001_step_000927
+2019-05-26 12:58:46,740 Training INFO: Saving checkpoint to kitti_output/model_epoch_001_step_000927.pth
+2019-05-26 12:58:46,925 Training INFO: Finish epoch 1, start eval ...
+2019-05-26 12:58:46,926 Training INFO: Start evaluation on dataset for 3769 samples.
+2019-05-26 13:06:28,884 Training INFO: Evaluation official: car AP(Average Precision)@0.70, 0.70, 0.70:
+bbox AP:87.78, 77.16, 75.80
+bev  AP:85.85, 76.22, 74.60
+3d   AP:57.38, 49.34, 47.30
+aos  AP:85.14, 72.47, 69.86
+car AP(Average Precision)@0.70, 0.50, 0.50:
+bbox AP:87.78, 77.16, 75.80
+bev  AP:90.31, 87.16, 86.04
+3d   AP:90.03, 85.90, 84.64
+aos  AP:85.14, 72.47, 69.86
+
+2019-05-26 13:06:28,887 Training INFO: Evaluation coco: car coco AP@0.50:0.05:0.95:
+bbox AP:59.86, 56.05, 54.50
+bev  AP:58.01, 54.07, 52.54
+3d   AP:43.56, 39.66, 38.58
+aos  AP:58.12, 52.02, 49.60
+
+2019-05-26 13:06:49,686 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 13:06:49,689 Training INFO: epoch: 2 step: 950 time 0.681439 Loss_all: 0.383232
+2019-05-26 13:06:49,689 Training INFO: epoch: 2 step: 950 Loss_cls: 0.179475 Loss_loc: 0.162010 Loss_dir: 0.041748
+2019-05-26 13:06:49,690 Training INFO: epoch: 2 step: 950 Loc_elements x: 0.007834 y: 0.006900 z: 0.024176 w: 0.011726 h: 0.028314 l: 0.028751 angle: 0.054309
+2019-05-26 13:06:49,690 Training INFO: epoch: 2 step: 950 Cls_elements cls_neg_rt: 0.041727 cls_pos_rt: 0.137748
+2019-05-26 13:06:49,690 Training INFO: epoch: 2 step: 950 Auxiliraries num_voxels: 66736 num_pos: 73 num_neg: 70227 num_anchors: 70400 lr: 0.000227
+2019-05-26 13:06:49,690 Training INFO: epoch: 2 step: 950 RpnAcc: 0.999545
+2019-05-26 13:06:49,690 Training INFO: epoch: 2 step: 950 Prec prec@10: 0.174944 prec@30: 0.713178 prec@50: 0.922078 prec@70: 1.000000 prec@90: 1.000000
+2019-05-26 13:06:49,690 Training INFO: epoch: 2 step: 950 Reca reca@10: 0.914729 reca@30: 0.713178 reca@50: 0.550388 reca@70: 0.333333 reca@90: 0.019380
+2019-05-26 13:06:49,690 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 13:07:20,361 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 13:07:20,363 Training INFO: epoch: 2 step: 1000 time 0.611178 Loss_all: 0.454601
+2019-05-26 13:07:20,363 Training INFO: epoch: 2 step: 1000 Loss_cls: 0.186800 Loss_loc: 0.211086 Loss_dir: 0.056715
+2019-05-26 13:07:20,363 Training INFO: epoch: 2 step: 1000 Loc_elements x: 0.012990 y: 0.014064 z: 0.031465 w: 0.026994 h: 0.035790 l: 0.027367 angle: 0.062417
+2019-05-26 13:07:20,363 Training INFO: epoch: 2 step: 1000 Cls_elements cls_neg_rt: 0.075176 cls_pos_rt: 0.111625
+2019-05-26 13:07:20,364 Training INFO: epoch: 2 step: 1000 Auxiliraries num_voxels: 64841 num_pos: 53 num_neg: 70260 num_anchors: 70400 lr: 0.000228
+2019-05-26 13:07:20,364 Training INFO: epoch: 2 step: 1000 RpnAcc: 0.999545
+2019-05-26 13:07:20,364 Training INFO: epoch: 2 step: 1000 Prec prec@10: 0.110036 prec@30: 0.597270 prec@50: 0.861314 prec@70: 1.000000 prec@90: 1.000000
+2019-05-26 13:07:20,364 Training INFO: epoch: 2 step: 1000 Reca reca@10: 0.951542 reca@30: 0.770925 reca@50: 0.519824 reca@70: 0.286344 reca@90: 0.052863
+2019-05-26 13:07:20,364 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 13:07:50,953 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 13:07:50,955 Training INFO: epoch: 2 step: 1050 time 0.575272 Loss_all: 0.388490
+2019-05-26 13:07:50,955 Training INFO: epoch: 2 step: 1050 Loss_cls: 0.156327 Loss_loc: 0.176587 Loss_dir: 0.055576
+2019-05-26 13:07:50,956 Training INFO: epoch: 2 step: 1050 Loc_elements x: 0.008737 y: 0.005507 z: 0.019799 w: 0.014889 h: 0.034156 l: 0.034092 angle: 0.059407
+2019-05-26 13:07:50,956 Training INFO: epoch: 2 step: 1050 Cls_elements cls_neg_rt: 0.041752 cls_pos_rt: 0.114574
+2019-05-26 13:07:50,956 Training INFO: epoch: 2 step: 1050 Auxiliraries num_voxels: 65430 num_pos: 57 num_neg: 70258 num_anchors: 70400 lr: 0.000228
+2019-05-26 13:07:50,956 Training INFO: epoch: 2 step: 1050 RpnAcc: 0.999513
+2019-05-26 13:07:50,956 Training INFO: epoch: 2 step: 1050 Prec prec@10: 0.137804 prec@30: 0.727612 prec@50: 0.952703 prec@70: 1.000000 prec@90: 1.000000
+2019-05-26 13:07:50,956 Training INFO: epoch: 2 step: 1050 Reca reca@10: 0.963100 reca@30: 0.719557 reca@50: 0.520295 reca@70: 0.291513 reca@90: 0.014760
+2019-05-26 13:07:50,956 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-26 13:08:21,565 Training INFO: Metrics for task: ['Car'], saved to: kitti_output
+2019-05-26 13:08:21,567 Training INFO: epoch: 2 step: 1100 time 0.553699 Loss_all: 0.470065
+2019-05-26 13:08:21,567 Training INFO: epoch: 2 step: 1100 Loss_cls: 0.231259 Loss_loc: 0.189039 Loss_dir: 0.049767
+2019-05-26 13:08:21,567 Training INFO: epoch: 2 step: 1100 Loc_elements x: 0.007667 y: 0.007571 z: 0.018005 w: 0.020682 h: 0.029755 l: 0.041734 angle: 0.063626
+2019-05-26 13:08:21,567 Training INFO: epoch: 2 step: 1100 Cls_elements cls_neg_rt: 0.053086 cls_pos_rt: 0.178173
+2019-05-26 13:08:21,567 Training INFO: epoch: 2 step: 1100 Auxiliraries num_voxels: 63006 num_pos: 53 num_neg: 70272 num_anchors: 70400 lr: 0.000228
+2019-05-26 13:08:21,568 Training INFO: epoch: 2 step: 1100 RpnAcc: 0.999417
+2019-05-26 13:08:21,568 Training INFO: epoch: 2 step: 1100 Prec prec@10: 0.142669 prec@30: 0.591549 prec@50: 0.891304 prec@70: 1.000000 prec@90: 1.000000
+2019-05-26 13:08:21,568 Training INFO: epoch: 2 step: 1100 Reca reca@10: 0.919492 reca@30: 0.533898 reca@50: 0.347458 reca@70: 0.139831 reca@90: 0.016949
+2019-05-26 13:08:21,568 Training INFO: -------------------------------------------------------------------------------------------------------------------

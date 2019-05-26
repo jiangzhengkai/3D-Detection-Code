@@ -24,8 +24,8 @@ from lib.utils.dist_common import synchronize
 from lib.utils.checkpoint import Det3DCheckpointer
 
 from apex import parallel
-def train(config, logger=None, distributed=False):
-    logger = setup_logger("Training", config.output_dir, get_rank())    
+def train(config, logger=None, model_dir=None, distributed=False):
+    logger = setup_logger("Training", model_dir, get_rank())    
 
     ####### dataloader #######
     train_dataloader = build_dataloader(config, training=True, logger=logger)
@@ -33,32 +33,6 @@ def train(config, logger=None, distributed=False):
 
     ####### build network ######
     model = build_network(config, logger=logger)
-
-    ####### optimizer #######
-    optimizer = build_optimizer(config, model)
-
-    ####### checkpoint #######
-    save_to_disk = get_rank() == 0
-    arguments = {}
-    arguments["iteration"] = 0
-    arguments["epoch"] = 0
-    model_dir = config.output_dir
-    checkpoint = Det3DCheckpointer(model, 
-                                   optimizer=optimizer,
-                                   save_dir=model_dir,
-                                   save_to_disk=save_to_disk,
-                                   logger=logger)
-
-    arguments.update(checkpoint.load())
-    logger.info(f"extra arguments: {arguments}")
-    num_epochs = config.input.train.num_epochs
-    num_gpus = int(os.environ["WORLD_SIZE"]) if "WORLD_SIZE" in os.environ else 1
-    
-    total_steps = int(num_epochs * len(train_dataloader.dataset) / (config.input.train.batch_size * num_gpus))
-    logger.info("total training steps: %s" %(total_steps))
-
-    lr_scheduler = build_lr_scheduler(config, optimizer, total_steps)
-    
     device = torch.device('cuda')
     logger.info("Model Articutures: %s"%(model))
     if distributed:
@@ -74,12 +48,37 @@ def train(config, logger=None, distributed=False):
     else:
         net_module = model.to(device)
         logger.info("Training use Single-GPU")
+
+    ####### optimizer #######
+    optimizer = build_optimizer(config, net_module)
+
+    ####### checkpoint #######
+    save_to_disk = get_rank() == 0
+    arguments = {}
+    arguments["iteration"] = 0
+    arguments["epoch"] = 0
+    checkpoint = Det3DCheckpointer(net_module, 
+                                   optimizer=optimizer,
+                                   save_dir=model_dir,
+                                   save_to_disk=save_to_disk,
+                                   logger=logger)
+
+    arguments.update(checkpoint.load())
+    logger.info(f"extra arguments: {arguments}")
+    num_epochs = config.input.train.num_epochs
+    num_gpus = int(os.environ["WORLD_SIZE"]) if "WORLD_SIZE" in os.environ else 1
+    
+    total_steps = int(num_epochs * len(train_dataloader.dataset) / (config.input.train.batch_size * num_gpus))
+    logger.info("total training steps: %s" %(total_steps))
+
+    lr_scheduler = build_lr_scheduler(config, optimizer, total_steps)
+    
     # num_classes 
     target_assigners = target_assigners_all_classes(config)
     num_classes = [len(target_assigner.classes) for target_assigner in target_assigners]
     class_names = [target_assigner.classes for target_assigner in target_assigners]
     t = time.time()
-    for epoch in range(arguments["epoch"]+1, num_epochs):
+    for epoch in range(arguments["epoch"]+1, num_epochs+1):
         arguments["epoch"] = epoch
         for i, data_batch in enumerate(train_dataloader):
             ######## data_device ########
@@ -96,7 +95,7 @@ def train(config, logger=None, distributed=False):
             #### reg_targets: [batch_size x num_anchors x 7]
             #### reg_weights: [batch_size x num_anchors]
             #### meta_data: [dict_0, dict_1, ... dict_batch_size]
-            step = int(epoch * len(train_dataloader.dataset) / (num_gpus * config.input.train.batch_size)) + i
+            step = int((epoch-1) * len(train_dataloader.dataset) / (num_gpus * config.input.train.batch_size)) + i
             lr_scheduler.step(step)
             arguments["iteration"] += 1
              
@@ -206,7 +205,7 @@ def train(config, logger=None, distributed=False):
             logger.info("Finish epoch %d, start eval ..." %(epoch))
             test(val_dataloader, 
                  model, 
-                 save_dir=config.output_dir, 
+                 save_dir=model_dir, 
                  device=device, 
                  distributed=distributed, 
                  logger=logger)
