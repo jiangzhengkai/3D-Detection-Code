@@ -21,6 +21,7 @@ from lib.engine.convert_batch_to_device import convert_batch_to_device
 from lib.engine.metrics import get_metrics
 from lib.engine.test import test
 from lib.utils.dist_common import synchronize
+from lib.utils.checkpoint import Det3DCheckpointer
 
 from apex import parallel
 def train(config, logger=None, distributed=False):
@@ -36,7 +37,20 @@ def train(config, logger=None, distributed=False):
     ####### optimizer #######
     optimizer = build_optimizer(config, model)
 
+    ####### checkpoint #######
+    save_to_disk = get_rank() == 0
+    arguments = {}
+    arguments["iteration"] = 0
+    arguments["epoch"] = 0
+    model_dir = config.output_dir
+    checkpoint = Det3DCheckpointer(model, 
+                                   optimizer=optimizer,
+                                   save_dir=model_dir,
+                                   save_to_disk=save_to_disk,
+                                   logger=logger)
 
+    arguments.update(checkpoint.load())
+    logger.info(f"extra arguments: {arguments}")
     num_epochs = config.input.train.num_epochs
     num_gpus = int(os.environ["WORLD_SIZE"]) if "WORLD_SIZE" in os.environ else 1
     
@@ -65,7 +79,8 @@ def train(config, logger=None, distributed=False):
     num_classes = [len(target_assigner.classes) for target_assigner in target_assigners]
     class_names = [target_assigner.classes for target_assigner in target_assigners]
     t = time.time()
-    for epoch in range(num_epochs):
+    for epoch in range(arguments["epoch"]+1, num_epochs):
+        arguments["epoch"] = epoch
         for i, data_batch in enumerate(train_dataloader):
             ######## data_device ########
             #### voxels: num_voxels x max_num_points x 4 
@@ -83,6 +98,7 @@ def train(config, logger=None, distributed=False):
             #### meta_data: [dict_0, dict_1, ... dict_batch_size]
             num_step = int(epoch * len(train_dataloader.dataset) / (num_gpus * config.input.train.batch_size)) + i
             lr_scheduler.step(num_step)
+            arguments["iteration"] += 1
              
             data_device = convert_batch_to_device(data_batch, device=device)
             rpn_predict_dicts = net_module(data_device)
@@ -144,7 +160,7 @@ def train(config, logger=None, distributed=False):
                 step_time = time.time() - t
                 t = time.time()
                 if num_step % 50 == 0:
-                    logger.info("Metrics for task: {}".format(class_names[idx]))
+                    logger.info(f"Metrics for task: class_names[idx], saved to: {model_dir}")
 
                     loc_loss_elem = [float(loc_loss[:,:,i].sum().detach().cpu().numpy() / batch_size) for i in range(loc_loss.shape[-1])]
                     metrics["loss"] = loss
@@ -190,7 +206,9 @@ def train(config, logger=None, distributed=False):
             torch.cuda.empty_cache()
 
         if epoch % 1 == 0 or num_step == total_steps-1:
-            torch.save(model.state_dict(), config.output_dir+"/model_%d.pth"%epoch)
+            checkpoint.save("model_epoch_{:03d}_step_{:06d}".format(
+                epoch, step, **arguments))
+            #torch.save(model.state_dict(), config.output_dir+"/model_%d.pth"%epoch)
             logger.info("Finish epoch %d, start eval ..." %(epoch))
             test(val_dataloader, 
                  model, 

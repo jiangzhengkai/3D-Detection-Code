@@ -6,7 +6,7 @@ input:
         voxel_size: [0.05, 0.05, 0.1]
         point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
         max_num_points: 5
-        max_voxels: 17000
+        max_num_voxels: 17000
     train:
         batch_size: 4
         num_epochs: 120
@@ -16,7 +16,6 @@ input:
             info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
             nsweeps: 1
         preprocess:
-            max_num_voxels: 17000
             shuffle: True
             num_workers: 3
             gt_location_noise: [1.0, 1.0, 0.5]
@@ -154,7 +153,7 @@ optimizer:
         lr:
             type: "one_cycle"
             value: 
-                lr_max: 9.0e-3
+                lr_max: 2.25e-3
                 moms: [0.95, 0.85]
                 div_factor: 10.0
                 pct_start: 0.4

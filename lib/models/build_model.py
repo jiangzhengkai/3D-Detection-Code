@@ -8,8 +8,7 @@ def build_network(config, logger=None, device=None):
     voxel_generator = VoxelGenerator(
         voxel_size=config.input.voxel.voxel_size,
         point_cloud_range=config.input.voxel.point_cloud_range,
-        max_num_points=config.input.voxel.max_num_points,
-        max_voxels=config.input.voxel.max_voxels)
+        max_num_points=config.input.voxel.max_num_points)
     
     ######## target assiginers ########
     target_assigners = target_assigners_all_classes(config)

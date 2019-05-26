@@ -17,7 +17,7 @@ _C.input.voxel = edict()
 _C.input.voxel.voxel_size = [0.05, 0.05, 0.1]
 _C.input.voxel.point_cloud_range = [0, -40.0, -3.0, 70.4, 40.0, 1.0]
 _C.input.voxel.max_num_points = 5
-_C.input.voxel.max_voxels = 20000
+_C.input.voxel.max_num_voxels = 20000
 # --------------------------------------------------------------------
 # train
 # --------------------------------------------------------------------
@@ -33,7 +33,6 @@ _C.input.train.dataset.nsweeps = 1
 # train preprocess
 # --------------------------------------------------------------------
 _C.input.train.preprocess = edict()
-_C.input.train.preprocess.max_num_voxels = 40000
 _C.input.train.preprocess.shuffle = False
 _C.input.train.preprocess.num_workers = 0
 _C.input.train.preprocess.gt_location_noise = [0.25, 0.25, 0.25]

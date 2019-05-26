@@ -17,8 +17,7 @@ def build_dataset(config, training, logger=None):
     voxel_generator = VoxelGenerator(
 	voxel_size=config.input.voxel.voxel_size,
 	point_cloud_range=config.input.voxel.point_cloud_range,
-	max_num_points=config.input.voxel.max_num_points,
-	max_voxels=config.input.voxel.max_voxels)
+	max_num_points=config.input.voxel.max_num_points)
     ####### target assigners ########
     target_assigners = target_assigners_all_classes(config)
 
@@ -96,7 +95,8 @@ def build_dataset(config, training, logger=None):
 	root_path=config_dataset.root_path,
         num_point_features=config.input.num_point_features,
 	class_names=list(itertools.chain(*class_names)),
-	prep_func=prep_func)
+	prep_func=prep_func,
+        nsweeps=config_dataset.nsweeps)
     return dataset
 
 def build_dataloader(config, training, logger=None):

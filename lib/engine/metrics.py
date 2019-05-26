@@ -14,6 +14,7 @@ def get_metrics(config, cls_loss, loc_loss, cls_preds, labels, sampled, num_clas
 
 
     rpn_acc_function = Accuracy(dim=-1, encode_background_as_zeros=encode_background_as_zeros)
+    #pos_rpn_acc_function = PositiveAccuracy(dim=-1, encode_background_as_zeros=encode_background_as_zeros)
     rpn_metrics_function = PrecisionRecall(dim=-1, 
                                            thresholds=config.model.loss.rpn_thresholds,
                                            use_sigmoid_score=use_sigmoid_score,
@@ -23,6 +24,7 @@ def get_metrics(config, cls_loss, loc_loss, cls_preds, labels, sampled, num_clas
     rpn_loc_loss_function = Scalar()
     rpn_metrics_thresholds = config.model.loss.rpn_thresholds    
     rpn_acc = rpn_acc_function(labels, cls_preds, sampled).numpy()[0]
+    #pos_rpn_acc = pos_rpn_acc_function(labels, cls_preds).numpy()[0]
     prec, recall = rpn_metrics_function(labels, cls_preds, sampled)
     prec = prec.numpy()
     recall = recall.numpy()
@@ -112,6 +114,53 @@ class Accuracy(nn.Module):
         self.total.zero_()
         self.count.zero_()
 
+
+class PositiveAccuracy(nn.Module):
+    def __init__(self,
+                 dim=1,
+                 ignore_idx=-1,
+                 threshold=0.5,
+                 encode_background_as_zeros=True):
+        super().__init__()
+        self.register_buffer('total', torch.FloatTensor([0.0]))
+        self.register_buffer('count', torch.FloatTensor([0.0]))
+        self._ignore_idx = ignore_idx
+        self._dim = dim
+        self._threshold = threshold
+        self._encode_background_as_zeros = encode_background_as_zeros
+
+    def forward(self, labels, preds):
+        # labels: [N, ...]
+        # preds: [N, C, ...]
+        if self._encode_background_as_zeros:
+            scores = torch.sigmoid(preds)
+            labels_pred = torch.max(preds, dim=self._dim)[1] + 1
+            pred_labels = torch.where((scores > self._threshold).any(self._dim),
+                                      labels_pred,
+                                      torch.tensor(0).type_as(labels_pred))
+        else:
+            pred_labels = torch.max(preds, dim=self._dim)[1]
+        N, *Ds = labels.shape
+        labels = labels.view(N*int(np.prod(Ds),))
+        pred_labels = pred_labels.view(N*int(np.prod(Ds),))
+        weights = (labels > 0).float()
+        keep_index = torch.where(labels >0)[0]
+        labels = labels[keep_index]
+        pred_labels = pred_labels[keep_index]
+
+        num_examples = torch.sum(weights)
+        num_examples = torch.clamp(num_examples, min=1.0).float()
+        total = torch.sum((pred_labels == labels.long()).float())
+        self.count += num_examples
+        self.total += total
+        return self.value.cpu()
+    @property
+    def value(self):
+        return self.total / self.count
+
+    def clear(self):
+        self.total.zero_()
+        self.count.zero_()
 
 class Precision(nn.Module):
     def __init__(self, dim=1, ignore_idx=-1, threshold=0.5):

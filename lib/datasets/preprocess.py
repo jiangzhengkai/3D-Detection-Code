@@ -98,7 +98,7 @@ def prep_pointcloud(config,
     """ 
     prep_config = config.input.train.preprocess if training  else config.input.eval.preprocess
     remove_environment = prep_config.remove_environment
-    max_num_voxels = prep_config.max_num_voxels
+    max_num_voxels = config.input.voxel.max_num_voxels
     shuffle_points = prep_config.shuffle
     anchor_area_threshold = prep_config.anchor_area_threshold
     
@@ -113,11 +113,10 @@ def prep_pointcloud(config,
         gt_points_max_keep = prep_config.gt_drop_percentage
         gt_drop_max_keep = prep_config.gt_drop_max_keep_points
         remove_points_after_sample = prep_config.remove_points_after_sample
-       
-
  
     task_class_names = [target_assigner.classes for target_assigner in target_assigners]
     class_names = list(itertools.chain(*task_class_names))
+  
     if config.input.train.dataset.type == "KittiDataset":
         points = input_dict["lidar"]["points"]
     else:
@@ -249,7 +248,6 @@ def prep_pointcloud(config,
     voxel_size = voxel_generator.voxel_size
     pc_range = voxel_generator.point_cloud_range
     grid_size = voxel_generator.grid_size
-
     voxels, coordinates, num_points = voxel_generator.generate(points, max_num_voxels)
     num_voxels = np.array([voxels.shape[0]], dtype=np.int64)
 
