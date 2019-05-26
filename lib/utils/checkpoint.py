@@ -218,8 +218,8 @@ class Det3DCheckpointer(Checkpointer):
         super(Det3DCheckpointer, self).__init__(
             model, optimizer, scheduler, save_dir, save_to_disk, logger
         )
-        # self.cfg = cfg.clone()
-        # self.writer = Writer(save_dir)
+        #self.cfg = cfg.clone()
+        self.writer = Writer(save_dir)
 
     def _load_file(self, f):
         # load native detectron.pytorch checkpoint

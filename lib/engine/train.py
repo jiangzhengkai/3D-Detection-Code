@@ -184,6 +184,16 @@ def train(config, logger=None, model_dir=None, distributed=False):
                     num_neg = int(num_neg)
                     num_anchors = int(num_anchors)
                     lr = float(optimizer.lr)
+                    metrics["misc"] = {
+                        "num_vox": int(num_voxel),
+                        "num_pos": int(num_pos),
+                        "num_neg": int(num_neg),
+                        "num_anchors": int(num_anchors),
+                        "lr": float(optimizer.lr),
+                    }
+                    checkpoint.writer.open()
+                    checkpoint.writer.log_metrics(metrics, step)
+
                     logger.info("epoch: %d step: %d Auxiliraries num_voxels: %d num_pos: %d num_neg: %d num_anchors: %d lr: %6f"%(
                                  epoch, step, num_voxel, num_pos, num_neg, num_anchors, lr))
                     pr_metrics = net_metrics["pr"]
