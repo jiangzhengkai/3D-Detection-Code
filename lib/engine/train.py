@@ -16,7 +16,7 @@ from lib.core.target.target_assigner import target_assigners_all_classes
 
 from lib.utils.logger import setup_logger
 from lib.utils.dist_common import get_rank
-from lib.engine.convert_batch_to_device import convert_batch_to_device
+from lib.engine.convert_batch_to_device import convert_batch_to_device, DataPrefetch
 
 from lib.engine.metrics import get_metrics
 from lib.engine.test import test
@@ -80,7 +80,7 @@ def train(config, logger=None, model_dir=None, distributed=False):
     t = time.time()
     for epoch in range(arguments["epoch"]+1, num_epochs+1):
         arguments["epoch"] = epoch
-        for i, data_batch in enumerate(train_dataloader):
+        for i, data_batch in enumerate(DataPrefetch(iter(train_dataloader), max_prefetch=4)):
             ######## data_device ########
             #### voxels: num_voxels x max_num_points x 4 
             #### num_points: num_voxels
@@ -95,8 +95,7 @@ def train(config, logger=None, model_dir=None, distributed=False):
             #### reg_targets: [batch_size x num_anchors x 7]
             #### reg_weights: [batch_size x num_anchors]
             #### meta_data: [dict_0, dict_1, ... dict_batch_size]
-            step = int((epoch-1) * len(train_dataloader.dataset) / (num_gpus * config.input.train.batch_size)) + i
-            lr_scheduler.step(step)
+            lr_scheduler.step(net_module.get_global_step())
             arguments["iteration"] += 1
              
             data_device = convert_batch_to_device(data_batch, device=device)
@@ -143,6 +142,7 @@ def train(config, logger=None, model_dir=None, distributed=False):
             loss_all.backward()
             torch.nn.utils.clip_grad_norm_(net_module.parameters(), 10.0)
             optimizer.step()
+            net_module.update_global_step()
 
             for idx, [cls_loss_reduced, loc_loss_reduced, dir_loss_reduced, cls_pred, labels, cared, loc_loss, cls_pos_loss, cls_neg_loss, loss] in enumerate(
                 zip(cls_loss_reduceds, loc_loss_reduceds, dir_loss_reduceds, cls_preds, data_device["labels"], careds, loc_losses, cls_pos_losses, cls_neg_losses, losses)):
@@ -158,6 +158,7 @@ def train(config, logger=None, model_dir=None, distributed=False):
 
                 step_time = time.time() - t
                 t = time.time()
+                step = net_module.get_global_step()
                 if step % 50 == 0:
                     logger.info(f"Metrics for task: {class_names[idx]}, saved to: {model_dir}")
                     loc_loss_elem = [float(loc_loss[:,:,i].sum().detach().cpu().numpy() / batch_size) for i in range(loc_loss.shape[-1])]
@@ -207,8 +208,6 @@ def train(config, logger=None, model_dir=None, distributed=False):
                     logger.info("-------------------------------------------------------------------------------------------------------------------")
 
             torch.cuda.empty_cache()
-
-    checkpoint.writer.close()
         if epoch % 1 == 0 or step == total_steps-1:
             checkpoint.save("model_epoch_{:03d}_step_{:06d}".format(
                 epoch, step, **arguments))
@@ -222,3 +221,5 @@ def train(config, logger=None, model_dir=None, distributed=False):
                  logger=logger)
             torch.cuda.empty_cache()
         synchronize()
+    
+    checkpoint.writer.close()

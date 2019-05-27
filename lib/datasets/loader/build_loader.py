@@ -96,7 +96,8 @@ def build_dataset(config, training, logger=None):
         num_point_features=config.input.num_point_features,
 	class_names=list(itertools.chain(*class_names)),
 	prep_func=prep_func,
-        nsweeps=config_dataset.nsweeps)
+        nsweeps=config_dataset.nsweeps,
+        logger=logger)
     return dataset
 
 def build_dataloader(config, training, logger=None):

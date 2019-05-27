@@ -97,11 +97,11 @@ model:
     decoder:
         rpn:
             type: "RPNV2"
-            layer_nums: [5, 5]
-            downsample_layer_strides: [1, 2]
-            downsample_num_filters: [128, 256]
-            upsample_layer_strides: [1, 2]
-            upsample_num_filters: [128, 128]
+            layer_nums: [5]
+            downsample_layer_strides: [1]
+            downsample_num_filters: [128]
+            upsample_layer_strides: [1]
+            upsample_num_filters: [128]
             group_norm: False
             num_groups: 32
             num_input_features: 128
@@ -152,7 +152,7 @@ optimizer:
         lr:
             type: "one_cycle"
             value: 
-                lr_max: 2.25e-3
+                lr_max: 9.0e-3
                 moms: [0.95, 0.85]
                 div_factor: 10.0
                 pct_start: 0.4

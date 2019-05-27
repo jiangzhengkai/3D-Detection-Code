@@ -29,3 +29,6 @@ dist/
 /datasets
 /models
 /output
+/nusc_output
+/kitti_output
+/kitti_4card

@@ -158,6 +158,16 @@ class VoxelNet(nn.Module):
             ],
             logger=logger,
             )
+        self.register_buffer("global_step", torch.LongTensor(1).zero_())
+    def update_global_step(self):
+        self.global_step += 1
+
+    def clear_global_step(self):
+        self.global_step.zero_()
+
+    def get_global_step(self):
+        return int(self.global_step.cpu().numpy()[0])
+
     def forward(self, example):
         voxels = example["voxels"]
         num_points = example["num_points"]

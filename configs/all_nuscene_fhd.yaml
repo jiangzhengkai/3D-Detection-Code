@@ -103,7 +103,7 @@ model:
             downsample_layer_strides: [1, 2]
             downsample_num_filters: [128, 256]
             upsample_layer_strides: [1, 2]
-            upsample_num_filters: [128, 128]
+            upsample_num_filters: [128, 256]
             group_norm: False
             num_groups: 32
             num_input_features: 128
@@ -142,7 +142,7 @@ model:
             type: "weighted_smooth_l1"
             value: 
                 sigma: 3.0
-                code_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+                code_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.2, 0.2, 1.0]
         classification_loss_weight: 1.0
         localization_loss_weight: 1.0
         direction_loss_weight: 0.2
