@@ -1,3 +1,0 @@
-2019-05-26 15:11:58,297 3d-object-detection INFO: Using 6 GPUs
-2019-05-26 15:11:58,297 3d-object-detection INFO: Namespace(cfg='configs/all_nuscene_fhd.yaml', distributed=True, local_rank=0, model_dir='nusc_output')
-2019-05-26 15:11:58,297 3d-object-detection INFO: Collecting env info (might take some time)

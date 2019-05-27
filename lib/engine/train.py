@@ -137,10 +137,10 @@ def train(config, logger=None, model_dir=None, distributed=False):
                 
             task_loss = torch.stack(losses)
             loss_all = torch.Tensor(config.model.decoder.head.weights).to(device) * task_loss
-            loss_mean = torch.mean(loss_all)
+            loss_all = torch.sum(loss_all)
 
             optimizer.zero_grad()                       
-            loss_mean.backward()
+            loss_all.backward()
             torch.nn.utils.clip_grad_norm_(net_module.parameters(), 10.0)
             optimizer.step()
 
@@ -208,6 +208,7 @@ def train(config, logger=None, model_dir=None, distributed=False):
 
             torch.cuda.empty_cache()
 
+    checkpoint.writer.close()
         if epoch % 1 == 0 or step == total_steps-1:
             checkpoint.save("model_epoch_{:03d}_step_{:06d}".format(
                 epoch, step, **arguments))
@@ -219,4 +220,5 @@ def train(config, logger=None, model_dir=None, distributed=False):
                  device=device, 
                  distributed=distributed, 
                  logger=logger)
+            torch.cuda.empty_cache()
         synchronize()
