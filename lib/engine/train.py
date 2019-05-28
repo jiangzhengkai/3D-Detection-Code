@@ -6,7 +6,6 @@ import numpy as np
 
 import pathlib
 import torch
-torch.backends.cudnn.benchmark = True
 import time
 
 from lib.datasets.loader.build_loader import build_dataloader
@@ -19,7 +18,7 @@ from lib.utils.logger import setup_logger
 from lib.utils.dist_common import get_rank
 from lib.engine.convert_batch_to_device import convert_batch_to_device, DataPrefetch
 
-from lib.engine.metrics import get_metrics
+#from lib.engine.metrics import get_metrics
 from lib.engine.test import test
 from lib.utils.dist_common import synchronize
 from lib.utils.checkpoint import Det3DCheckpointer
@@ -66,6 +65,8 @@ def train(config, logger=None, model_dir=None, distributed=False):
 
     arguments.update(checkpoint.load())
     logger.info(f"extra arguments: {arguments}")
+    net_module.clear_metrics() 
+
     num_epochs = config.input.train.num_epochs
     num_gpus = int(os.environ["WORLD_SIZE"]) if "WORLD_SIZE" in os.environ else 1
     total_steps = int(num_epochs * len(train_dataloader.dataset) / (config.input.train.batch_size * num_gpus))
@@ -147,7 +148,9 @@ def train(config, logger=None, model_dir=None, distributed=False):
 
             for idx, [cls_loss_reduced, loc_loss_reduced, dir_loss_reduced, cls_pred, labels, cared, loc_loss, cls_pos_loss, cls_neg_loss, loss] in enumerate(
                 zip(cls_loss_reduceds, loc_loss_reduceds, dir_loss_reduceds, cls_preds, data_device["labels"], careds, loc_losses, cls_pos_losses, cls_neg_losses, losses)):
-                net_metrics = get_metrics(config, cls_loss_reduced, loc_loss_reduced, cls_pred, labels, cared, num_classes[idx])
+                
+                net_metrics = net_module.update_metrics(cls_loss_reduced, loc_loss_reduced, cls_pred, labels, cared, idx)
+                #net_metrics = get_metrics(config, cls_loss_reduced, loc_loss_reduced, cls_pred, labels, cared, num_classes[idx])
                 metrics = {}
                 num_pos = int((labels > 0)[0].float().sum().cpu().numpy())
                 num_neg = int((labels == 0)[0].float().sum().cpu().numpy())
@@ -208,7 +211,7 @@ def train(config, logger=None, model_dir=None, distributed=False):
                     logger.info("-------------------------------------------------------------------------------------------------------------------")
 
             #torch.cuda.empty_cache()
-
+        net_module.clear_metrics()
         checkpoint.save("model_epoch_{:03d}_step_{:06d}".format(
             epoch, step, **arguments))
         if epoch % 1 == 0 or step == total_steps-1:

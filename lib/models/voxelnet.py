@@ -6,6 +6,8 @@ from lib.models import middle, rpn
 from lib.solver import build_losses
 from lib.core.bbox import box_torch_ops
 from lib.core.loss.loss import prepare_loss_weights, create_loss, get_pos_neg_loss, get_direction_target
+
+from lib.engine import metrics
 from lib.solver.losses import (WeightedSigmoidClassificationLoss,
                                WeightedSmoothL1LocalizationLoss,
                                WeightedSoftmaxClassificationLoss)
@@ -159,6 +161,22 @@ class VoxelNet(nn.Module):
             ],
             logger=logger,
             )
+        self.rpn_acc = metrics.Accuracy(
+            dim=-1,
+            encode_background_as_zeros=self._encode_background_as_zeros)
+        self.rpn_precision = metrics.Precision(dim=-1)
+        self.rpn_recall = metrics.Recall(dim=-1)
+        self.rpn_metrics = metrics.PrecisionRecall(
+            dim=-1,
+            thresholds=config.model.loss.rpn_thresholds,
+            use_sigmoid_score=self._use_sigmoid_score,
+            encode_background_as_zeros=self._encode_background_as_zeros)
+
+        self.rpn_cls_loss = metrics.Scalar()
+        self.rpn_loc_loss = metrics.Scalar()
+        self.rpn_total_loss = metrics.Scalar()
+
+
         self.register_buffer("global_step", torch.LongTensor(1).zero_())
     def update_global_step(self):
         self.global_step += 1
@@ -563,4 +581,45 @@ class VoxelNet(nn.Module):
             predictions_dicts.append(predictions_dict)
 
         return predictions_dicts
+
+    def metrics_to_float(self):
+        self.rpn_acc.float()
+        self.rpn_metrics.float()
+        self.rpn_cls_loss.float()
+        self.rpn_loc_loss.float()
+        self.rpn_total_loss.float()
+
+    def update_metrics(self, cls_loss, loc_loss, cls_preds, labels, sampled,
+                       task_id):
+        batch_size = cls_preds.shape[0]
+        num_class = self._num_classes[task_id]
+        if not self._encode_background_as_zeros:
+            num_class += 1
+        cls_preds = cls_preds.view(batch_size, -1, num_class)
+        rpn_acc = self.rpn_acc(labels, cls_preds, sampled).numpy()[0]
+        prec, recall = self.rpn_metrics(labels, cls_preds, sampled)
+        prec = prec.numpy()
+        recall = recall.numpy()
+        rpn_cls_loss = self.rpn_cls_loss(cls_loss).numpy()[0]
+        rpn_loc_loss = self.rpn_loc_loss(loc_loss).numpy()[0]
+        ret = {
+            "loss": {
+                "cls_loss": float(rpn_cls_loss),
+                "cls_loss_rt": float(cls_loss.data.cpu().numpy()),
+                'loc_loss': float(rpn_loc_loss),
+                "loc_loss_rt": float(loc_loss.data.cpu().numpy()),
+            },
+            "rpn_acc": float(rpn_acc),
+            "pr": {},
+        }
+        for i, thresh in enumerate(self.rpn_metrics.thresholds):
+            ret["pr"][f"prec@{int(thresh*100)}"] = float(prec[i])
+            ret["pr"][f"rec@{int(thresh*100)}"] = float(recall[i])
+        return ret
+    def clear_metrics(self):
+        self.rpn_acc.clear()
+        self.rpn_metrics.clear()
+        self.rpn_cls_loss.clear()
+        self.rpn_loc_loss.clear()
+        self.rpn_total_loss.clear()
 
