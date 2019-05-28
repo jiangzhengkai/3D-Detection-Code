@@ -19,9 +19,7 @@ def collate_batch_fn(batch_list):
     for key, elems in example_merged.items():
         if key in ['voxels', 'num_points', 'num_gt', 'voxel_labels']:
             ret[key] = np.concatenate(elems, axis=0)
-        elif key in [
-                "gt_boxes",
-        ]:
+        elif key in ["gt_boxes",]:
             task_max_gts = []
             for task_id in range(len(elems[0])):
                 max_gt = 0
@@ -205,10 +203,10 @@ def prep_pointcloud(config,
         _dict_select(gt_dict, gt_boxes_mask)
         gt_classes = np.array([class_names.index(n) + 1 for n in gt_dict["gt_names"]], dtype=np.int32)
         gt_dict["gt_classes"] = gt_classes
-        gt_dict["gt_boxes"], points = prep.random_flip(gt_dict["gt_boxes"], points)
-        gt_dict["gt_boxes"], points = prep.global_rotation(gt_dict["gt_boxes"], points, rotation=global_rotation_noise)
-        gt_dict["gt_boxes"], points = prep.global_scaling_v2(gt_dict["gt_boxes"], points, *global_scale_noise)
-        prep.global_translate_(gt_dict["gt_boxes"], points, global_translate_noise_std)
+        #gt_dict["gt_boxes"], points = prep.random_flip(gt_dict["gt_boxes"], points)
+        #gt_dict["gt_boxes"], points = prep.global_rotation(gt_dict["gt_boxes"], points, rotation=global_rotation_noise)
+        #gt_dict["gt_boxes"], points = prep.global_scaling_v2(gt_dict["gt_boxes"], points, *global_scale_noise)
+        #prep.global_translate_(gt_dict["gt_boxes"], points, global_translate_noise_std)
 
         bv_range = voxel_generator.point_cloud_range[[0, 1, 3, 4]]
         mask = prep.filter_gt_box_outside_range(gt_dict["gt_boxes"], bv_range)
@@ -311,7 +309,6 @@ def prep_pointcloud(config,
 
     if not training:
         return example
-
     if create_targets:
         targets_dicts = []
         for idx, target_assigner in enumerate(target_assigners):

@@ -102,8 +102,7 @@ def train(config, logger=None, model_dir=None, distributed=False):
       
             optimizer.zero_grad()
 
-            rpn_predict_dicts = net_module(data_device)
-            losses_dict = net_module.loss(data_device, rpn_predict_dicts)
+            losses_dict = model(data_device)
   
             batch_size = data_device["anchors"][0].shape[0]
             losses = []
@@ -139,9 +138,9 @@ def train(config, logger=None, model_dir=None, distributed=False):
                 
             task_loss = torch.stack(losses)
             loss_all = torch.Tensor(config.model.decoder.head.weights).to(device) * task_loss
-            loss_all = torch.sum(loss_all)
+            loss_mean = torch.sum(loss_all)
 
-            loss_all.backward()
+            loss_mean.backward()
             torch.nn.utils.clip_grad_norm_(net_module.parameters(), 10.0)
             optimizer.step()
             net_module.update_global_step()
@@ -155,7 +154,7 @@ def train(config, logger=None, model_dir=None, distributed=False):
                 if "anchor_mask" not in data_device:
                     num_anchors = data_device["anchors"][idx].shape[1]
                 else:
-                    num_anchors = int(data_device["anchors_mask"][idx].shape[1])
+                    num_anchors = int(data_device["anchors_mask"][idx][0].sum())
 
                 step_time = time.time() - t
                 t = time.time()

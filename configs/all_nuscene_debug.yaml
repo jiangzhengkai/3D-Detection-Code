@@ -30,7 +30,7 @@ input:
             remove_unknow_examples: False
             remove_environment: False
             db_sampler:
-                enable: True
+                enable: False
                 db_info_path: "/unsullied/sharefs/_research_detection/GeneralDetection/NuScenes/full_data/dbinfos_train_10sweeps_withvelo.pkl"
                 db_preprocess_steps:
                     filter_by_min_num_points:

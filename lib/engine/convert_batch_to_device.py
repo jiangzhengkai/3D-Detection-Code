@@ -43,12 +43,12 @@ def convert_batch_to_device(data_batch, dtype=torch.float32, device=None):
         elif k in ["voxels", "bev_map"]:
             # slow when directly provide fp32 data with dtype=torch.half
             data_batch_torch[k] = torch.tensor(v,
-                                            dtype=torch.float32,
-                                            device=device)
+                                               dtype=torch.float32,
+                                               device=device)
         elif k in ["coordinates", "num_points"]:
             data_batch_torch[k] = torch.tensor(v,
-                                            dtype=torch.int32,
-                                            device=device)
+                                               dtype=torch.int32,
+                                               device=device)
         elif k == 'labels':
             res = []
             for kk, vv in v.items():
@@ -57,8 +57,8 @@ def convert_batch_to_device(data_batch, dtype=torch.float32, device=None):
             data_batch_torch[k] = res
         elif k == 'points':
             data_batch_torch[k] = torch.tensor(v,
-                                            dtype=torch.float,
-                                            device=device)
+                                               dtype=torch.float32,
+                                               device=device)
         elif k in ["anchors_mask"]:
             res = []
             for kk, vv in v.items():
@@ -72,8 +72,8 @@ def convert_batch_to_device(data_batch, dtype=torch.float32, device=None):
             data_batch_torch[k] = calib
         elif k == "num_voxels":
             data_batch_torch[k] = torch.tensor(v,
-                                            dtype=torch.int64,
-                                            device=device)
+                                               dtype=torch.int64,
+                                               device=device)
         else:
             data_batch_torch[k] = v
 

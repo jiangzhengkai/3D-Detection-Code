@@ -16,7 +16,7 @@ input:
             nsweeps: 10
         preprocess:
             shuffle: False
-            num_workers: 0
+            num_workers: 3
             gt_location_noise: [0, 0, 0]
             gt_rotation_noise: [0, 0]
             global_rotation_noise: [-0.3925, 0.3925]
@@ -86,7 +86,7 @@ target_assigner:
 model:
     encoder:
         vfe:
-            type: "PIXORFeatureLayer" #"VoxelFeatureExtractorV3" #"PIXORFeatureLayer"
+            type: "VoxelFeatureExtractorV3" #"PIXORFeatureLayer"
             num_filters: [16,]
             with_distance: False
             num_input_features: 5

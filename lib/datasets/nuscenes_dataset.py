@@ -65,7 +65,6 @@ class NuScenesDataset(Dataset):
         self._root_path = Path(root_path)
         with open(info_path, 'rb') as f:
             self._nusc_infos_all = pickle.load(f)
-    
         if subset: # if training
             self.frac = int(len(self._nusc_infos_all) * 0.25)
             self._cls_infos = {name: [] for name in class_names}

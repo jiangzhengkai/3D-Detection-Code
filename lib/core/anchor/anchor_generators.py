@@ -19,6 +19,7 @@ def anchor_generators(config):
             anchor = AnchorGeneratorRange(
                                 anchor_dim=config.anchor_dims[i],
                                 ranges=config.anchor_ranges[i],
+                                sizes=config.anchor_sizes[i],
                                 velocities=config.anchor_velocities[i],
                                 rotations=config.anchor_rotations[i],
                                 match_threshold=config.anchor_matched_thresholds[i],

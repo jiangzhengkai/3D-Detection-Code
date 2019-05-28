@@ -20,7 +20,9 @@ def build_dataset(config, training, logger=None):
 	max_num_points=config.input.voxel.max_num_points)
     ####### target assigners ########
     target_assigners = target_assigners_all_classes(config)
-
+    for target_assigner in target_assigners:
+        assert all([n != '' for n in target_assigner.classes
+                    ]), "you must specify class_name in anchor_generators."
     ######## database sampler ########
     db_sampler = None
     if training:
@@ -28,7 +30,7 @@ def build_dataset(config, training, logger=None):
             logger.info("Enable db sampler: db_sampler")
             db_sampler = DBSampler(config, logger=logger)
 
-    out_size_factor = 1
+    out_size_factor = 8
     grid_size = voxel_generator.grid_size
     feature_map_size = grid_size[:2] // out_size_factor
     feature_map_size = [*feature_map_size, 1][::-1]

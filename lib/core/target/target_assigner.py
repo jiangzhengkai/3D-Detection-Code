@@ -18,6 +18,10 @@ def target_assigners_all_classes(config):
     anchor_generators_all_class = anchor_generators(config.target_assigner.anchor_generators)
 
     ######## target assiginers ########
+    positive_fraction = config.target_assigner.anchor_generators.sample_positive_fraction
+    if positive_fraction < 0:
+        positive_fraction = None
+
     class_names = []
     target_assigners = []
     flag = 0
@@ -26,7 +30,7 @@ def target_assigners_all_classes(config):
             box_coder=bbox_coder,
             anchor_generators=anchor_generators_all_class[flag:flag+len(class_name)],
             region_similarity_calculator=region_similarity,
-            positive_fraction=config.target_assigner.anchor_generators.sample_positive_fraction,
+            positive_fraction=positive_fraction,
             sample_size=config.target_assigner.anchor_generators.sample_size)
 
         flag += len(class_name)
@@ -46,7 +50,7 @@ class TargetAssigner:
         self._region_similarity_calculator = region_similarity_calculator
         self._box_coder = box_coder
         self._anchor_generators = anchor_generators
-        self._positive_fraction = positive_fraction if positive_fraction > 0 else None
+        self._positive_fraction = positive_fraction
         self._sample_size = sample_size
 
     @property
@@ -69,8 +73,8 @@ class TargetAssigner:
             prune_anchor_fn = None
 
         def similarity_fn(anchors, gt_boxes):
-            anchors_rbv = anchors[:, [0, 1, 3, 4, 6]]
-            gt_boxes_rbv = gt_boxes[:, [0, 1, 3, 4, 6]]
+            anchors_rbv = anchors[:, [0, 1, 3, 4, -1]]
+            gt_boxes_rbv = gt_boxes[:, [0, 1, 3, 4, -1]]
             return self._region_similarity_calculator.compare(
                 anchors_rbv, gt_boxes_rbv)
 
@@ -79,11 +83,11 @@ class TargetAssigner:
 
         return create_target_np(
             anchors,
-            gt_boxes,
+            gt_boxes[gt_classes == class_name],
             similarity_fn,
             box_encoding_fn,
             prune_anchor_fn=prune_anchor_fn,
-            gt_classes=gt_classes,
+            gt_classes=gt_classes[gt_classes == class_name],
             matched_threshold=matched_thresholds,
             unmatched_threshold=unmatched_thresholds,
             positive_fraction=self._positive_fraction,
@@ -96,6 +100,7 @@ class TargetAssigner:
                   anchors_mask=None,
                   gt_classes=None,
                   gt_names=None):
+
         def similarity_fn(anchors, gt_boxes):
             anchors_rbv = anchors[:, [0, 1, 3, 4, -1]]
             gt_boxes_rbv = gt_boxes[:, [0, 1, 3, 4, -1]]

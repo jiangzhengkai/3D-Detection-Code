@@ -188,22 +188,12 @@ class VoxelNet(nn.Module):
                 voxel_features, coordinates, batch_size_dev)
         else:
             spatial_features = voxel_features
-        import pdb;pdb.set_trace()
         # (spatial_features.sum(dim=1)[0].detach().cpu().numpy() / 41.0).tofile(open("./bev.bin", "wb"))
         # example['labels'][1][0].detach().cpu().numpy().tofile(open("labels.bin", "wb"))
         # example['gt_boxes'][1][0].tofile(open("gt_boxes.bin", "wb"))
-
         predict_dicts = self._rpn(spatial_features) 
-        return predict_dicts
-
-    def loss(self, example, preds_dicts):
-        voxels = example["voxels"]
-        num_points = example["num_points"]
-        coordinates = example["coordinates"]
-        batch_anchors = example["anchors"]
-        batch_size_dev = batch_anchors[0].shape[0]
         rets = []
-        for task_id, pred_dict in enumerate(preds_dicts):
+        for task_id, pred_dict in enumerate(predict_dicts):
             if self.training: 
                 box_preds = pred_dict["box_preds"] 
                 cls_preds = pred_dict["cls_preds"]
@@ -362,9 +352,10 @@ class VoxelNet(nn.Module):
             else:
                 nms_func = box_torch_ops.nms
 
-            # self.logger.info(f"multiclass_nms: {self._multiclass_nms}"): False
+            feature_map_size_prod = batch_box_preds.shape[
+                1] // self.target_assigners[task_id].num_anchors_per_location
             if self._multiclass_nms:
-                # curently only support class-agnostic boxes.
+                assert self._encode_background_as_zeros is True
                 boxes_for_nms = box_preds[:, [0, 1, 3, 4, -1]]
                 if not self._use_rotate_nms:
                     box_preds_corners = box_torch_ops.center_to_corner_box2d(
@@ -372,33 +363,105 @@ class VoxelNet(nn.Module):
                         boxes_for_nms[:, 4])
                     boxes_for_nms = box_torch_ops.corner_to_standup_nd(
                         box_preds_corners)
-                boxes_for_mcnms = boxes_for_nms.unsqueeze(1)
-                selected_per_class = box_torch_ops.multiclass_nms(
-                    nms_func=nms_func,
-                    boxes=boxes_for_mcnms,
-                    scores=total_scores,
-                    num_class=self._num_classes[task_id],
-                    pre_max_size=self._nms_pre_max_size,
-                    post_max_size=self._nms_post_max_size,
-                    iou_threshold=self._nms_iou_threshold,
-                    score_thresh=self._nms_score_threshold,
-                )
+
                 selected_boxes, selected_labels, selected_scores = [], [], []
                 selected_dir_labels = []
-                for i, selected in enumerate(selected_per_class):
-                    if selected is not None:
-                        num_dets = selected.shape[0]
-                        selected_boxes.append(box_preds[selected])
-                        selected_labels.append(
-                            torch.full([num_dets], i, dtype=torch.int64))
+
+                scores = total_scores
+                boxes = boxes_for_nms
+                selected_per_class = []
+                score_threshs = [self._nms_score_threshold
+                                 ] * self._num_classes[task_id]
+                pre_max_sizes = [self._nms_pre_max_size
+                                 ] * self._num_classes[task_id]
+                post_max_sizes = [self._nms_post_max_size
+                                  ] * self._num_classes[task_id]
+                iou_thresholds = [self._nms_iou_threshold
+                                  ] * self._num_classes[task_id]
+
+                for class_idx, score_thresh, pre_ms, post_ms, iou_th in zip(
+                        range(self._num_classes[task_id]), score_threshs,
+                        pre_max_sizes, post_max_sizes, iou_thresholds):
+                    self._nms_class_agnostic = False
+                    if self._nms_class_agnostic:
+                        class_scores = total_scores.view(
+                            feature_map_size_prod, -1,
+                            self._num_classes[task_id])[..., class_idx]
+                        class_scores = class_scores.contiguous().view(-1)
+                        class_boxes_nms = boxes.view(-1,
+                                                     boxes_for_nms.shape[-1])
+                        class_boxes = box_preds
+                        class_dir_labels = dir_labels
+                    else:
+                        # anchors_range = self.target_assigner.anchors_range(class_idx)
+                        anchors_range = self.target_assigners[
+                            task_id].anchors_range
+                        class_scores = total_scores.view(
+                            -1, self._num_classes[task_id]
+                        )[anchors_range[0]:anchors_range[1], class_idx]
+                        class_boxes_nms = boxes.view(
+                            -1, boxes_for_nms.shape[-1]
+                        )[anchors_range[0]:anchors_range[1], :]
+                        class_scores = class_scores.contiguous().view(-1)
+                        class_boxes_nms = class_boxes_nms.contiguous().view(
+                            -1, boxes_for_nms.shape[-1])
+                        class_boxes = box_preds.view(
+                            -1, box_preds.shape[-1]
+                        )[anchors_range[0]:anchors_range[1], :]
+                        class_boxes = class_boxes.contiguous().view(
+                            -1, box_preds.shape[-1])
                         if self._use_direction_classifier:
-                            selected_dir_labels.append(dir_labels[selected])
-                        selected_scores.append(total_scores[selected, i])
+                            class_dir_labels = dir_labels.view(
+                                -1)[anchors_range[0]:anchors_range[1]]
+                            class_dir_labels = class_dir_labels.contiguous(
+                            ).view(-1)
+                    if score_thresh > 0.0:
+                        class_scores_keep = class_scores >= score_thresh
+                        if class_scores_keep.shape[0] == 0:
+                            selected_per_class.append(None)
+                            continue
+                        class_scores = class_scores[class_scores_keep]
+                    if class_scores.shape[0] != 0:
+                        if score_thresh > 0.0:
+                            class_boxes_nms = class_boxes_nms[
+                                class_scores_keep]
+                            class_boxes = class_boxes[class_scores_keep]
+                            class_dir_labels = class_dir_labels[
+                                class_scores_keep]
+                        keep = nms_func(class_boxes_nms, class_scores, pre_ms,
+                                        post_ms, iou_th)
+                        if keep.shape[0] != 0:
+                            selected_per_class.append(keep)
+                        else:
+                            selected_per_class.append(None)
+                    else:
+                        selected_per_class.append(None)
+                    selected = selected_per_class[-1]
+
+                    if selected is not None:
+                        selected_boxes.append(class_boxes[selected])
+                        selected_labels.append(
+                            torch.full([class_boxes[selected].shape[0]],
+                                       class_idx,
+                                       dtype=torch.int64,
+                                       device=box_preds.device))
+                        if self._use_direction_classifier:
+                            selected_dir_labels.append(
+                                class_dir_labels[selected])
+                        selected_scores.append(class_scores[selected])
+                    # else:
+                    #     selected_boxes.append(torch.Tensor([], device=class_boxes.device))
+                    #     selected_labels.append(torch.Tensor([], device=box_preds.device))
+                    #     selected_scores.append(torch.Tensor([], device=class_scores.device))
+                    #     if self._use_direction_classifier:
+                    #         selected_dir_labels.append(torch.Tensor([], device=class_dir_labels.device))
+
                 selected_boxes = torch.cat(selected_boxes, dim=0)
                 selected_labels = torch.cat(selected_labels, dim=0)
                 selected_scores = torch.cat(selected_scores, dim=0)
                 if self._use_direction_classifier:
                     selected_dir_labels = torch.cat(selected_dir_labels, dim=0)
+
             else:
                 # get highest score per prediction, than apply nms
                 # to remove overlapped box.
@@ -498,4 +561,6 @@ class VoxelNet(nn.Module):
                     meta,
                 }
             predictions_dicts.append(predictions_dict)
-        return predictions_dicts                               
+
+        return predictions_dicts
+
