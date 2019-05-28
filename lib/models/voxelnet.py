@@ -1,7 +1,7 @@
 import torch
 import numpy as np
 from torch import nn
-from lib.models import voxel_encoder
+from lib.models import voxel_encoder, pixor_encoder
 from lib.models import middle, rpn
 from lib.solver import build_losses
 from lib.core.bbox import box_torch_ops
@@ -69,6 +69,7 @@ class VoxelNet(nn.Module):
             "VoxelFeatureExtractorV2": voxel_encoder.VoxelFeatureExtractorV2,
             "VoxelFeatureExtractorV3": voxel_encoder.VoxelFeatureExtractorV3, 
             "SimpleVoxel": voxel_encoder.SimpleVoxel,
+            "PIXORFeatureLayer": pixor_encoder.PIXORFeatureLayer
         }
         vfe_class_name = config.model.encoder.vfe.type
         vfe_num_filters = config.model.encoder.vfe.num_filters
@@ -77,9 +78,8 @@ class VoxelNet(nn.Module):
         self._vfe_class_name = vfe_class_name
         logger.info("Voxel Feature Encoder: {}".format(self._vfe_class_name))
     
-        if "Pixor" in self._vfe_class_name:
+        if "PIXOR" in self._vfe_class_name:
             self._voxel_feature_extractor = vfe_class(output_shape[:-1])
-            rpn_num_input_features = self.voxel_feature_extractor.nchannels
         else:
             self._voxel_feature_extractor = vfe_class(
             	config.model.encoder.vfe.num_input_features,
@@ -91,6 +91,7 @@ class VoxelNet(nn.Module):
   
         middle_class_dict = {
             "SpMiddleFHD": middle.SpMiddleFHD,
+            "None": None,
         }
     
         middle_class_name = config.model.encoder.middle.type
@@ -175,18 +176,22 @@ class VoxelNet(nn.Module):
         batch_anchors = example["anchors"]
         batch_size_dev = batch_anchors[0].shape[0]
         
-        if "Pixor" in self._vfe_class_name:
+        if "PIXOR" in self._vfe_class_name:
             voxel_features = self._voxel_feature_extractor(
                 voxels, num_points, coordinates, batch_size_dev)
         else:
             voxel_features = self._voxel_feature_extractor(
                 voxels, num_points, coordinates)
     
-        if "Pixor" not in self._vfe_class_name:
+        if "PIXOR" not in self._vfe_class_name:
             spatial_features = self._middle_feature_extractor(
                 voxel_features, coordinates, batch_size_dev)
         else:
             spatial_features = voxel_features
+        import pdb;pdb.set_trace()
+        # (spatial_features.sum(dim=1)[0].detach().cpu().numpy() / 41.0).tofile(open("./bev.bin", "wb"))
+        # example['labels'][1][0].detach().cpu().numpy().tofile(open("labels.bin", "wb"))
+        # example['gt_boxes'][1][0].tofile(open("gt_boxes.bin", "wb"))
 
         predict_dicts = self._rpn(spatial_features) 
         return predict_dicts

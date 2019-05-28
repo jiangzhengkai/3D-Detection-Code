@@ -561,3 +561,10 @@ def second_box_decode(box_encodings, anchors, encode_angle_to_vector=False, smoo
 
     return np.concatenate(ret, axis=1)
 
+def rbbox3d_to_corners(rbboxes, origin=[0.5, 0.5, 0.5], axis=2):
+    return center_to_corner_box3d(rbboxes[..., :3],
+                                  rbboxes[..., 3:6],
+                                  rbboxes[..., 6],
+                                  origin,
+                                  axis=axis)
+

@@ -30,7 +30,7 @@ input:
             remove_unknow_examples: False
             remove_environment: False
             db_sampler:
-                enable: False
+                enable: True
                 db_info_path: "/unsullied/sharefs/_research_detection/GeneralDetection/NuScenes/full_data/dbinfos_train_10sweeps_withvelo.pkl"
                 db_preprocess_steps:
                     filter_by_min_num_points:
@@ -91,10 +91,10 @@ model:
             with_distance: False
             num_input_features: 5
         middle:
-            type: "SpMiddleFHD"
+            type: "None"
             num_filters_down1: []
             num_filters_down2: []
-            downsample_factor: 8
+            downsample_factor: 1
             num_input_features: 5
     decoder:
         rpn:

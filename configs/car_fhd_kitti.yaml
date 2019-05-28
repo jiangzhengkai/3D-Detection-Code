@@ -8,14 +8,14 @@ input:
         max_num_voxels: 17000
     train:
         batch_size: 4
-        num_epochs: 120
+        num_epochs: 100
         dataset:
             type: "KittiDataset"
             root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
             info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
             nsweeps: 1
         preprocess:
-            shuffle: True
+            shuffle: False
             num_workers: 3
             gt_location_noise: [1.0, 1.0, 0.5]
             gt_rotation_noise: [-0.3141592654, 0.3141592654]

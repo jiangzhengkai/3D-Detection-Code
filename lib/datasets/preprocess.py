@@ -4,6 +4,7 @@ from lib.datasets import kitti_common as kitti
 from lib.core.bbox import box_np_ops
 from lib.datasets import preprocess as prep
 from collections import defaultdict
+from lib.utils import simplevis
 import numba
 from lib.core.bbox.geometry import points_in_convex_polygon_3d_jit, points_in_convex_polygon_jit
 
@@ -31,8 +32,7 @@ def collate_batch_fn(batch_list):
             for idx, max_gt in enumerate(task_max_gts):
                 batch_task_gt_boxes3d = np.zeros((batch_size, max_gt, 9))
                 for i in range(batch_size):
-                    batch_task_gt_boxes3d[i, :len(elems[i][idx]
-                                                  ), :] = elems[i][idx]
+                    batch_task_gt_boxes3d[i, :len(elems[i][idx]), :] = elems[i][idx]
                 res.append(batch_task_gt_boxes3d)
             ret[key] = res
         elif key == 'metadata':
@@ -110,7 +110,7 @@ def prep_pointcloud(config,
         global_scale_noise = prep_config.global_scale_noise
         global_random_rot_range = prep_config.global_rotation_per_object_range
         global_translate_noise_std = prep_config.global_translation_noise
-        gt_points_max_keep = prep_config.gt_drop_percentage
+        gt_points_drop = prep_config.gt_drop_percentage
         gt_drop_max_keep = prep_config.gt_drop_max_keep_points
         remove_points_after_sample = prep_config.remove_points_after_sample
  
@@ -121,6 +121,7 @@ def prep_pointcloud(config,
         points = input_dict["lidar"]["points"]
     else:
         points = input_dict["lidar"]["combined"]
+
     if training:
         anno_dict = input_dict["lidar"]["annotations"]
         gt_dict = {
@@ -161,6 +162,9 @@ def prep_pointcloud(config,
         points = points[masks.any(-1)]
 
     if training:
+        # boxes_lidar = gt_dict["gt_boxes"]
+        # bev_map = simplevis.nuscene_vis(points, boxes_lidar)
+        # cv2.imshow('pre-noise', bev_map)
         selected = kitti.drop_arrays_by_name(gt_dict["gt_names"], ["DontCare", "ignore"])
         _dict_select(gt_dict, selected)
         if remove_unknown:
@@ -169,7 +173,6 @@ def prep_pointcloud(config,
             _dict_select(gt_dict, keep_mask)
         gt_dict.pop("difficulty")
         gt_boxes_mask = np.array([n in class_names for n in gt_dict["gt_names"]], dtype=np.bool_)
-
         if db_sampler is not None:
             group_ids = None
             sampled_dict = db_sampler.sample_all(
@@ -197,13 +200,11 @@ def prep_pointcloud(config,
                     masks = box_np_ops.points_in_rbbox(points, sampled_gt_boxes)
                     points = points[np.logical_not(masks.any(-1))]
                 points = np.concatenate([sampled_points, points], axis=0)
-
         pc_range = voxel_generator.point_cloud_range
 
         _dict_select(gt_dict, gt_boxes_mask)
         gt_classes = np.array([class_names.index(n) + 1 for n in gt_dict["gt_names"]], dtype=np.int32)
         gt_dict["gt_classes"] = gt_classes
-
         gt_dict["gt_boxes"], points = prep.random_flip(gt_dict["gt_boxes"], points)
         gt_dict["gt_boxes"], points = prep.global_rotation(gt_dict["gt_boxes"], points, rotation=global_rotation_noise)
         gt_dict["gt_boxes"], points = prep.global_scaling_v2(gt_dict["gt_boxes"], points, *global_scale_noise)
@@ -241,6 +242,10 @@ def prep_pointcloud(config,
             task_box[:, -1] = box_np_ops.limit_period(task_box[:, -1],
                                                           offset=0.5,
                                                            period=2 * np.pi)
+        # boxes_lidar = gt_dict["gt_boxes"]
+        # bev_map = simplevis.nuscene_vis(points, boxes_lidar)
+        # cv2.imshow('post-noise', bev_map)
+        # cv2.waitKey(0)
         gt_dict["gt_classes"] = task_classes
         gt_dict["gt_names"] = task_names
         gt_dict["gt_boxes"] = task_boxes
@@ -248,6 +253,7 @@ def prep_pointcloud(config,
     voxel_size = voxel_generator.voxel_size
     pc_range = voxel_generator.point_cloud_range
     grid_size = voxel_generator.grid_size
+
     voxels, coordinates, num_points = voxel_generator.generate(points, max_num_voxels)
     num_voxels = np.array([voxels.shape[0]], dtype=np.int64)
 
@@ -257,6 +263,8 @@ def prep_pointcloud(config,
         'points': points,
         'coordinates': coordinates,
         "num_voxels": num_voxels,
+        "gt_boxes": gt_dict["gt_boxes"],
+        "gt_dict": gt_dict,
     }
     if calib is not None:
         example["calib"] = calib
@@ -329,7 +337,6 @@ def prep_pointcloud(config,
                 for targets_dict in targets_dicts
             ],
         })
-
     return example
 
 

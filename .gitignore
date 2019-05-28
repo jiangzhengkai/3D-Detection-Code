@@ -24,8 +24,10 @@ dist/
 
 # Pycharm editor settings
 .idea
-
+*.bin
 # project dirs
+show.py
+show2.py
 /datasets
 /models
 /output

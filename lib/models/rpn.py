@@ -15,7 +15,7 @@ class RPNHead(nn.Module):
                  use_dir=False,
                  num_dir=0,
                  use_rc=False,
-                 use_focal_loss_init=True,
+                 use_focal_loss_init=False,
                  name='',
                  **kwargs):
         super(RPNHead, self).__init__(**kwargs)

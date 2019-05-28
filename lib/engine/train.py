@@ -6,6 +6,7 @@ import numpy as np
 
 import pathlib
 import torch
+torch.backends.cudnn.benchmark = True
 import time
 
 from lib.datasets.loader.build_loader import build_dataloader
@@ -67,7 +68,6 @@ def train(config, logger=None, model_dir=None, distributed=False):
     logger.info(f"extra arguments: {arguments}")
     num_epochs = config.input.train.num_epochs
     num_gpus = int(os.environ["WORLD_SIZE"]) if "WORLD_SIZE" in os.environ else 1
-    
     total_steps = int(num_epochs * len(train_dataloader.dataset) / (config.input.train.batch_size * num_gpus))
     logger.info("total training steps: %s" %(total_steps))
 
@@ -99,6 +99,9 @@ def train(config, logger=None, model_dir=None, distributed=False):
             arguments["iteration"] += 1
              
             data_device = convert_batch_to_device(data_batch, device=device)
+      
+            optimizer.zero_grad()
+
             rpn_predict_dicts = net_module(data_device)
             losses_dict = net_module.loss(data_device, rpn_predict_dicts)
   
@@ -138,7 +141,6 @@ def train(config, logger=None, model_dir=None, distributed=False):
             loss_all = torch.Tensor(config.model.decoder.head.weights).to(device) * task_loss
             loss_all = torch.sum(loss_all)
 
-            optimizer.zero_grad()                       
             loss_all.backward()
             torch.nn.utils.clip_grad_norm_(net_module.parameters(), 10.0)
             optimizer.step()
@@ -146,7 +148,6 @@ def train(config, logger=None, model_dir=None, distributed=False):
 
             for idx, [cls_loss_reduced, loc_loss_reduced, dir_loss_reduced, cls_pred, labels, cared, loc_loss, cls_pos_loss, cls_neg_loss, loss] in enumerate(
                 zip(cls_loss_reduceds, loc_loss_reduceds, dir_loss_reduceds, cls_preds, data_device["labels"], careds, loc_losses, cls_pos_losses, cls_neg_losses, losses)):
-
                 net_metrics = get_metrics(config, cls_loss_reduced, loc_loss_reduced, cls_pred, labels, cared, num_classes[idx])
                 metrics = {}
                 num_pos = int((labels > 0)[0].float().sum().cpu().numpy())
@@ -207,10 +208,11 @@ def train(config, logger=None, model_dir=None, distributed=False):
                                  pr_metrics["rec@70"], pr_metrics["rec@90"]))
                     logger.info("-------------------------------------------------------------------------------------------------------------------")
 
-            torch.cuda.empty_cache()
+            #torch.cuda.empty_cache()
+
+        checkpoint.save("model_epoch_{:03d}_step_{:06d}".format(
+            epoch, step, **arguments))
         if epoch % 1 == 0 or step == total_steps-1:
-            checkpoint.save("model_epoch_{:03d}_step_{:06d}".format(
-                epoch, step, **arguments))
             #torch.save(model.state_dict(), config.output_dir+"/model_%d.pth"%epoch)
             logger.info("Finish epoch %d, start eval ..." %(epoch))
             test(val_dataloader, 

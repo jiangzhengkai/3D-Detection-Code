@@ -253,8 +253,9 @@ class NuScenesDataset(Dataset):
 
         """ online read """
         lidar_path = Path(info['lidar_path'])
-        points = np.fromfile(str(lidar_path), dtype=np.float32,
-                             count=-1).reshape([-1, 5])[:, :4]
+
+        points = read_file(str(lidar_path))
+
         sweep_points_list = [points]
         sweep_times_list = [np.zeros((points.shape[0], 1))]
 
@@ -265,9 +266,7 @@ class NuScenesDataset(Dataset):
             nsweeps, len(info["sweeps"]))
 
         def read_sweep(sweep):
-            points_sweep = np.fromfile(str(sweep["lidar_path"]),
-                                       dtype=np.float32).reshape([-1,
-                                                                  5])[:, :4].T
+            points_sweep = read_file(str(sweep["lidar_path"])).T
             nbr_points = points_sweep.shape[1]
             if sweep["transform_matrix"] is not None:
                 points_sweep[:3, :] = sweep["transform_matrix"].dot(
@@ -530,6 +529,22 @@ class NuScenesDataset(Dataset):
             },
         }
         return res
+
+def read_file(path):
+    points = None
+    try_cnt = 0
+    while points is None:
+        try_cnt += 1
+        try:
+            points = np.fromfile(path, dtype=np.float32).reshape([-1, 5])[:, :4]
+        except:
+            points = None
+        if try_cnt > 3:
+            break
+
+    return points
+
+
 
 def _second_det_to_nusc_box(detection):
     box3d = detection["box3d_lidar"].detach().cpu().numpy()

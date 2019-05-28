@@ -84,7 +84,7 @@ class DataBasePreprocessing:
 class DBFilterByDifficulty(DataBasePreprocessing):
     def __init__(self, removed_difficulties, logger=None):
         self._removed_difficulties = removed_difficulties
-        logger.info("db_filter_by_removed_difficulties")
+        logger.info(f"db_filter_by_removed_difficulties: {removed_difficulties}")
 
     def _preprocess(self, db_infos):
         new_db_infos = {}
@@ -99,7 +99,7 @@ class DBFilterByDifficulty(DataBasePreprocessing):
 class DBFilterByMinNumPoint(DataBasePreprocessing):
     def __init__(self, min_gt_point_dict, logger=None):
         self._min_gt_point_dict = min_gt_point_dict
-        logger.info("db_filter_by_min_num_points")
+        logger.info(f"db_filter_by_min_num_points: {min_gt_point_dict}")
 
     def _preprocess(self, db_infos):
         for name, min_num in self._min_gt_point_dict.items():

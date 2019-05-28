@@ -22,18 +22,17 @@ def build_dataset(config, training, logger=None):
     target_assigners = target_assigners_all_classes(config)
 
     ######## database sampler ########
+    db_sampler = None
     if training:
-        if logger is not None:
+        if config.input.train.preprocess.db_sampler.enable:
             logger.info("Enable db sampler: db_sampler")
-        db_sampler = DBSampler(config, logger=logger)
-    else:
-        db_sampler = None
+            db_sampler = DBSampler(config, logger=logger)
 
-    out_size_factor = 8
+    out_size_factor = 1
     grid_size = voxel_generator.grid_size
     feature_map_size = grid_size[:2] // out_size_factor
     feature_map_size = [*feature_map_size, 1][::-1]
-    if logger is not None:
+    if logger is not None and training:
         logger.info("feature_map_size: {}".format(feature_map_size))
     dataset_class = get_dataset_class(config.input.train.dataset.type)    
     config_dataset = config.input.train.dataset if training else config.input.eval.dataset
@@ -88,7 +87,7 @@ def build_dataset(config, training, logger=None):
 	db_sampler=db_sampler,
 	num_point_features=config.input.num_point_features,
 	out_size_factor=out_size_factor)
-
+    logging = logger if training else None
     ######## dataset ########
     dataset = dataset_class(
 	info_path=config_dataset.info_path,
@@ -97,7 +96,8 @@ def build_dataset(config, training, logger=None):
 	class_names=list(itertools.chain(*class_names)),
 	prep_func=prep_func,
         nsweeps=config_dataset.nsweeps,
-        logger=logger)
+        subset=False,
+        logger=logging)
     return dataset
 
 def build_dataloader(config, training, logger=None):
@@ -107,13 +107,15 @@ def build_dataloader(config, training, logger=None):
     num_workers = config.input.train.preprocess.num_workers if training else config.input.eval.preprocess.num_workers
     num_gpus = int(
         os.environ["WORLD_SIZE"]) if "WORLD_SIZE" in os.environ else 1
-    logger.info(f"{num_gpus} gpus for dataloader")
+    if logger is not None and training:
+        logger.info(f"{config.input.train.preprocess.num_workers} workers per GPU for dataloader")
     distributed = num_gpus > 1
     if distributed:
         shuffle = True if training else False
         sampler = DistributedSampler(dataset, shuffle=shuffle)
     else:
         sampler = None
+        shuffle = False
 
     dataloader = torch.utils.data.DataLoader(dataset,
                                              batch_size=batch_size,
