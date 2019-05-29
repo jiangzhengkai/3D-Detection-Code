@@ -27,7 +27,7 @@ class RPNHead(nn.Module):
         if self.use_dir:
             self.conv_dir = nn.Conv2d(num_input, num_dir, 1)
         if self.use_rc:
-            self.conv_dir = nn.Conv2d(num_input, num_pred, 1)
+            self.conv_rc = nn.Conv2d(num_input, num_pred, 1)
         # initialization for focal loss
         if use_focal_loss_init:
             prior_prob = 0.01
@@ -221,7 +221,7 @@ class RPNV2(RPNBase):
             nn.ZeroPad2d(1),
             Conv2d(inplanes, planes, 3, stride=stride),
             BatchNorm2d(planes),
-            nn.ReLU(),
+            nn.ReLU6(),
         )
         for j in range(num_blocks):
             block.add(Conv2d(planes, planes, 3, padding=1))

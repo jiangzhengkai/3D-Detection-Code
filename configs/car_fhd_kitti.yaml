@@ -84,7 +84,7 @@ target_assigner:
 model:
     encoder:
         vfe:
-            type: "VoxelFeatureExtractorV3"
+            type: "VoxelFeatureExtractorV3" #"SimpleVoxel"
             num_filters: [16,]
             with_distance: False
             num_input_features: 4

@@ -1,0 +1,1815 @@
+2019-05-29 23:27:15,194 3d-object-detection INFO: Using 1 GPUs
+2019-05-29 23:27:15,195 3d-object-detection INFO: Namespace(cfg='configs/car_fhd_kitti.yaml', distributed=False, local_rank=0, model_dir='kitti')
+2019-05-29 23:27:15,195 3d-object-detection INFO: Collecting env info (might take some time)
+2019-05-29 23:27:21,372 3d-object-detection INFO: 
+PyTorch version: 1.1.0
+Is debug build: No
+CUDA used to build PyTorch: 9.0.176
+
+OS: Ubuntu 16.04.6 LTS
+GCC version: (Ubuntu 5.4.0-6ubuntu1~16.04.11) 5.4.0 20160609
+CMake version: version 3.13.4
+
+Python version: 3.6
+Is CUDA available: Yes
+CUDA runtime version: 9.0.176
+GPU models and configuration: GPU 0: GeForce GTX 1080 Ti
+Nvidia driver version: 390.30
+cuDNN version: /unsullied/sharefs/_admin/cuda/cuda-9.0/cudnn/v7.4.1/lib64/libcudnn.so.7.4.1
+
+Versions of relevant libraries:
+[pip3] numpy==1.14.5
+[pip3] numpydoc==0.8.0
+[pip3] torch==1.1.0
+[pip3] torchvision==0.2.2.post3
+[conda] blas                      1.0                         mkl  
+[conda] mkl                       2018.0.2                      1  
+[conda] mkl-service               1.1.2            py36h17a0993_4  
+[conda] mkl_fft                   1.0.1            py36h3010b51_0  
+[conda] mkl_random                1.0.1            py36h629b387_0  
+[conda] torch                     1.1.0                    pypi_0    pypi
+[conda] torchvision               0.2.2.post3              pypi_0    pypi
+        Pillow (5.2.0)
+2019-05-29 23:27:21,373 3d-object-detection INFO: 
+local_rank: 0
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_num_voxels: 17000
+    train:
+        batch_size: 4
+        num_epochs: 100
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            shuffle: False
+            num_workers: 3
+            gt_location_noise: [1.0, 1.0, 0.5]
+            gt_rotation_noise: [-0.3141592654, 0.3141592654]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0, 0, 0]
+            anchor_area_threshold: -1
+            remove_points_after_sample: True
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+            db_sampler:
+                enable: True
+                db_info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/dbinfos_train.pkl"
+                db_preprocess_steps:
+                    filter_by_min_num_points:
+                        type: "filter_by_min_num_points"
+                        classes: ["Car",] 
+                        values: [5,]
+                    filter_by_difficulty:
+                        type: "filter_by_difficulty"
+                        value: [-1,]
+                global_random_rotation_range_per_object: [0, 0]
+                rate: 1.0
+                sample_groups:
+                     classes: ["Car",] 
+                     values: [15, ]
+
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_val.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 3
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        n_dim: 7
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [[1.6, 3.9, 1.56],]
+        anchor_dims: [7,]
+        anchor_ranges: [[0, -40.0, -1.0, 70.4, 40.0, -1.0],]
+        anchor_rotations: [[0, 1.57],]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["Car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+model:
+    encoder:
+        vfe:
+            type: "SimpleVoxel"
+            num_filters: [16,]
+            with_distance: False
+            num_input_features: 4
+        middle:
+            type: "SpMiddleFHD"
+            num_filters_down1: []
+            num_filters_down2: []
+            downsample_factor: 8
+            num_input_features: 4
+    decoder:
+        rpn:
+            type: "RPNV2"
+            layer_nums: [5]
+            downsample_layer_strides: [1]
+            downsample_num_filters: [128]
+            upsample_layer_strides: [1]
+            upsample_num_filters: [128]
+            group_norm: False
+            num_groups: 32
+            num_input_features: 128
+        head:
+            tasks:
+                num_classes: [1]
+                class_names: [["car"],]
+            weights: [1,]
+        auxiliary:
+            use_direction_classifier: True
+            direction_offset: 0.0
+    post_process:
+        post_center_limit_range: [0, -40.0, -2.2, 70.4, 40.0, 0.8]
+        use_rotate_nms: True
+        use_multi_class_nms: False
+        nms_pre_max_size: 1000
+        nms_post_max_size: 100
+        nms_score_threshold: 0.3
+        nms_iou_threshold: 0.01
+
+    loss:
+        loss_scale_factor: -1
+        loss_norm_type: "NormByNumPositives"
+        pos_class_weight: 1.0
+        neg_class_weight: 1.0
+        use_sigmoid_score: True
+        encode_background_as_zeros: True
+        encode_rad_error_by_sin: True
+        classification_loss:
+            type: "weighted_sigmoid_focal"
+            value: 
+                alpha: 0.25
+                gamma: 2.0
+                anchorwise_output: True
+        localization_loss:
+            type: "weighted_smooth_l1"
+            value: 
+                sigma: 3.0
+                code_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+        classification_loss_weight: 1.0
+        localization_loss_weight: 1.0
+        direction_loss_weight: 0.2
+        rpn_thresholds: [0.1,0.3,0.5,0.7,0.8,0.9]
+
+optimizer:
+    type: "adam"
+    value: 
+        lr:
+            type: "one_cycle"
+            value: 
+                lr_max: 2.25e-3
+                moms: [0.95, 0.85]
+                div_factor: 10.0
+                pct_start: 0.4
+        amsgrad: 0.0
+        wd: 0.01
+    fixed_wd: True
+    moving_average: False
+
+2019-05-29 23:27:21,375 Training INFO: Enable db sampler: db_sampler
+2019-05-29 23:27:21,375 Training INFO: db_filter_by_min_num_points: {'Car': 5}
+2019-05-29 23:27:21,375 Training INFO: db_filter_by_removed_difficulties: [-1]
+2019-05-29 23:27:21,563 Training INFO: load 2207 Pedestrian database infos
+2019-05-29 23:27:21,563 Training INFO: load 14357 Car database infos
+2019-05-29 23:27:21,563 Training INFO: load 734 Cyclist database infos
+2019-05-29 23:27:21,563 Training INFO: load 1297 Van database infos
+2019-05-29 23:27:21,563 Training INFO: load 488 Truck database infos
+2019-05-29 23:27:21,563 Training INFO: load 224 Tram database infos
+2019-05-29 23:27:21,564 Training INFO: load 337 Misc database infos
+2019-05-29 23:27:21,564 Training INFO: load 56 Person_sitting database infos
+2019-05-29 23:27:21,593 Training INFO: After filter database:
+2019-05-29 23:27:21,593 Training INFO: load 2207 Pedestrian database infos
+2019-05-29 23:27:21,593 Training INFO: load 13442 Car database infos
+2019-05-29 23:27:21,594 Training INFO: load 734 Cyclist database infos
+2019-05-29 23:27:21,594 Training INFO: load 1297 Van database infos
+2019-05-29 23:27:21,594 Training INFO: load 488 Truck database infos
+2019-05-29 23:27:21,594 Training INFO: load 224 Tram database infos
+2019-05-29 23:27:21,594 Training INFO: load 337 Misc database infos
+2019-05-29 23:27:21,594 Training INFO: load 56 Person_sitting database infos
+2019-05-29 23:27:21,595 Training INFO: feature_map_size: [1, 200, 176]
+2019-05-29 23:27:21,869 Training INFO: 3 workers per GPU for dataloader
+2019-05-29 23:27:22,137 Training INFO: Using direction offset 0.000000 to fix aoe
+2019-05-29 23:27:22,138 Training INFO: Voxel Feature Encoder: SimpleVoxel
+2019-05-29 23:27:22,138 Training INFO: Middle class name: SpMiddleFHD
+2019-05-29 23:27:22,154 Training INFO: RPN class name: RPNV2
+2019-05-29 23:27:22,167 Training INFO: num_classes: [1]
+2019-05-29 23:27:22,167 Training INFO: num_preds: [14]
+2019-05-29 23:27:22,167 Training INFO: num_dirs: [4]
+2019-05-29 23:27:22,168 Training INFO: Finish RPNBase Initialization
+2019-05-29 23:27:22,169 Training INFO: Model Articutures: VoxelNet(
+  (_voxel_feature_extractor): SimpleVoxel()
+  (_middle_feature_extractor): SpMiddleFHD(
+    (middle_conv): SparseSequential(
+      (0): DefaultArgLayer()
+      (1): BatchNorm1d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): ReLU()
+      (3): DefaultArgLayer()
+      (4): BatchNorm1d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (5): ReLU()
+      (6): DefaultArgLayer()
+      (7): DefaultArgLayer(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (8): ReLU()
+      (9): DefaultArgLayer()
+      (10): DefaultArgLayer(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (11): ReLU()
+      (12): DefaultArgLayer()
+      (13): DefaultArgLayer(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (14): ReLU()
+      (15): DefaultArgLayer()
+      (16): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (17): ReLU()
+      (18): DefaultArgLayer()
+      (19): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (20): ReLU()
+      (21): DefaultArgLayer()
+      (22): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (23): ReLU()
+      (24): DefaultArgLayer()
+      (25): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (26): ReLU()
+      (27): DefaultArgLayer()
+      (28): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (29): ReLU()
+      (30): DefaultArgLayer()
+      (31): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (32): ReLU()
+      (33): DefaultArgLayer()
+      (34): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (35): ReLU()
+      (36): DefaultArgLayer()
+      (37): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (38): ReLU()
+      (39): DefaultArgLayer()
+      (40): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (41): ReLU()
+    )
+  )
+  (_rpn): RPNV2(
+    (blocks): ModuleList(
+      (0): Sequential(
+        (0): ZeroPad2d(padding=(1, 1, 1, 1), value=0.0)
+        (1): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), bias=False)
+        (2): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (3): ReLU6()
+        (4): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (5): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (6): ReLU6()
+        (7): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (8): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (9): ReLU6()
+        (10): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (11): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (12): ReLU6()
+        (13): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (14): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (15): ReLU6()
+        (16): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (17): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (18): ReLU6()
+      )
+    )
+    (deblocks): ModuleList(
+      (0): Sequential(
+        (0): DefaultArgLayer(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU6()
+      )
+    )
+    (tasks): ModuleList(
+      (0): RPNHead(
+        (conv_box): Conv2d(128, 14, kernel_size=(1, 1), stride=(1, 1))
+        (conv_cls): Conv2d(128, 2, kernel_size=(1, 1), stride=(1, 1))
+        (conv_dir): Conv2d(128, 4, kernel_size=(1, 1), stride=(1, 1))
+      )
+    )
+  )
+  (rpn_acc): Accuracy()
+  (rpn_precision): Precision()
+  (rpn_recall): Recall()
+  (rpn_metrics): PrecisionRecall()
+  (rpn_cls_loss): Scalar()
+  (rpn_loc_loss): Scalar()
+  (rpn_total_loss): Scalar()
+)
+2019-05-29 23:27:32,277 Training INFO: Training use Single-GPU
+2019-05-29 23:27:32,280 Training INFO: No checkpoint found. Initializing model from scratch
+2019-05-29 23:27:32,280 Training INFO: extra arguments: {'iteration': 0, 'epoch': 0}
+2019-05-29 23:27:32,281 Training INFO: total training steps: 92800
+2019-05-29 23:38:43,181 3d-object-detection INFO: Using 1 GPUs
+2019-05-29 23:38:43,181 3d-object-detection INFO: Namespace(cfg='configs/car_fhd_kitti.yaml', distributed=False, local_rank=0, model_dir='kitti')
+2019-05-29 23:38:43,181 3d-object-detection INFO: Collecting env info (might take some time)
+2019-05-29 23:38:49,094 3d-object-detection INFO: 
+PyTorch version: 1.1.0
+Is debug build: No
+CUDA used to build PyTorch: 9.0.176
+
+OS: Ubuntu 16.04.6 LTS
+GCC version: (Ubuntu 5.4.0-6ubuntu1~16.04.11) 5.4.0 20160609
+CMake version: version 3.13.4
+
+Python version: 3.6
+Is CUDA available: Yes
+CUDA runtime version: 9.0.176
+GPU models and configuration: GPU 0: GeForce GTX 1080 Ti
+Nvidia driver version: 390.30
+cuDNN version: /unsullied/sharefs/_admin/cuda/cuda-9.0/cudnn/v7.4.1/lib64/libcudnn.so.7.4.1
+
+Versions of relevant libraries:
+[pip3] numpy==1.14.5
+[pip3] numpydoc==0.8.0
+[pip3] torch==1.1.0
+[pip3] torchvision==0.2.2.post3
+[conda] blas                      1.0                         mkl  
+[conda] mkl                       2018.0.2                      1  
+[conda] mkl-service               1.1.2            py36h17a0993_4  
+[conda] mkl_fft                   1.0.1            py36h3010b51_0  
+[conda] mkl_random                1.0.1            py36h629b387_0  
+[conda] torch                     1.1.0                    pypi_0    pypi
+[conda] torchvision               0.2.2.post3              pypi_0    pypi
+        Pillow (5.2.0)
+2019-05-29 23:38:49,094 3d-object-detection INFO: 
+local_rank: 0
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_num_voxels: 17000
+    train:
+        batch_size: 4
+        num_epochs: 100
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            shuffle: False
+            num_workers: 3
+            gt_location_noise: [1.0, 1.0, 0.5]
+            gt_rotation_noise: [-0.3141592654, 0.3141592654]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0, 0, 0]
+            anchor_area_threshold: -1
+            remove_points_after_sample: True
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+            db_sampler:
+                enable: True
+                db_info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/dbinfos_train.pkl"
+                db_preprocess_steps:
+                    filter_by_min_num_points:
+                        type: "filter_by_min_num_points"
+                        classes: ["Car",] 
+                        values: [5,]
+                    filter_by_difficulty:
+                        type: "filter_by_difficulty"
+                        value: [-1,]
+                global_random_rotation_range_per_object: [0, 0]
+                rate: 1.0
+                sample_groups:
+                     classes: ["Car",] 
+                     values: [15, ]
+
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_val.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 3
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        n_dim: 7
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [[1.6, 3.9, 1.56],]
+        anchor_dims: [7,]
+        anchor_ranges: [[0, -40.0, -1.0, 70.4, 40.0, -1.0],]
+        anchor_rotations: [[0, 1.57],]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["Car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+model:
+    encoder:
+        vfe:
+            type: "SimpleVoxel"
+            num_filters: [16,]
+            with_distance: False
+            num_input_features: 4
+        middle:
+            type: "SpMiddleFHD"
+            num_filters_down1: []
+            num_filters_down2: []
+            downsample_factor: 8
+            num_input_features: 4
+    decoder:
+        rpn:
+            type: "RPNV2"
+            layer_nums: [5]
+            downsample_layer_strides: [1]
+            downsample_num_filters: [128]
+            upsample_layer_strides: [1]
+            upsample_num_filters: [128]
+            group_norm: False
+            num_groups: 32
+            num_input_features: 128
+        head:
+            tasks:
+                num_classes: [1]
+                class_names: [["car"],]
+            weights: [1,]
+        auxiliary:
+            use_direction_classifier: True
+            direction_offset: 0.0
+    post_process:
+        post_center_limit_range: [0, -40.0, -2.2, 70.4, 40.0, 0.8]
+        use_rotate_nms: True
+        use_multi_class_nms: False
+        nms_pre_max_size: 1000
+        nms_post_max_size: 100
+        nms_score_threshold: 0.3
+        nms_iou_threshold: 0.01
+
+    loss:
+        loss_scale_factor: -1
+        loss_norm_type: "NormByNumPositives"
+        pos_class_weight: 1.0
+        neg_class_weight: 1.0
+        use_sigmoid_score: True
+        encode_background_as_zeros: True
+        encode_rad_error_by_sin: True
+        classification_loss:
+            type: "weighted_sigmoid_focal"
+            value: 
+                alpha: 0.25
+                gamma: 2.0
+                anchorwise_output: True
+        localization_loss:
+            type: "weighted_smooth_l1"
+            value: 
+                sigma: 3.0
+                code_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+        classification_loss_weight: 1.0
+        localization_loss_weight: 1.0
+        direction_loss_weight: 0.2
+        rpn_thresholds: [0.1,0.3,0.5,0.7,0.8,0.9]
+
+optimizer:
+    type: "adam"
+    value: 
+        lr:
+            type: "one_cycle"
+            value: 
+                lr_max: 2.25e-3
+                moms: [0.95, 0.85]
+                div_factor: 10.0
+                pct_start: 0.4
+        amsgrad: 0.0
+        wd: 0.01
+    fixed_wd: True
+    moving_average: False
+
+2019-05-29 23:38:49,096 Training INFO: Enable db sampler: db_sampler
+2019-05-29 23:38:49,096 Training INFO: db_filter_by_min_num_points: {'Car': 5}
+2019-05-29 23:38:49,096 Training INFO: db_filter_by_removed_difficulties: [-1]
+2019-05-29 23:38:49,207 Training INFO: load 2207 Pedestrian database infos
+2019-05-29 23:38:49,208 Training INFO: load 14357 Car database infos
+2019-05-29 23:38:49,208 Training INFO: load 734 Cyclist database infos
+2019-05-29 23:38:49,208 Training INFO: load 1297 Van database infos
+2019-05-29 23:38:49,208 Training INFO: load 488 Truck database infos
+2019-05-29 23:38:49,208 Training INFO: load 224 Tram database infos
+2019-05-29 23:38:49,208 Training INFO: load 337 Misc database infos
+2019-05-29 23:38:49,208 Training INFO: load 56 Person_sitting database infos
+2019-05-29 23:38:49,237 Training INFO: After filter database:
+2019-05-29 23:38:49,237 Training INFO: load 2207 Pedestrian database infos
+2019-05-29 23:38:49,237 Training INFO: load 13442 Car database infos
+2019-05-29 23:38:49,237 Training INFO: load 734 Cyclist database infos
+2019-05-29 23:38:49,238 Training INFO: load 1297 Van database infos
+2019-05-29 23:38:49,238 Training INFO: load 488 Truck database infos
+2019-05-29 23:38:49,238 Training INFO: load 224 Tram database infos
+2019-05-29 23:38:49,238 Training INFO: load 337 Misc database infos
+2019-05-29 23:38:49,238 Training INFO: load 56 Person_sitting database infos
+2019-05-29 23:38:49,239 Training INFO: feature_map_size: [1, 200, 176]
+2019-05-29 23:38:49,413 Training INFO: 3 workers per GPU for dataloader
+2019-05-29 23:38:49,589 Training INFO: Using direction offset 0.000000 to fix aoe
+2019-05-29 23:38:49,590 Training INFO: Voxel Feature Encoder: SimpleVoxel
+2019-05-29 23:38:49,590 Training INFO: Middle class name: SpMiddleFHD
+2019-05-29 23:38:49,606 Training INFO: RPN class name: RPNV2
+2019-05-29 23:38:49,619 Training INFO: num_classes: [1]
+2019-05-29 23:38:49,619 Training INFO: num_preds: [14]
+2019-05-29 23:38:49,619 Training INFO: num_dirs: [4]
+2019-05-29 23:38:49,620 Training INFO: Finish RPNBase Initialization
+2019-05-29 23:38:49,621 Training INFO: Model Articutures: VoxelNet(
+  (_voxel_feature_extractor): SimpleVoxel()
+  (_middle_feature_extractor): SpMiddleFHD(
+    (middle_conv): SparseSequential(
+      (0): DefaultArgLayer()
+      (1): BatchNorm1d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): ReLU()
+      (3): DefaultArgLayer()
+      (4): BatchNorm1d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (5): ReLU()
+      (6): DefaultArgLayer()
+      (7): DefaultArgLayer(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (8): ReLU()
+      (9): DefaultArgLayer()
+      (10): DefaultArgLayer(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (11): ReLU()
+      (12): DefaultArgLayer()
+      (13): DefaultArgLayer(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (14): ReLU()
+      (15): DefaultArgLayer()
+      (16): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (17): ReLU()
+      (18): DefaultArgLayer()
+      (19): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (20): ReLU()
+      (21): DefaultArgLayer()
+      (22): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (23): ReLU()
+      (24): DefaultArgLayer()
+      (25): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (26): ReLU()
+      (27): DefaultArgLayer()
+      (28): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (29): ReLU()
+      (30): DefaultArgLayer()
+      (31): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (32): ReLU()
+      (33): DefaultArgLayer()
+      (34): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (35): ReLU()
+      (36): DefaultArgLayer()
+      (37): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (38): ReLU()
+      (39): DefaultArgLayer()
+      (40): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (41): ReLU()
+    )
+  )
+  (_rpn): RPNV2(
+    (blocks): ModuleList(
+      (0): Sequential(
+        (0): ZeroPad2d(padding=(1, 1, 1, 1), value=0.0)
+        (1): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), bias=False)
+        (2): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (3): ReLU6()
+        (4): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (5): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (6): ReLU6()
+        (7): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (8): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (9): ReLU6()
+        (10): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (11): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (12): ReLU6()
+        (13): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (14): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (15): ReLU6()
+        (16): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (17): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (18): ReLU6()
+      )
+    )
+    (deblocks): ModuleList(
+      (0): Sequential(
+        (0): DefaultArgLayer(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU6()
+      )
+    )
+    (tasks): ModuleList(
+      (0): RPNHead(
+        (conv_box): Conv2d(128, 14, kernel_size=(1, 1), stride=(1, 1))
+        (conv_cls): Conv2d(128, 2, kernel_size=(1, 1), stride=(1, 1))
+        (conv_dir): Conv2d(128, 4, kernel_size=(1, 1), stride=(1, 1))
+      )
+    )
+  )
+  (rpn_acc): Accuracy()
+  (rpn_precision): Precision()
+  (rpn_recall): Recall()
+  (rpn_metrics): PrecisionRecall()
+  (rpn_cls_loss): Scalar()
+  (rpn_loc_loss): Scalar()
+  (rpn_total_loss): Scalar()
+)
+2019-05-29 23:38:59,640 Training INFO: Training use Single-GPU
+2019-05-29 23:38:59,644 Training INFO: No checkpoint found. Initializing model from scratch
+2019-05-29 23:38:59,644 Training INFO: extra arguments: {'iteration': 0, 'epoch': 0}
+2019-05-29 23:38:59,644 Training INFO: total training steps: 92800
+2019-05-29 23:39:23,108 3d-object-detection INFO: Using 1 GPUs
+2019-05-29 23:39:23,108 3d-object-detection INFO: Namespace(cfg='configs/car_fhd_kitti.yaml', distributed=False, local_rank=0, model_dir='kitti')
+2019-05-29 23:39:23,108 3d-object-detection INFO: Collecting env info (might take some time)
+2019-05-29 23:39:28,443 3d-object-detection INFO: 
+PyTorch version: 1.1.0
+Is debug build: No
+CUDA used to build PyTorch: 9.0.176
+
+OS: Ubuntu 16.04.6 LTS
+GCC version: (Ubuntu 5.4.0-6ubuntu1~16.04.11) 5.4.0 20160609
+CMake version: version 3.13.4
+
+Python version: 3.6
+Is CUDA available: Yes
+CUDA runtime version: 9.0.176
+GPU models and configuration: GPU 0: GeForce GTX 1080 Ti
+Nvidia driver version: 390.30
+cuDNN version: /unsullied/sharefs/_admin/cuda/cuda-9.0/cudnn/v7.4.1/lib64/libcudnn.so.7.4.1
+
+Versions of relevant libraries:
+[pip3] numpy==1.14.5
+[pip3] numpydoc==0.8.0
+[pip3] torch==1.1.0
+[pip3] torchvision==0.2.2.post3
+[conda] blas                      1.0                         mkl  
+[conda] mkl                       2018.0.2                      1  
+[conda] mkl-service               1.1.2            py36h17a0993_4  
+[conda] mkl_fft                   1.0.1            py36h3010b51_0  
+[conda] mkl_random                1.0.1            py36h629b387_0  
+[conda] torch                     1.1.0                    pypi_0    pypi
+[conda] torchvision               0.2.2.post3              pypi_0    pypi
+        Pillow (5.2.0)
+2019-05-29 23:39:28,443 3d-object-detection INFO: 
+local_rank: 0
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_num_voxels: 17000
+    train:
+        batch_size: 4
+        num_epochs: 100
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            shuffle: False
+            num_workers: 3
+            gt_location_noise: [1.0, 1.0, 0.5]
+            gt_rotation_noise: [-0.3141592654, 0.3141592654]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0, 0, 0]
+            anchor_area_threshold: -1
+            remove_points_after_sample: True
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+            db_sampler:
+                enable: True
+                db_info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/dbinfos_train.pkl"
+                db_preprocess_steps:
+                    filter_by_min_num_points:
+                        type: "filter_by_min_num_points"
+                        classes: ["Car",] 
+                        values: [5,]
+                    filter_by_difficulty:
+                        type: "filter_by_difficulty"
+                        value: [-1,]
+                global_random_rotation_range_per_object: [0, 0]
+                rate: 1.0
+                sample_groups:
+                     classes: ["Car",] 
+                     values: [15, ]
+
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_val.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 3
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        n_dim: 7
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [[1.6, 3.9, 1.56],]
+        anchor_dims: [7,]
+        anchor_ranges: [[0, -40.0, -1.0, 70.4, 40.0, -1.0],]
+        anchor_rotations: [[0, 1.57],]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["Car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+model:
+    encoder:
+        vfe:
+            type: "SimpleVoxel"
+            num_filters: [16,]
+            with_distance: False
+            num_input_features: 4
+        middle:
+            type: "SpMiddleFHD"
+            num_filters_down1: []
+            num_filters_down2: []
+            downsample_factor: 8
+            num_input_features: 4
+    decoder:
+        rpn:
+            type: "RPNV2"
+            layer_nums: [5]
+            downsample_layer_strides: [1]
+            downsample_num_filters: [128]
+            upsample_layer_strides: [1]
+            upsample_num_filters: [128]
+            group_norm: False
+            num_groups: 32
+            num_input_features: 128
+        head:
+            tasks:
+                num_classes: [1]
+                class_names: [["car"],]
+            weights: [1,]
+        auxiliary:
+            use_direction_classifier: True
+            direction_offset: 0.0
+    post_process:
+        post_center_limit_range: [0, -40.0, -2.2, 70.4, 40.0, 0.8]
+        use_rotate_nms: True
+        use_multi_class_nms: False
+        nms_pre_max_size: 1000
+        nms_post_max_size: 100
+        nms_score_threshold: 0.3
+        nms_iou_threshold: 0.01
+
+    loss:
+        loss_scale_factor: -1
+        loss_norm_type: "NormByNumPositives"
+        pos_class_weight: 1.0
+        neg_class_weight: 1.0
+        use_sigmoid_score: True
+        encode_background_as_zeros: True
+        encode_rad_error_by_sin: True
+        classification_loss:
+            type: "weighted_sigmoid_focal"
+            value: 
+                alpha: 0.25
+                gamma: 2.0
+                anchorwise_output: True
+        localization_loss:
+            type: "weighted_smooth_l1"
+            value: 
+                sigma: 3.0
+                code_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+        classification_loss_weight: 1.0
+        localization_loss_weight: 1.0
+        direction_loss_weight: 0.2
+        rpn_thresholds: [0.1,0.3,0.5,0.7,0.8,0.9]
+
+optimizer:
+    type: "adam"
+    value: 
+        lr:
+            type: "one_cycle"
+            value: 
+                lr_max: 2.25e-3
+                moms: [0.95, 0.85]
+                div_factor: 10.0
+                pct_start: 0.4
+        amsgrad: 0.0
+        wd: 0.01
+    fixed_wd: True
+    moving_average: False
+
+2019-05-29 23:39:28,445 Training INFO: Enable db sampler: db_sampler
+2019-05-29 23:39:28,445 Training INFO: db_filter_by_min_num_points: {'Car': 5}
+2019-05-29 23:39:28,445 Training INFO: db_filter_by_removed_difficulties: [-1]
+2019-05-29 23:39:28,552 Training INFO: load 2207 Pedestrian database infos
+2019-05-29 23:39:28,552 Training INFO: load 14357 Car database infos
+2019-05-29 23:39:28,552 Training INFO: load 734 Cyclist database infos
+2019-05-29 23:39:28,552 Training INFO: load 1297 Van database infos
+2019-05-29 23:39:28,552 Training INFO: load 488 Truck database infos
+2019-05-29 23:39:28,552 Training INFO: load 224 Tram database infos
+2019-05-29 23:39:28,553 Training INFO: load 337 Misc database infos
+2019-05-29 23:39:28,553 Training INFO: load 56 Person_sitting database infos
+2019-05-29 23:39:28,585 Training INFO: After filter database:
+2019-05-29 23:39:28,585 Training INFO: load 2207 Pedestrian database infos
+2019-05-29 23:39:28,585 Training INFO: load 13442 Car database infos
+2019-05-29 23:39:28,585 Training INFO: load 734 Cyclist database infos
+2019-05-29 23:39:28,585 Training INFO: load 1297 Van database infos
+2019-05-29 23:39:28,585 Training INFO: load 488 Truck database infos
+2019-05-29 23:39:28,585 Training INFO: load 224 Tram database infos
+2019-05-29 23:39:28,586 Training INFO: load 337 Misc database infos
+2019-05-29 23:39:28,586 Training INFO: load 56 Person_sitting database infos
+2019-05-29 23:39:28,587 Training INFO: feature_map_size: [1, 200, 176]
+2019-05-29 23:39:28,765 Training INFO: 3 workers per GPU for dataloader
+2019-05-29 23:39:28,943 Training INFO: Using direction offset 0.000000 to fix aoe
+2019-05-29 23:39:28,944 Training INFO: Voxel Feature Encoder: SimpleVoxel
+2019-05-29 23:39:28,944 Training INFO: Middle class name: SpMiddleFHD
+2019-05-29 23:39:28,962 Training INFO: RPN class name: RPNV2
+2019-05-29 23:39:28,975 Training INFO: num_classes: [1]
+2019-05-29 23:39:28,975 Training INFO: num_preds: [14]
+2019-05-29 23:39:28,975 Training INFO: num_dirs: [4]
+2019-05-29 23:39:28,976 Training INFO: Finish RPNBase Initialization
+2019-05-29 23:39:28,977 Training INFO: Model Articutures: VoxelNet(
+  (_voxel_feature_extractor): SimpleVoxel()
+  (_middle_feature_extractor): SpMiddleFHD(
+    (middle_conv): SparseSequential(
+      (0): DefaultArgLayer()
+      (1): BatchNorm1d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): ReLU()
+      (3): DefaultArgLayer()
+      (4): BatchNorm1d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (5): ReLU()
+      (6): DefaultArgLayer()
+      (7): DefaultArgLayer(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (8): ReLU()
+      (9): DefaultArgLayer()
+      (10): DefaultArgLayer(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (11): ReLU()
+      (12): DefaultArgLayer()
+      (13): DefaultArgLayer(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (14): ReLU()
+      (15): DefaultArgLayer()
+      (16): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (17): ReLU()
+      (18): DefaultArgLayer()
+      (19): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (20): ReLU()
+      (21): DefaultArgLayer()
+      (22): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (23): ReLU()
+      (24): DefaultArgLayer()
+      (25): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (26): ReLU()
+      (27): DefaultArgLayer()
+      (28): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (29): ReLU()
+      (30): DefaultArgLayer()
+      (31): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (32): ReLU()
+      (33): DefaultArgLayer()
+      (34): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (35): ReLU()
+      (36): DefaultArgLayer()
+      (37): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (38): ReLU()
+      (39): DefaultArgLayer()
+      (40): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (41): ReLU()
+    )
+  )
+  (_rpn): RPNV2(
+    (blocks): ModuleList(
+      (0): Sequential(
+        (0): ZeroPad2d(padding=(1, 1, 1, 1), value=0.0)
+        (1): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), bias=False)
+        (2): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (3): ReLU6()
+        (4): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (5): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (6): ReLU6()
+        (7): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (8): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (9): ReLU6()
+        (10): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (11): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (12): ReLU6()
+        (13): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (14): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (15): ReLU6()
+        (16): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (17): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (18): ReLU6()
+      )
+    )
+    (deblocks): ModuleList(
+      (0): Sequential(
+        (0): DefaultArgLayer(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU6()
+      )
+    )
+    (tasks): ModuleList(
+      (0): RPNHead(
+        (conv_box): Conv2d(128, 14, kernel_size=(1, 1), stride=(1, 1))
+        (conv_cls): Conv2d(128, 2, kernel_size=(1, 1), stride=(1, 1))
+        (conv_dir): Conv2d(128, 4, kernel_size=(1, 1), stride=(1, 1))
+      )
+    )
+  )
+  (rpn_acc): Accuracy()
+  (rpn_precision): Precision()
+  (rpn_recall): Recall()
+  (rpn_metrics): PrecisionRecall()
+  (rpn_cls_loss): Scalar()
+  (rpn_loc_loss): Scalar()
+  (rpn_total_loss): Scalar()
+)
+2019-05-29 23:39:39,137 Training INFO: Training use Single-GPU
+2019-05-29 23:39:39,140 Training INFO: No checkpoint found. Initializing model from scratch
+2019-05-29 23:39:39,140 Training INFO: extra arguments: {'iteration': 0, 'epoch': 0}
+2019-05-29 23:39:39,141 Training INFO: total training steps: 92800
+2019-05-29 23:40:43,188 3d-object-detection INFO: Using 1 GPUs
+2019-05-29 23:40:43,189 3d-object-detection INFO: Namespace(cfg='configs/car_fhd_kitti.yaml', distributed=False, local_rank=0, model_dir='kitti')
+2019-05-29 23:40:43,189 3d-object-detection INFO: Collecting env info (might take some time)
+2019-05-29 23:40:49,092 3d-object-detection INFO: 
+PyTorch version: 1.1.0
+Is debug build: No
+CUDA used to build PyTorch: 9.0.176
+
+OS: Ubuntu 16.04.6 LTS
+GCC version: (Ubuntu 5.4.0-6ubuntu1~16.04.11) 5.4.0 20160609
+CMake version: version 3.13.4
+
+Python version: 3.6
+Is CUDA available: Yes
+CUDA runtime version: 9.0.176
+GPU models and configuration: GPU 0: GeForce GTX 1080 Ti
+Nvidia driver version: 390.30
+cuDNN version: /unsullied/sharefs/_admin/cuda/cuda-9.0/cudnn/v7.4.1/lib64/libcudnn.so.7.4.1
+
+Versions of relevant libraries:
+[pip3] numpy==1.14.5
+[pip3] numpydoc==0.8.0
+[pip3] torch==1.1.0
+[pip3] torchvision==0.2.2.post3
+[conda] blas                      1.0                         mkl  
+[conda] mkl                       2018.0.2                      1  
+[conda] mkl-service               1.1.2            py36h17a0993_4  
+[conda] mkl_fft                   1.0.1            py36h3010b51_0  
+[conda] mkl_random                1.0.1            py36h629b387_0  
+[conda] torch                     1.1.0                    pypi_0    pypi
+[conda] torchvision               0.2.2.post3              pypi_0    pypi
+        Pillow (5.2.0)
+2019-05-29 23:40:49,093 3d-object-detection INFO: 
+local_rank: 0
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_num_voxels: 17000
+    train:
+        batch_size: 4
+        num_epochs: 100
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            shuffle: False
+            num_workers: 3
+            gt_location_noise: [1.0, 1.0, 0.5]
+            gt_rotation_noise: [-0.3141592654, 0.3141592654]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0, 0, 0]
+            anchor_area_threshold: -1
+            remove_points_after_sample: True
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+            db_sampler:
+                enable: True
+                db_info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/dbinfos_train.pkl"
+                db_preprocess_steps:
+                    filter_by_min_num_points:
+                        type: "filter_by_min_num_points"
+                        classes: ["Car",] 
+                        values: [5,]
+                    filter_by_difficulty:
+                        type: "filter_by_difficulty"
+                        value: [-1,]
+                global_random_rotation_range_per_object: [0, 0]
+                rate: 1.0
+                sample_groups:
+                     classes: ["Car",] 
+                     values: [15, ]
+
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_val.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 3
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        n_dim: 7
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [[1.6, 3.9, 1.56],]
+        anchor_dims: [7,]
+        anchor_ranges: [[0, -40.0, -1.0, 70.4, 40.0, -1.0],]
+        anchor_rotations: [[0, 1.57],]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["Car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+model:
+    encoder:
+        vfe:
+            type: "VoxelFeatureExtractorV3" #"SimpleVoxel"
+            num_filters: [16,]
+            with_distance: False
+            num_input_features: 4
+        middle:
+            type: "SpMiddleFHD"
+            num_filters_down1: []
+            num_filters_down2: []
+            downsample_factor: 8
+            num_input_features: 4
+    decoder:
+        rpn:
+            type: "RPNV2"
+            layer_nums: [5]
+            downsample_layer_strides: [1]
+            downsample_num_filters: [128]
+            upsample_layer_strides: [1]
+            upsample_num_filters: [128]
+            group_norm: False
+            num_groups: 32
+            num_input_features: 128
+        head:
+            tasks:
+                num_classes: [1]
+                class_names: [["car"],]
+            weights: [1,]
+        auxiliary:
+            use_direction_classifier: True
+            direction_offset: 0.0
+    post_process:
+        post_center_limit_range: [0, -40.0, -2.2, 70.4, 40.0, 0.8]
+        use_rotate_nms: True
+        use_multi_class_nms: False
+        nms_pre_max_size: 1000
+        nms_post_max_size: 100
+        nms_score_threshold: 0.3
+        nms_iou_threshold: 0.01
+
+    loss:
+        loss_scale_factor: -1
+        loss_norm_type: "NormByNumPositives"
+        pos_class_weight: 1.0
+        neg_class_weight: 1.0
+        use_sigmoid_score: True
+        encode_background_as_zeros: True
+        encode_rad_error_by_sin: True
+        classification_loss:
+            type: "weighted_sigmoid_focal"
+            value: 
+                alpha: 0.25
+                gamma: 2.0
+                anchorwise_output: True
+        localization_loss:
+            type: "weighted_smooth_l1"
+            value: 
+                sigma: 3.0
+                code_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+        classification_loss_weight: 1.0
+        localization_loss_weight: 1.0
+        direction_loss_weight: 0.2
+        rpn_thresholds: [0.1,0.3,0.5,0.7,0.8,0.9]
+
+optimizer:
+    type: "adam"
+    value: 
+        lr:
+            type: "one_cycle"
+            value: 
+                lr_max: 2.25e-3
+                moms: [0.95, 0.85]
+                div_factor: 10.0
+                pct_start: 0.4
+        amsgrad: 0.0
+        wd: 0.01
+    fixed_wd: True
+    moving_average: False
+
+2019-05-29 23:40:49,095 Training INFO: Enable db sampler: db_sampler
+2019-05-29 23:40:49,095 Training INFO: db_filter_by_min_num_points: {'Car': 5}
+2019-05-29 23:40:49,095 Training INFO: db_filter_by_removed_difficulties: [-1]
+2019-05-29 23:40:49,232 Training INFO: load 2207 Pedestrian database infos
+2019-05-29 23:40:49,232 Training INFO: load 14357 Car database infos
+2019-05-29 23:40:49,232 Training INFO: load 734 Cyclist database infos
+2019-05-29 23:40:49,232 Training INFO: load 1297 Van database infos
+2019-05-29 23:40:49,232 Training INFO: load 488 Truck database infos
+2019-05-29 23:40:49,233 Training INFO: load 224 Tram database infos
+2019-05-29 23:40:49,233 Training INFO: load 337 Misc database infos
+2019-05-29 23:40:49,233 Training INFO: load 56 Person_sitting database infos
+2019-05-29 23:40:49,263 Training INFO: After filter database:
+2019-05-29 23:40:49,263 Training INFO: load 2207 Pedestrian database infos
+2019-05-29 23:40:49,263 Training INFO: load 13442 Car database infos
+2019-05-29 23:40:49,263 Training INFO: load 734 Cyclist database infos
+2019-05-29 23:40:49,264 Training INFO: load 1297 Van database infos
+2019-05-29 23:40:49,264 Training INFO: load 488 Truck database infos
+2019-05-29 23:40:49,264 Training INFO: load 224 Tram database infos
+2019-05-29 23:40:49,264 Training INFO: load 337 Misc database infos
+2019-05-29 23:40:49,264 Training INFO: load 56 Person_sitting database infos
+2019-05-29 23:40:49,265 Training INFO: feature_map_size: [1, 200, 176]
+2019-05-29 23:40:49,483 Training INFO: 3 workers per GPU for dataloader
+2019-05-29 23:40:49,699 Training INFO: Using direction offset 0.000000 to fix aoe
+2019-05-29 23:40:49,699 Training INFO: Voxel Feature Encoder: VoxelFeatureExtractorV3
+2019-05-29 23:40:49,699 Training INFO: Middle class name: SpMiddleFHD
+2019-05-29 23:40:49,714 Training INFO: RPN class name: RPNV2
+2019-05-29 23:40:49,726 Training INFO: num_classes: [1]
+2019-05-29 23:40:49,726 Training INFO: num_preds: [14]
+2019-05-29 23:40:49,726 Training INFO: num_dirs: [4]
+2019-05-29 23:40:49,727 Training INFO: Finish RPNBase Initialization
+2019-05-29 23:40:49,728 Training INFO: Model Articutures: VoxelNet(
+  (_voxel_feature_extractor): VoxelFeatureExtractorV3()
+  (_middle_feature_extractor): SpMiddleFHD(
+    (middle_conv): SparseSequential(
+      (0): DefaultArgLayer()
+      (1): BatchNorm1d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): ReLU()
+      (3): DefaultArgLayer()
+      (4): BatchNorm1d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (5): ReLU()
+      (6): DefaultArgLayer()
+      (7): DefaultArgLayer(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (8): ReLU()
+      (9): DefaultArgLayer()
+      (10): DefaultArgLayer(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (11): ReLU()
+      (12): DefaultArgLayer()
+      (13): DefaultArgLayer(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (14): ReLU()
+      (15): DefaultArgLayer()
+      (16): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (17): ReLU()
+      (18): DefaultArgLayer()
+      (19): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (20): ReLU()
+      (21): DefaultArgLayer()
+      (22): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (23): ReLU()
+      (24): DefaultArgLayer()
+      (25): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (26): ReLU()
+      (27): DefaultArgLayer()
+      (28): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (29): ReLU()
+      (30): DefaultArgLayer()
+      (31): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (32): ReLU()
+      (33): DefaultArgLayer()
+      (34): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (35): ReLU()
+      (36): DefaultArgLayer()
+      (37): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (38): ReLU()
+      (39): DefaultArgLayer()
+      (40): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (41): ReLU()
+    )
+  )
+  (_rpn): RPNV2(
+    (blocks): ModuleList(
+      (0): Sequential(
+        (0): ZeroPad2d(padding=(1, 1, 1, 1), value=0.0)
+        (1): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), bias=False)
+        (2): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (3): ReLU6()
+        (4): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (5): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (6): ReLU6()
+        (7): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (8): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (9): ReLU6()
+        (10): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (11): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (12): ReLU6()
+        (13): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (14): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (15): ReLU6()
+        (16): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (17): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (18): ReLU6()
+      )
+    )
+    (deblocks): ModuleList(
+      (0): Sequential(
+        (0): DefaultArgLayer(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU6()
+      )
+    )
+    (tasks): ModuleList(
+      (0): RPNHead(
+        (conv_box): Conv2d(128, 14, kernel_size=(1, 1), stride=(1, 1))
+        (conv_cls): Conv2d(128, 2, kernel_size=(1, 1), stride=(1, 1))
+        (conv_dir): Conv2d(128, 4, kernel_size=(1, 1), stride=(1, 1))
+      )
+    )
+  )
+  (rpn_acc): Accuracy()
+  (rpn_precision): Precision()
+  (rpn_recall): Recall()
+  (rpn_metrics): PrecisionRecall()
+  (rpn_cls_loss): Scalar()
+  (rpn_loc_loss): Scalar()
+  (rpn_total_loss): Scalar()
+)
+2019-05-29 23:40:59,354 Training INFO: Training use Single-GPU
+2019-05-29 23:40:59,358 Training INFO: No checkpoint found. Initializing model from scratch
+2019-05-29 23:40:59,358 Training INFO: extra arguments: {'iteration': 0, 'epoch': 0}
+2019-05-29 23:40:59,358 Training INFO: total training steps: 92800
+2019-05-29 23:41:45,865 Training INFO: Metrics for task: ['Car'], saved to: kitti
+2019-05-29 23:41:45,867 Training INFO: epoch: 1 step: 50 time 0.454095 Loss_all: 49.009472
+2019-05-29 23:41:45,870 Training INFO: epoch: 1 step: 50 Loss_cls: 48.061760 Loss_loc: 0.806987 Loss_dir: 0.140725
+2019-05-29 23:41:45,870 Training INFO: epoch: 1 step: 50 Loc_elements x: 0.058062 y: 0.034873 z: 0.146130 w: 0.057857 h: 0.078731 l: 0.044724 angle: 0.386610
+2019-05-29 23:41:45,871 Training INFO: epoch: 1 step: 50 Cls_elements cls_neg_rt: 47.949566 cls_pos_rt: 0.112194
+2019-05-29 23:41:45,881 Training INFO: epoch: 1 step: 50 Auxiliraries num_voxels: 59005 num_pos: 63 num_neg: 70239 num_anchors: 70400 lr: 0.000225
+2019-05-29 23:41:45,881 Training INFO: epoch: 1 step: 50 RpnAcc: 0.968081
+2019-05-29 23:41:45,881 Training INFO: epoch: 1 step: 50 Prec prec@10: 0.000908 prec@30: 0.000909 prec@50: 0.003251 prec@70: 0.011477 prec@90: 0.000000
+2019-05-29 23:41:45,882 Training INFO: epoch: 1 step: 50 Reca reca@10: 1.000000 reca@30: 0.995851 reca@50: 0.111720 reca@70: 0.002975 reca@90: 0.000000
+2019-05-29 23:41:45,882 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-29 23:42:22,828 Training INFO: Metrics for task: ['Car'], saved to: kitti
+2019-05-29 23:42:22,830 Training INFO: epoch: 1 step: 100 time 1.388197 Loss_all: 21.674015
+2019-05-29 23:42:22,836 Training INFO: epoch: 1 step: 100 Loss_cls: 20.910633 Loss_loc: 0.622972 Loss_dir: 0.140409
+2019-05-29 23:42:22,837 Training INFO: epoch: 1 step: 100 Loc_elements x: 0.046720 y: 0.018231 z: 0.071707 w: 0.025875 h: 0.049027 l: 0.031314 angle: 0.380097
+2019-05-29 23:42:22,838 Training INFO: epoch: 1 step: 100 Cls_elements cls_neg_rt: 20.728561 cls_pos_rt: 0.182071
+2019-05-29 23:42:22,851 Training INFO: epoch: 1 step: 100 Auxiliraries num_voxels: 62340 num_pos: 60 num_neg: 70250 num_anchors: 70400 lr: 0.000225
+2019-05-29 23:42:22,851 Training INFO: epoch: 1 step: 100 RpnAcc: 0.983585
+2019-05-29 23:42:22,852 Training INFO: epoch: 1 step: 100 Prec prec@10: 0.000904 prec@30: 0.000832 prec@50: 0.003255 prec@70: 0.011477 prec@90: 0.000000
+2019-05-29 23:42:22,852 Training INFO: epoch: 1 step: 100 Reca reca@10: 1.000000 reca@30: 0.758343 reca@50: 0.056233 reca@70: 0.001495 reca@90: 0.000000
+2019-05-29 23:42:22,852 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-29 23:42:58,901 Training INFO: Metrics for task: ['Car'], saved to: kitti
+2019-05-29 23:42:58,906 Training INFO: epoch: 1 step: 150 time 0.551884 Loss_all: 8.402066
+2019-05-29 23:42:58,907 Training INFO: epoch: 1 step: 150 Loss_cls: 7.675140 Loss_loc: 0.589385 Loss_dir: 0.137540
+2019-05-29 23:42:58,907 Training INFO: epoch: 1 step: 150 Loc_elements x: 0.030412 y: 0.017635 z: 0.092034 w: 0.028771 h: 0.046665 l: 0.039521 angle: 0.334347
+2019-05-29 23:42:58,907 Training INFO: epoch: 1 step: 150 Cls_elements cls_neg_rt: 7.420099 cls_pos_rt: 0.255041
+2019-05-29 23:42:58,914 Training INFO: epoch: 1 step: 150 Auxiliraries num_voxels: 66476 num_pos: 74 num_neg: 70223 num_anchors: 70400 lr: 0.000225
+2019-05-29 23:42:58,914 Training INFO: epoch: 1 step: 150 RpnAcc: 0.988753
+2019-05-29 23:42:58,914 Training INFO: epoch: 1 step: 150 Prec prec@10: 0.000906 prec@30: 0.000825 prec@50: 0.003255 prec@70: 0.011477 prec@90: 0.000000
+2019-05-29 23:42:58,915 Training INFO: epoch: 1 step: 150 Reca reca@10: 1.000000 reca@30: 0.508240 reca@50: 0.037383 reca@70: 0.000994 reca@90: 0.000000
+2019-05-29 23:42:58,915 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-29 23:43:35,327 Training INFO: Metrics for task: ['Car'], saved to: kitti
+2019-05-29 23:43:35,331 Training INFO: epoch: 1 step: 200 time 0.463958 Loss_all: 3.896395
+2019-05-29 23:43:35,331 Training INFO: epoch: 1 step: 200 Loss_cls: 3.269457 Loss_loc: 0.488943 Loss_dir: 0.137995
+2019-05-29 23:43:35,331 Training INFO: epoch: 1 step: 200 Loc_elements x: 0.038998 y: 0.013026 z: 0.104326 w: 0.022795 h: 0.048334 l: 0.043601 angle: 0.217864
+2019-05-29 23:43:35,332 Training INFO: epoch: 1 step: 200 Cls_elements cls_neg_rt: 2.922468 cls_pos_rt: 0.346989
+2019-05-29 23:43:35,353 Training INFO: epoch: 1 step: 200 Auxiliraries num_voxels: 62823 num_pos: 49 num_neg: 70256 num_anchors: 70400 lr: 0.000225
+2019-05-29 23:43:35,353 Training INFO: epoch: 1 step: 200 RpnAcc: 0.991343
+2019-05-29 23:43:35,354 Training INFO: epoch: 1 step: 200 Prec prec@10: 0.000903 prec@30: 0.000825 prec@50: 0.003255 prec@70: 0.011477 prec@90: 0.000000
+2019-05-29 23:43:35,354 Training INFO: epoch: 1 step: 200 Reca reca@10: 0.999074 reca@30: 0.383058 reca@50: 0.028164 reca@70: 0.000749 reca@90: 0.000000
+2019-05-29 23:43:35,354 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-29 23:44:11,860 Training INFO: Metrics for task: ['Car'], saved to: kitti
+2019-05-29 23:44:11,862 Training INFO: epoch: 1 step: 250 time 0.505530 Loss_all: 1.955178
+2019-05-29 23:44:11,862 Training INFO: epoch: 1 step: 250 Loss_cls: 1.244710 Loss_loc: 0.566742 Loss_dir: 0.143725
+2019-05-29 23:44:11,862 Training INFO: epoch: 1 step: 250 Loc_elements x: 0.035659 y: 0.019305 z: 0.082330 w: 0.023176 h: 0.050978 l: 0.042982 angle: 0.312312
+2019-05-29 23:44:11,863 Training INFO: epoch: 1 step: 250 Cls_elements cls_neg_rt: 0.885423 cls_pos_rt: 0.359288
+2019-05-29 23:44:11,877 Training INFO: epoch: 1 step: 250 Auxiliraries num_voxels: 67540 num_pos: 51 num_neg: 70268 num_anchors: 70400 lr: 0.000225
+2019-05-29 23:44:11,877 Training INFO: epoch: 1 step: 250 RpnAcc: 0.992896
+2019-05-29 23:44:11,878 Training INFO: epoch: 1 step: 250 Prec prec@10: 0.000935 prec@30: 0.000825 prec@50: 0.003255 prec@70: 0.011477 prec@90: 0.000000
+2019-05-29 23:44:11,878 Training INFO: epoch: 1 step: 250 Reca reca@10: 0.989887 reca@30: 0.307109 reca@50: 0.022580 reca@70: 0.000600 reca@90: 0.000000
+2019-05-29 23:44:11,878 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-29 23:44:49,007 Training INFO: Metrics for task: ['Car'], saved to: kitti
+2019-05-29 23:44:49,012 Training INFO: epoch: 1 step: 300 time 0.554773 Loss_all: 1.445944
+2019-05-29 23:44:49,012 Training INFO: epoch: 1 step: 300 Loss_cls: 0.906521 Loss_loc: 0.402617 Loss_dir: 0.136805
+2019-05-29 23:44:49,013 Training INFO: epoch: 1 step: 300 Loc_elements x: 0.028054 y: 0.016225 z: 0.092438 w: 0.019857 h: 0.048945 l: 0.027945 angle: 0.169153
+2019-05-29 23:44:49,013 Training INFO: epoch: 1 step: 300 Cls_elements cls_neg_rt: 0.568763 cls_pos_rt: 0.337759
+2019-05-29 23:44:49,018 Training INFO: epoch: 1 step: 300 Auxiliraries num_voxels: 64466 num_pos: 56 num_neg: 70263 num_anchors: 70400 lr: 0.000225
+2019-05-29 23:44:49,018 Training INFO: epoch: 1 step: 300 RpnAcc: 0.993927
+2019-05-29 23:44:49,019 Training INFO: epoch: 1 step: 300 Prec prec@10: 0.001050 prec@30: 0.000825 prec@50: 0.003255 prec@70: 0.011477 prec@90: 0.000000
+2019-05-29 23:44:49,019 Training INFO: epoch: 1 step: 300 Reca reca@10: 0.952129 reca@30: 0.255229 reca@50: 0.018762 reca@70: 0.000499 reca@90: 0.000000
+2019-05-29 23:44:49,019 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-29 23:45:25,112 Training INFO: Metrics for task: ['Car'], saved to: kitti
+2019-05-29 23:45:25,115 Training INFO: epoch: 1 step: 350 time 0.494757 Loss_all: 1.102021
+2019-05-29 23:45:25,115 Training INFO: epoch: 1 step: 350 Loss_cls: 0.592035 Loss_loc: 0.373954 Loss_dir: 0.136032
+2019-05-29 23:45:25,115 Training INFO: epoch: 1 step: 350 Loc_elements x: 0.021858 y: 0.013971 z: 0.068871 w: 0.021196 h: 0.052273 l: 0.045241 angle: 0.150544
+2019-05-29 23:45:25,116 Training INFO: epoch: 1 step: 350 Cls_elements cls_neg_rt: 0.280121 cls_pos_rt: 0.311914
+2019-05-29 23:45:25,123 Training INFO: epoch: 1 step: 350 Auxiliraries num_voxels: 66262 num_pos: 69 num_neg: 70244 num_anchors: 70400 lr: 0.000225
+2019-05-29 23:45:25,124 Training INFO: epoch: 1 step: 350 RpnAcc: 0.994665
+2019-05-29 23:45:25,124 Training INFO: epoch: 1 step: 350 Prec prec@10: 0.001175 prec@30: 0.000837 prec@50: 0.003255 prec@70: 0.011477 prec@90: 0.000000
+2019-05-29 23:45:25,124 Training INFO: epoch: 1 step: 350 Reca reca@10: 0.919602 reca@30: 0.221734 reca@50: 0.016075 reca@70: 0.000427 reca@90: 0.000000
+2019-05-29 23:45:25,124 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-29 23:46:02,510 Training INFO: Metrics for task: ['Car'], saved to: kitti
+2019-05-29 23:46:02,515 Training INFO: epoch: 1 step: 400 time 1.224497 Loss_all: 1.055009
+2019-05-29 23:46:02,516 Training INFO: epoch: 1 step: 400 Loss_cls: 0.549720 Loss_loc: 0.371419 Loss_dir: 0.133870
+2019-05-29 23:46:02,516 Training INFO: epoch: 1 step: 400 Loc_elements x: 0.023179 y: 0.014789 z: 0.078792 w: 0.026255 h: 0.053295 l: 0.050900 angle: 0.124210
+2019-05-29 23:46:02,516 Training INFO: epoch: 1 step: 400 Cls_elements cls_neg_rt: 0.219506 cls_pos_rt: 0.330213
+2019-05-29 23:46:02,522 Training INFO: epoch: 1 step: 400 Auxiliraries num_voxels: 66868 num_pos: 74 num_neg: 70211 num_anchors: 70400 lr: 0.000226
+2019-05-29 23:46:02,522 Training INFO: epoch: 1 step: 400 RpnAcc: 0.995220
+2019-05-29 23:46:02,522 Training INFO: epoch: 1 step: 400 Prec prec@10: 0.001304 prec@30: 0.000864 prec@50: 0.003255 prec@70: 0.011477 prec@90: 0.000000
+2019-05-29 23:46:02,522 Training INFO: epoch: 1 step: 400 Reca reca@10: 0.897695 reca@30: 0.200520 reca@50: 0.014080 reca@70: 0.000374 reca@90: 0.000000
+2019-05-29 23:46:02,522 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-29 23:46:39,349 Training INFO: Metrics for task: ['Car'], saved to: kitti
+2019-05-29 23:46:39,351 Training INFO: epoch: 1 step: 450 time 0.447963 Loss_all: 1.128927
+2019-05-29 23:46:39,351 Training INFO: epoch: 1 step: 450 Loss_cls: 0.580487 Loss_loc: 0.411404 Loss_dir: 0.137036
+2019-05-29 23:46:39,352 Training INFO: epoch: 1 step: 450 Loc_elements x: 0.024132 y: 0.032590 z: 0.056461 w: 0.038417 h: 0.047106 l: 0.036683 angle: 0.176016
+2019-05-29 23:46:39,352 Training INFO: epoch: 1 step: 450 Cls_elements cls_neg_rt: 0.232453 cls_pos_rt: 0.348034
+2019-05-29 23:46:39,388 Training INFO: epoch: 1 step: 450 Auxiliraries num_voxels: 66920 num_pos: 64 num_neg: 70226 num_anchors: 70400 lr: 0.000226
+2019-05-29 23:46:39,404 Training INFO: epoch: 1 step: 450 RpnAcc: 0.995650
+2019-05-29 23:46:39,405 Training INFO: epoch: 1 step: 450 Prec prec@10: 0.001438 prec@30: 0.000908 prec@50: 0.003255 prec@70: 0.011477 prec@90: 0.000000
+2019-05-29 23:46:39,405 Training INFO: epoch: 1 step: 450 Reca reca@10: 0.882774 reca@30: 0.187186 reca@50: 0.012506 reca@70: 0.000333 reca@90: 0.000000
+2019-05-29 23:46:39,405 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-29 23:47:16,934 Training INFO: Metrics for task: ['Car'], saved to: kitti
+2019-05-29 23:47:16,938 Training INFO: epoch: 1 step: 500 time 0.489391 Loss_all: 0.837647
+2019-05-29 23:47:16,939 Training INFO: epoch: 1 step: 500 Loss_cls: 0.387249 Loss_loc: 0.319591 Loss_dir: 0.130808
+2019-05-29 23:47:16,939 Training INFO: epoch: 1 step: 500 Loc_elements x: 0.019012 y: 0.013395 z: 0.052812 w: 0.024642 h: 0.040158 l: 0.036354 angle: 0.133218
+2019-05-29 23:47:16,940 Training INFO: epoch: 1 step: 500 Cls_elements cls_neg_rt: 0.107453 cls_pos_rt: 0.279796
+2019-05-29 23:47:16,951 Training INFO: epoch: 1 step: 500 Auxiliraries num_voxels: 65928 num_pos: 70 num_neg: 70211 num_anchors: 70400 lr: 0.000226
+2019-05-29 23:47:16,951 Training INFO: epoch: 1 step: 500 RpnAcc: 0.995996
+2019-05-29 23:47:16,952 Training INFO: epoch: 1 step: 500 Prec prec@10: 0.001576 prec@30: 0.000994 prec@50: 0.003255 prec@70: 0.011477 prec@90: 0.000000
+2019-05-29 23:47:16,952 Training INFO: epoch: 1 step: 500 Reca reca@10: 0.874348 reca@30: 0.184724 reca@50: 0.011269 reca@70: 0.000300 reca@90: 0.000000
+2019-05-29 23:47:16,952 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-29 23:47:53,630 Training INFO: Metrics for task: ['Car'], saved to: kitti
+2019-05-29 23:47:53,638 Training INFO: epoch: 1 step: 550 time 1.170530 Loss_all: 0.797625
+2019-05-29 23:47:53,639 Training INFO: epoch: 1 step: 550 Loss_cls: 0.365949 Loss_loc: 0.301442 Loss_dir: 0.130234
+2019-05-29 23:47:53,639 Training INFO: epoch: 1 step: 550 Loc_elements x: 0.013768 y: 0.011979 z: 0.044165 w: 0.024061 h: 0.037466 l: 0.040778 angle: 0.129225
+2019-05-29 23:47:53,639 Training INFO: epoch: 1 step: 550 Cls_elements cls_neg_rt: 0.097680 cls_pos_rt: 0.268269
+2019-05-29 23:47:53,649 Training INFO: epoch: 1 step: 550 Auxiliraries num_voxels: 64471 num_pos: 62 num_neg: 70243 num_anchors: 70400 lr: 0.000226
+2019-05-29 23:47:53,649 Training INFO: epoch: 1 step: 550 RpnAcc: 0.996278
+2019-05-29 23:47:53,650 Training INFO: epoch: 1 step: 550 Prec prec@10: 0.001717 prec@30: 0.001119 prec@50: 0.003255 prec@70: 0.011477 prec@90: 0.000000
+2019-05-29 23:47:53,650 Training INFO: epoch: 1 step: 550 Reca reca@10: 0.868198 reca@30: 0.188835 reca@50: 0.010236 reca@70: 0.000272 reca@90: 0.000000
+2019-05-29 23:47:53,650 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-29 23:48:31,131 Training INFO: Metrics for task: ['Car'], saved to: kitti
+2019-05-29 23:48:31,146 Training INFO: epoch: 1 step: 600 time 0.462360 Loss_all: 0.912817
+2019-05-29 23:48:31,146 Training INFO: epoch: 1 step: 600 Loss_cls: 0.438802 Loss_loc: 0.335660 Loss_dir: 0.138355
+2019-05-29 23:48:31,146 Training INFO: epoch: 1 step: 600 Loc_elements x: 0.015636 y: 0.014852 z: 0.049981 w: 0.025765 h: 0.045302 l: 0.026813 angle: 0.157310
+2019-05-29 23:48:31,146 Training INFO: epoch: 1 step: 600 Cls_elements cls_neg_rt: 0.112493 cls_pos_rt: 0.326308
+2019-05-29 23:48:31,177 Training INFO: epoch: 1 step: 600 Auxiliraries num_voxels: 62938 num_pos: 49 num_neg: 70279 num_anchors: 70400 lr: 0.000226
+2019-05-29 23:48:31,177 Training INFO: epoch: 1 step: 600 RpnAcc: 0.996513
+2019-05-29 23:48:31,177 Training INFO: epoch: 1 step: 600 Prec prec@10: 0.001859 prec@30: 0.001284 prec@50: 0.003255 prec@70: 0.011477 prec@90: 0.000000
+2019-05-29 23:48:31,177 Training INFO: epoch: 1 step: 600 Reca reca@10: 0.864464 reca@30: 0.198809 reca@50: 0.009390 reca@70: 0.000250 reca@90: 0.000000
+2019-05-29 23:48:31,177 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-29 23:49:07,829 Training INFO: Metrics for task: ['Car'], saved to: kitti
+2019-05-29 23:49:07,831 Training INFO: epoch: 1 step: 650 time 0.494659 Loss_all: 0.684225
+2019-05-29 23:49:07,832 Training INFO: epoch: 1 step: 650 Loss_cls: 0.315290 Loss_loc: 0.245336 Loss_dir: 0.123599
+2019-05-29 23:49:07,832 Training INFO: epoch: 1 step: 650 Loc_elements x: 0.013834 y: 0.010915 z: 0.039170 w: 0.020481 h: 0.039580 l: 0.034254 angle: 0.087102
+2019-05-29 23:49:07,832 Training INFO: epoch: 1 step: 650 Cls_elements cls_neg_rt: 0.087291 cls_pos_rt: 0.227999
+2019-05-29 23:49:07,856 Training INFO: epoch: 1 step: 650 Auxiliraries num_voxels: 63926 num_pos: 49 num_neg: 70264 num_anchors: 70400 lr: 0.000227
+2019-05-29 23:49:07,857 Training INFO: epoch: 1 step: 650 RpnAcc: 0.996712
+2019-05-29 23:49:07,857 Training INFO: epoch: 1 step: 650 Prec prec@10: 0.002004 prec@30: 0.001487 prec@50: 0.003432 prec@70: 0.011477 prec@90: 0.000000
+2019-05-29 23:49:07,857 Training INFO: epoch: 1 step: 650 Reca reca@10: 0.862041 reca@30: 0.212460 reca@50: 0.009134 reca@70: 0.000230 reca@90: 0.000000
+2019-05-29 23:49:07,857 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-29 23:49:43,941 Training INFO: Metrics for task: ['Car'], saved to: kitti
+2019-05-29 23:49:43,956 Training INFO: epoch: 1 step: 700 time 1.020689 Loss_all: 0.755788
+2019-05-29 23:49:43,957 Training INFO: epoch: 1 step: 700 Loss_cls: 0.367652 Loss_loc: 0.265057 Loss_dir: 0.123079
+2019-05-29 23:49:43,958 Training INFO: epoch: 1 step: 700 Loc_elements x: 0.017373 y: 0.011606 z: 0.049971 w: 0.027508 h: 0.050246 l: 0.038728 angle: 0.069625
+2019-05-29 23:49:43,958 Training INFO: epoch: 1 step: 700 Cls_elements cls_neg_rt: 0.110672 cls_pos_rt: 0.256979
+2019-05-29 23:49:43,971 Training INFO: epoch: 1 step: 700 Auxiliraries num_voxels: 65731 num_pos: 51 num_neg: 70278 num_anchors: 70400 lr: 0.000227
+2019-05-29 23:49:43,971 Training INFO: epoch: 1 step: 700 RpnAcc: 0.996883
+2019-05-29 23:49:43,971 Training INFO: epoch: 1 step: 700 Prec prec@10: 0.002153 prec@30: 0.001720 prec@50: 0.004687 prec@70: 0.011477 prec@90: 0.000000
+2019-05-29 23:49:43,972 Training INFO: epoch: 1 step: 700 Reca reca@10: 0.860641 reca@30: 0.227980 reca@50: 0.011584 reca@70: 0.000214 reca@90: 0.000000
+2019-05-29 23:49:43,972 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-29 23:50:20,530 Training INFO: Metrics for task: ['Car'], saved to: kitti
+2019-05-29 23:50:20,532 Training INFO: epoch: 1 step: 750 time 0.522478 Loss_all: 0.659165
+2019-05-29 23:50:20,536 Training INFO: epoch: 1 step: 750 Loss_cls: 0.311509 Loss_loc: 0.226299 Loss_dir: 0.121356
+2019-05-29 23:50:20,536 Training INFO: epoch: 1 step: 750 Loc_elements x: 0.012856 y: 0.010919 z: 0.024891 w: 0.018301 h: 0.034070 l: 0.043924 angle: 0.081338
+2019-05-29 23:50:20,537 Training INFO: epoch: 1 step: 750 Cls_elements cls_neg_rt: 0.105360 cls_pos_rt: 0.206149
+2019-05-29 23:50:20,557 Training INFO: epoch: 1 step: 750 Auxiliraries num_voxels: 65512 num_pos: 53 num_neg: 70261 num_anchors: 70400 lr: 0.000227
+2019-05-29 23:50:20,557 Training INFO: epoch: 1 step: 750 RpnAcc: 0.997035
+2019-05-29 23:50:20,558 Training INFO: epoch: 1 step: 750 Prec prec@10: 0.002301 prec@30: 0.001966 prec@50: 0.006855 prec@70: 0.011477 prec@90: 0.000000
+2019-05-29 23:50:20,558 Training INFO: epoch: 1 step: 750 Reca reca@10: 0.859882 reca@30: 0.243285 reca@50: 0.015838 reca@70: 0.000199 reca@90: 0.000000
+2019-05-29 23:50:20,558 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-29 23:50:57,842 Training INFO: Metrics for task: ['Car'], saved to: kitti
+2019-05-29 23:50:57,847 Training INFO: epoch: 1 step: 800 time 0.482905 Loss_all: 0.654632
+2019-05-29 23:50:57,847 Training INFO: epoch: 1 step: 800 Loss_cls: 0.311520 Loss_loc: 0.229292 Loss_dir: 0.113820
+2019-05-29 23:50:57,848 Training INFO: epoch: 1 step: 800 Loc_elements x: 0.012543 y: 0.006979 z: 0.047236 w: 0.031178 h: 0.033379 l: 0.036722 angle: 0.061256
+2019-05-29 23:50:57,848 Training INFO: epoch: 1 step: 800 Cls_elements cls_neg_rt: 0.064468 cls_pos_rt: 0.247053
+2019-05-29 23:50:57,856 Training INFO: epoch: 1 step: 800 Auxiliraries num_voxels: 62672 num_pos: 61 num_neg: 70238 num_anchors: 70400 lr: 0.000227
+2019-05-29 23:50:57,856 Training INFO: epoch: 1 step: 800 RpnAcc: 0.997170
+2019-05-29 23:50:57,856 Training INFO: epoch: 1 step: 800 Prec prec@10: 0.002449 prec@30: 0.002229 prec@50: 0.010155 prec@70: 0.011477 prec@90: 0.000000
+2019-05-29 23:50:57,857 Training INFO: epoch: 1 step: 800 Reca reca@10: 0.860101 reca@30: 0.258862 reca@50: 0.022087 reca@70: 0.000187 reca@90: 0.000000
+2019-05-29 23:50:57,857 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-29 23:51:34,880 Training INFO: Metrics for task: ['Car'], saved to: kitti
+2019-05-29 23:51:34,885 Training INFO: epoch: 1 step: 850 time 1.160515 Loss_all: 0.573962
+2019-05-29 23:51:34,886 Training INFO: epoch: 1 step: 850 Loss_cls: 0.262441 Loss_loc: 0.202649 Loss_dir: 0.108871
+2019-05-29 23:51:34,953 Training INFO: epoch: 1 step: 850 Loc_elements x: 0.013652 y: 0.007604 z: 0.033120 w: 0.014627 h: 0.026870 l: 0.026747 angle: 0.080030
+2019-05-29 23:51:34,953 Training INFO: epoch: 1 step: 850 Cls_elements cls_neg_rt: 0.067672 cls_pos_rt: 0.194769
+2019-05-29 23:51:34,963 Training INFO: epoch: 1 step: 850 Auxiliraries num_voxels: 61400 num_pos: 61 num_neg: 70250 num_anchors: 70400 lr: 0.000228
+2019-05-29 23:51:34,963 Training INFO: epoch: 1 step: 850 RpnAcc: 0.997291
+2019-05-29 23:51:34,963 Training INFO: epoch: 1 step: 850 Prec prec@10: 0.002598 prec@30: 0.002508 prec@50: 0.014376 prec@70: 0.011477 prec@90: 0.000000
+2019-05-29 23:51:34,963 Training INFO: epoch: 1 step: 850 Reca reca@10: 0.860442 reca@30: 0.274252 reca@50: 0.029562 reca@70: 0.000176 reca@90: 0.000000
+2019-05-29 23:51:34,963 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-29 23:52:11,492 Training INFO: Metrics for task: ['Car'], saved to: kitti
+2019-05-29 23:52:11,496 Training INFO: epoch: 1 step: 900 time 0.494782 Loss_all: 0.598078
+2019-05-29 23:52:11,496 Training INFO: epoch: 1 step: 900 Loss_cls: 0.237565 Loss_loc: 0.257625 Loss_dir: 0.102888
+2019-05-29 23:52:11,497 Training INFO: epoch: 1 step: 900 Loc_elements x: 0.011836 y: 0.007897 z: 0.045153 w: 0.019846 h: 0.051899 l: 0.034011 angle: 0.086982
+2019-05-29 23:52:11,497 Training INFO: epoch: 1 step: 900 Cls_elements cls_neg_rt: 0.071426 cls_pos_rt: 0.166140
+2019-05-29 23:52:11,506 Training INFO: epoch: 1 step: 900 Auxiliraries num_voxels: 66137 num_pos: 69 num_neg: 70225 num_anchors: 70400 lr: 0.000228
+2019-05-29 23:52:11,506 Training INFO: epoch: 1 step: 900 RpnAcc: 0.997401
+2019-05-29 23:52:11,506 Training INFO: epoch: 1 step: 900 Prec prec@10: 0.002748 prec@30: 0.002808 prec@50: 0.019678 prec@70: 0.011477 prec@90: 0.000000
+2019-05-29 23:52:11,506 Training INFO: epoch: 1 step: 900 Reca reca@10: 0.861369 reca@30: 0.290248 reca@50: 0.038456 reca@70: 0.000166 reca@90: 0.000000
+2019-05-29 23:52:11,507 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-29 23:54:23,485 3d-object-detection INFO: Using 1 GPUs
+2019-05-29 23:54:23,486 3d-object-detection INFO: Namespace(cfg='configs/car_fhd_kitti.yaml', distributed=False, local_rank=0, model_dir='kitti')
+2019-05-29 23:54:23,486 3d-object-detection INFO: Collecting env info (might take some time)
+2019-05-29 23:54:28,887 3d-object-detection INFO: 
+PyTorch version: 1.1.0
+Is debug build: No
+CUDA used to build PyTorch: 9.0.176
+
+OS: Ubuntu 16.04.6 LTS
+GCC version: (Ubuntu 5.4.0-6ubuntu1~16.04.11) 5.4.0 20160609
+CMake version: version 3.13.4
+
+Python version: 3.6
+Is CUDA available: Yes
+CUDA runtime version: 9.0.176
+GPU models and configuration: GPU 0: GeForce GTX 1080 Ti
+Nvidia driver version: 390.30
+cuDNN version: /unsullied/sharefs/_admin/cuda/cuda-9.0/cudnn/v7.4.1/lib64/libcudnn.so.7.4.1
+
+Versions of relevant libraries:
+[pip3] numpy==1.14.5
+[pip3] numpydoc==0.8.0
+[pip3] torch==1.1.0
+[pip3] torchvision==0.2.2.post3
+[conda] blas                      1.0                         mkl  
+[conda] mkl                       2018.0.2                      1  
+[conda] mkl-service               1.1.2            py36h17a0993_4  
+[conda] mkl_fft                   1.0.1            py36h3010b51_0  
+[conda] mkl_random                1.0.1            py36h629b387_0  
+[conda] torch                     1.1.0                    pypi_0    pypi
+[conda] torchvision               0.2.2.post3              pypi_0    pypi
+        Pillow (5.2.0)
+2019-05-29 23:54:28,888 3d-object-detection INFO: 
+local_rank: 0
+input:
+    num_point_features: 4
+    voxel:
+        voxel_size: [0.05, 0.05, 0.1]
+        point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
+        max_num_points: 5
+        max_num_voxels: 17000
+    train:
+        batch_size: 4
+        num_epochs: 100
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            nsweeps: 1
+        preprocess:
+            shuffle: False
+            num_workers: 3
+            gt_location_noise: [1.0, 1.0, 0.5]
+            gt_rotation_noise: [-0.3141592654, 0.3141592654]
+            global_rotation_noise: [-0.78539816, 0.78539816]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0, 0, 0]
+            anchor_area_threshold: -1
+            remove_points_after_sample: True
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+            db_sampler:
+                enable: True
+                db_info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/dbinfos_train.pkl"
+                db_preprocess_steps:
+                    filter_by_min_num_points:
+                        type: "filter_by_min_num_points"
+                        classes: ["Car",] 
+                        values: [5,]
+                    filter_by_difficulty:
+                        type: "filter_by_difficulty"
+                        value: [-1,]
+                global_random_rotation_range_per_object: [0, 0]
+                rate: 1.0
+                sample_groups:
+                     classes: ["Car",] 
+                     values: [15, ]
+
+    eval:
+        dataset:
+            type: "KittiDataset"
+            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
+            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_val.pkl"
+            nsweeps: 1
+        preprocess:
+            max_num_voxels: 40000
+            shuffle: False
+            num_workers: 3
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        n_dim: 7
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types: ["anchor_generator_range",]
+        anchor_sizes: [[1.6, 3.9, 1.56],]
+        anchor_dims: [7,]
+        anchor_ranges: [[0, -40.0, -1.0, 70.4, 40.0, -1.0],]
+        anchor_rotations: [[0, 1.57],]
+        anchor_matched_thresholds: [0.6,]
+        anchor_unmatched_thresholds: [0.45,]
+        anchor_class_names: ["Car",]
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+model:
+    encoder:
+        vfe:
+            type: "VoxelFeatureExtractorV3" #"SimpleVoxel"
+            num_filters: [16,]
+            with_distance: False
+            num_input_features: 4
+        middle:
+            type: "SpMiddleFHD"
+            num_filters_down1: []
+            num_filters_down2: []
+            downsample_factor: 8
+            num_input_features: 4
+    decoder:
+        rpn:
+            type: "RPNV2"
+            layer_nums: [5]
+            downsample_layer_strides: [1]
+            downsample_num_filters: [128]
+            upsample_layer_strides: [1]
+            upsample_num_filters: [128]
+            group_norm: False
+            num_groups: 32
+            num_input_features: 128
+        head:
+            tasks:
+                num_classes: [1]
+                class_names: [["car"],]
+            weights: [1,]
+        auxiliary:
+            use_direction_classifier: True
+            direction_offset: 0.0
+    post_process:
+        post_center_limit_range: [0, -40.0, -2.2, 70.4, 40.0, 0.8]
+        use_rotate_nms: True
+        use_multi_class_nms: False
+        nms_pre_max_size: 1000
+        nms_post_max_size: 100
+        nms_score_threshold: 0.3
+        nms_iou_threshold: 0.01
+
+    loss:
+        loss_scale_factor: -1
+        loss_norm_type: "NormByNumPositives"
+        pos_class_weight: 1.0
+        neg_class_weight: 1.0
+        use_sigmoid_score: True
+        encode_background_as_zeros: True
+        encode_rad_error_by_sin: True
+        classification_loss:
+            type: "weighted_sigmoid_focal"
+            value: 
+                alpha: 0.25
+                gamma: 2.0
+                anchorwise_output: True
+        localization_loss:
+            type: "weighted_smooth_l1"
+            value: 
+                sigma: 3.0
+                code_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+        classification_loss_weight: 1.0
+        localization_loss_weight: 1.0
+        direction_loss_weight: 0.2
+        rpn_thresholds: [0.1,0.3,0.5,0.7,0.8,0.9]
+
+optimizer:
+    type: "adam"
+    value: 
+        lr:
+            type: "one_cycle"
+            value: 
+                lr_max: 2.25e-3
+                moms: [0.95, 0.85]
+                div_factor: 10.0
+                pct_start: 0.4
+        amsgrad: 0.0
+        wd: 0.01
+    fixed_wd: True
+    moving_average: False
+
+2019-05-29 23:54:28,889 Training INFO: Enable db sampler: db_sampler
+2019-05-29 23:54:28,889 Training INFO: db_filter_by_min_num_points: {'Car': 5}
+2019-05-29 23:54:28,890 Training INFO: db_filter_by_removed_difficulties: [-1]
+2019-05-29 23:54:29,004 Training INFO: load 2207 Pedestrian database infos
+2019-05-29 23:54:29,004 Training INFO: load 14357 Car database infos
+2019-05-29 23:54:29,004 Training INFO: load 734 Cyclist database infos
+2019-05-29 23:54:29,005 Training INFO: load 1297 Van database infos
+2019-05-29 23:54:29,005 Training INFO: load 488 Truck database infos
+2019-05-29 23:54:29,005 Training INFO: load 224 Tram database infos
+2019-05-29 23:54:29,005 Training INFO: load 337 Misc database infos
+2019-05-29 23:54:29,005 Training INFO: load 56 Person_sitting database infos
+2019-05-29 23:54:29,033 Training INFO: After filter database:
+2019-05-29 23:54:29,033 Training INFO: load 2207 Pedestrian database infos
+2019-05-29 23:54:29,033 Training INFO: load 13442 Car database infos
+2019-05-29 23:54:29,034 Training INFO: load 734 Cyclist database infos
+2019-05-29 23:54:29,034 Training INFO: load 1297 Van database infos
+2019-05-29 23:54:29,034 Training INFO: load 488 Truck database infos
+2019-05-29 23:54:29,034 Training INFO: load 224 Tram database infos
+2019-05-29 23:54:29,034 Training INFO: load 337 Misc database infos
+2019-05-29 23:54:29,034 Training INFO: load 56 Person_sitting database infos
+2019-05-29 23:54:29,035 Training INFO: feature_map_size: [1, 200, 176]
+2019-05-29 23:54:29,217 Training INFO: 3 workers per GPU for dataloader
+2019-05-29 23:54:29,398 Training INFO: Using direction offset 0.000000 to fix aoe
+2019-05-29 23:54:29,398 Training INFO: Voxel Feature Encoder: VoxelFeatureExtractorV3
+2019-05-29 23:54:29,399 Training INFO: Middle class name: SpMiddleFHD
+2019-05-29 23:54:29,414 Training INFO: RPN class name: RPNV2
+2019-05-29 23:54:29,426 Training INFO: num_classes: [1]
+2019-05-29 23:54:29,426 Training INFO: num_preds: [14]
+2019-05-29 23:54:29,427 Training INFO: num_dirs: [4]
+2019-05-29 23:54:29,427 Training INFO: Finish RPNBase Initialization
+2019-05-29 23:54:29,429 Training INFO: Model Articutures: VoxelNet(
+  (_voxel_feature_extractor): VoxelFeatureExtractorV3()
+  (_middle_feature_extractor): SpMiddleFHD(
+    (middle_conv): SparseSequential(
+      (0): DefaultArgLayer()
+      (1): BatchNorm1d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (2): ReLU()
+      (3): DefaultArgLayer()
+      (4): BatchNorm1d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (5): ReLU()
+      (6): DefaultArgLayer()
+      (7): DefaultArgLayer(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (8): ReLU()
+      (9): DefaultArgLayer()
+      (10): DefaultArgLayer(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (11): ReLU()
+      (12): DefaultArgLayer()
+      (13): DefaultArgLayer(32, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (14): ReLU()
+      (15): DefaultArgLayer()
+      (16): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (17): ReLU()
+      (18): DefaultArgLayer()
+      (19): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (20): ReLU()
+      (21): DefaultArgLayer()
+      (22): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (23): ReLU()
+      (24): DefaultArgLayer()
+      (25): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (26): ReLU()
+      (27): DefaultArgLayer()
+      (28): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (29): ReLU()
+      (30): DefaultArgLayer()
+      (31): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (32): ReLU()
+      (33): DefaultArgLayer()
+      (34): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (35): ReLU()
+      (36): DefaultArgLayer()
+      (37): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (38): ReLU()
+      (39): DefaultArgLayer()
+      (40): DefaultArgLayer(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      (41): ReLU()
+    )
+  )
+  (_rpn): RPNV2(
+    (blocks): ModuleList(
+      (0): Sequential(
+        (0): ZeroPad2d(padding=(1, 1, 1, 1), value=0.0)
+        (1): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), bias=False)
+        (2): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (3): ReLU6()
+        (4): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (5): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (6): ReLU6()
+        (7): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (8): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (9): ReLU6()
+        (10): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (11): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (12): ReLU6()
+        (13): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (14): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (15): ReLU6()
+        (16): DefaultArgLayer(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (17): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (18): ReLU6()
+      )
+    )
+    (deblocks): ModuleList(
+      (0): Sequential(
+        (0): DefaultArgLayer(128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): DefaultArgLayer(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU6()
+      )
+    )
+    (tasks): ModuleList(
+      (0): RPNHead(
+        (conv_box): Conv2d(128, 14, kernel_size=(1, 1), stride=(1, 1))
+        (conv_cls): Conv2d(128, 2, kernel_size=(1, 1), stride=(1, 1))
+        (conv_dir): Conv2d(128, 4, kernel_size=(1, 1), stride=(1, 1))
+      )
+    )
+  )
+  (rpn_acc): Accuracy()
+  (rpn_precision): Precision()
+  (rpn_recall): Recall()
+  (rpn_metrics): PrecisionRecall()
+  (rpn_cls_loss): Scalar()
+  (rpn_loc_loss): Scalar()
+  (rpn_total_loss): Scalar()
+)
+2019-05-29 23:54:39,153 Training INFO: Training use Single-GPU
+2019-05-29 23:54:39,157 Training INFO: No checkpoint found. Initializing model from scratch
+2019-05-29 23:54:39,157 Training INFO: extra arguments: {'iteration': 0, 'epoch': 0}
+2019-05-29 23:54:39,158 Training INFO: total training steps: 92800
+2019-05-29 23:55:24,412 Training INFO: Metrics for task: ['Car'], saved to: kitti
+2019-05-29 23:55:24,416 Training INFO: epoch: 1 step: 50 time 0.473924 Loss_all: 41.776047
+2019-05-29 23:55:24,416 Training INFO: epoch: 1 step: 50 Loss_cls: 40.828163 Loss_loc: 0.809518 Loss_dir: 0.138366
+2019-05-29 23:55:24,417 Training INFO: epoch: 1 step: 50 Loc_elements x: 0.097239 y: 0.068533 z: 0.166410 w: 0.054836 h: 0.080778 l: 0.055668 angle: 0.286054
+2019-05-29 23:55:24,417 Training INFO: epoch: 1 step: 50 Cls_elements cls_neg_rt: 40.686897 cls_pos_rt: 0.141264
+2019-05-29 23:55:24,436 Training INFO: epoch: 1 step: 50 Auxiliraries num_voxels: 62350 num_pos: 69 num_neg: 70219 num_anchors: 70400 lr: 0.000225
+2019-05-29 23:55:24,438 Training INFO: epoch: 1 step: 50 RpnAcc: 0.984128
+2019-05-29 23:55:24,438 Training INFO: epoch: 1 step: 50 Prec prec@10: 0.000925 prec@30: 0.000848 prec@50: 0.003923 prec@70: 0.006887 prec@90: 0.000000
+2019-05-29 23:55:24,439 Training INFO: epoch: 1 step: 50 Reca reca@10: 1.000000 reca@30: 0.888786 reca@50: 0.063913 reca@70: 0.003307 reca@90: 0.000000
+2019-05-29 23:55:24,439 Training INFO: -------------------------------------------------------------------------------------------------------------------

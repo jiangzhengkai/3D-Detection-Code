@@ -56,7 +56,7 @@ def corners_nd(dims, origin=0.5):
     corners_norm = corners_norm - np.array(origin, dtype=dims.dtype)
     corners = dims.reshape([-1, 1, ndim]) * corners_norm.reshape([1, 2**ndim, ndim])
     return corners
-    
+
 
 def center_to_corner_box3d(centers, dims, angles=None, origin=(0.5, 0.5, 0.5), axis=2):
     """convert kitti locations, dimensions and angles to corners
@@ -262,12 +262,12 @@ def rotation_2d(points, angles):
 def center_to_corner_box2d(centers, dims, angles=None, origin=0.5):
     """convert kitti locations, dimensions and angles to corners.
     format: center(xy), dims(xy), angles(clockwise when positive)
-    
+
     Args:
         centers (float array, shape=[N, 2]): locations in kitti label file.
         dims (float array, shape=[N, 2]): dimensions in kitti label file.
         angles (float array, shape=[N]): rotation_y in kitti label file.
-    
+
     Returns:
         [type]: [description]
     """
@@ -283,7 +283,7 @@ def center_to_corner_box2d(centers, dims, angles=None, origin=0.5):
 
 @numba.jit(nopython=True)
 def iou_jit(boxes, query_boxes, eps=1.0):
-    """calculate box iou. note that jit version runs 2x faster than cython in 
+    """calculate box iou. note that jit version runs 2x faster than cython in
     my machine!
     Parameters
     ----------
@@ -352,11 +352,11 @@ def create_anchors_3d_range(feature_size,
     for i in range(len(rets)):
         rets[i] = np.tile(rets[i][..., np.newaxis, :], tile_shape)
         rets[i] = rets[i][..., np.newaxis]  # for concat
-    
+
     combines = np.reshape(combines, [1, 1, 1, -1, 1, combines.shape[-1]])
     tile_size_shape = list(rets[0].shape)
     tile_size_shape[3] = 1
-    
+
     combines = np.tile(combines, tile_size_shape)
 
     rets.insert(3, combines)
@@ -456,7 +456,6 @@ def second_box_encode(boxes, anchors, encode_angle_to_vector=False, smooth_dim=F
     else:
         xa, ya, za, wa, la, ha, vxa, vya, ra = np.split(anchors, box_ndim, axis=1)
         xg, yg, zg, wg, lg, hg, vxg, vyg, rg = np.split(boxes, box_ndim, axis=1)
-    import pdb; pdb.set_trace()
     diagonal = np.sqrt(la**2 + wa**2)  # 4.3
     xt = (xg - xa) / diagonal
     yt = (yg - ya) / diagonal

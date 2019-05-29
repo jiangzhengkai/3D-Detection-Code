@@ -26,6 +26,7 @@ dist/
 .idea
 *.bin
 # project dirs
+./ropeproject
 show.py
 show2.py
 /datasets

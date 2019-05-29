@@ -6,9 +6,9 @@ from lib.models.common import Empty, change_default_args
 import numpy as np
 
 class SpMiddleFHD(nn.Module):
-    def __init__(self, 
+    def __init__(self,
                  output_shape,
-                 use_norm,
+                 use_norm=True,
                  num_input_features=128,
                  num_filters_down1=[64],
                  num_filters_down2=[64, 64],
@@ -82,7 +82,7 @@ class SpMiddleFHD(nn.Module):
             SubMConv3d(64, 64, 3, indice_key="subm3"),
             BatchNorm1d(64),
             nn.ReLU(),
-  
+
             SpConv3d(64, 64, (3, 1, 1),
                      (2, 1, 1)),  # [200, 150, 5] -> [200, 150, 2]
             BatchNorm1d(64),

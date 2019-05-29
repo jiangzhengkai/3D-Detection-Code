@@ -46,7 +46,7 @@ class KittiDataset(Dataset):
             rect = calib["R0_rect"]
             Trv2c = calib["Tr_velo_to_cam"]
             P2 = calib["P2"]
-            
+
             final_box_preds = det["box3d_lidar"].detach().cpu().numpy()
             label_preds = det["label_preds"].detach().cpu().numpy()
             scores = det["scores"].detach().cpu().numpy()
@@ -165,7 +165,7 @@ class KittiDataset(Dataset):
         res["lidar"]["points"] = points
         image_info = info["image"]
         image_path = image_info['image_path']
-       
+
         if read_image:
             image_path = self._root_path / image_path
             with open(str(image_path), 'rb') as f:

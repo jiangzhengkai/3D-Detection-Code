@@ -6,6 +6,7 @@ import numpy as np
 
 import pathlib
 import torch
+import gc
 import time
 
 from lib.datasets.loader.build_loader import build_dataloader
@@ -25,7 +26,7 @@ from lib.utils.checkpoint import Det3DCheckpointer
 
 from apex import parallel
 def train(config, logger=None, model_dir=None, distributed=False):
-    logger = setup_logger("Training", model_dir, get_rank())    
+    logger = setup_logger("Training", model_dir, get_rank())
 
     ####### dataloader #######
     train_dataloader = build_dataloader(config, training=True, logger=logger)
@@ -57,7 +58,7 @@ def train(config, logger=None, model_dir=None, distributed=False):
     arguments = {}
     arguments["iteration"] = 0
     arguments["epoch"] = 0
-    checkpoint = Det3DCheckpointer(net_module, 
+    checkpoint = Det3DCheckpointer(net_module,
                                    optimizer=optimizer,
                                    save_dir=model_dir,
                                    save_to_disk=save_to_disk,
@@ -65,7 +66,7 @@ def train(config, logger=None, model_dir=None, distributed=False):
 
     arguments.update(checkpoint.load())
     logger.info(f"extra arguments: {arguments}")
-    net_module.clear_metrics() 
+    net_module.clear_metrics()
 
     num_epochs = config.input.train.num_epochs
     num_gpus = int(os.environ["WORLD_SIZE"]) if "WORLD_SIZE" in os.environ else 1
@@ -73,8 +74,8 @@ def train(config, logger=None, model_dir=None, distributed=False):
     logger.info("total training steps: %s" %(total_steps))
 
     lr_scheduler = build_lr_scheduler(config, optimizer, total_steps)
-    
-    # num_classes 
+
+    # num_classes
     target_assigners = target_assigners_all_classes(config)
     num_classes = [len(target_assigner.classes) for target_assigner in target_assigners]
     class_names = [target_assigner.classes for target_assigner in target_assigners]
@@ -84,13 +85,13 @@ def train(config, logger=None, model_dir=None, distributed=False):
         for i, data_batch in enumerate(DataPrefetch(iter(train_dataloader), max_prefetch=4)):
             lr_scheduler.step(net_module.get_global_step())
             arguments["iteration"] += 1
-             
+
             data_device = convert_batch_to_device(data_batch, device=device)
-      
+
             optimizer.zero_grad()
 
             losses_dict = net_module(data_device)
-  
+
             batch_size = data_device["anchors"][0].shape[0]
             losses = []
             cls_loss_reduceds, loc_loss_reduceds, dir_loss_reduceds, cls_preds, careds = [], [], [], [], []
@@ -122,7 +123,7 @@ def train(config, logger=None, model_dir=None, distributed=False):
                 dir_loss_reduceds.append(dir_loss_reduced)
                 cls_preds.append(cls_pred)
                 careds.append(cared)
-                
+
             task_loss = torch.stack(losses)
             loss_all = torch.Tensor(config.model.decoder.head.weights).to(device) * task_loss
             loss_mean = torch.sum(loss_all)
@@ -134,7 +135,7 @@ def train(config, logger=None, model_dir=None, distributed=False):
 
             for idx, [cls_loss_reduced, loc_loss_reduced, dir_loss_reduced, cls_pred, labels, cared, loc_loss, cls_pos_loss, cls_neg_loss, loss] in enumerate(
                 zip(cls_loss_reduceds, loc_loss_reduceds, dir_loss_reduceds, cls_preds, data_device["labels"], careds, loc_losses, cls_pos_losses, cls_neg_losses, losses)):
-                
+
                 net_metrics = net_module.update_metrics(cls_loss_reduced, loc_loss_reduced, cls_pred, labels, cared, idx)
                 #net_metrics = get_metrics(config, cls_loss_reduced, loc_loss_reduced, cls_pred, labels, cared, num_classes[idx])
                 metrics = {}
@@ -168,7 +169,7 @@ def train(config, logger=None, model_dir=None, distributed=False):
                         logger.info("epoch: %d step: %d Loc_elements x: %6f y: %6f z: %6f w: %6f h: %6f l: %6f vx: %6f vy: %6f angle: %6f"%(
                                     epoch, step, *(metrics["loc_elem"])))
                     logger.info("epoch: %d step: %d Cls_elements cls_neg_rt: %2f cls_pos_rt: %2f"%(
-                                epoch, step, metrics["cls_neg_rt"], metrics["cls_pos_rt"]))                
+                                epoch, step, metrics["cls_neg_rt"], metrics["cls_pos_rt"]))
                     num_voxel = int(data_device["voxels"].shape[0])
                     num_pos = int(num_pos)
                     num_neg = int(num_neg)
@@ -189,10 +190,10 @@ def train(config, logger=None, model_dir=None, distributed=False):
                     pr_metrics = net_metrics["pr"]
                     logger.info("epoch: %d step: %d RpnAcc: %6f"%(epoch, step, net_metrics["rpn_acc"]))
                     logger.info("epoch: %d step: %d Prec prec@10: %6f prec@30: %6f prec@50: %6f prec@70: %6f prec@90: %6f"%(
-                                 epoch, step, pr_metrics["prec@10"], pr_metrics["prec@30"], pr_metrics["prec@50"], 
+                                 epoch, step, pr_metrics["prec@10"], pr_metrics["prec@30"], pr_metrics["prec@50"],
                                  pr_metrics["prec@70"], pr_metrics["prec@90"]))
                     logger.info("epoch: %d step: %d Reca reca@10: %6f reca@30: %6f reca@50: %6f reca@70: %6f reca@90: %6f"%(
-                                 epoch, step, pr_metrics["rec@10"], pr_metrics["rec@30"], pr_metrics["rec@50"], 
+                                 epoch, step, pr_metrics["rec@10"], pr_metrics["rec@30"], pr_metrics["rec@50"],
                                  pr_metrics["rec@70"], pr_metrics["rec@90"]))
                     logger.info("-------------------------------------------------------------------------------------------------------------------")
 
@@ -204,13 +205,13 @@ def train(config, logger=None, model_dir=None, distributed=False):
         if epoch % 1 == 0:
             #torch.save(model.state_dict(), config.output_dir+"/model_%d.pth"%epoch)
             logger.info("Finish epoch %d, start eval ..." %(epoch))
-            test(val_dataloader, 
-                 model, 
-                 save_dir=model_dir, 
-                 device=device, 
-                 distributed=distributed, 
+            test(val_dataloader,
+                 model,
+                 save_dir=model_dir,
+                 device=device,
+                 distributed=distributed,
                  logger=logger)
             torch.cuda.empty_cache()
         synchronize()
-    
+
     checkpoint.writer.close()

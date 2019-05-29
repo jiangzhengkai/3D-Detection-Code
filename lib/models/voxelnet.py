@@ -52,24 +52,24 @@ class VoxelNet(nn.Module):
         self._box_coders = [
             target_assigner.box_coder for target_assigner in target_assigners
         ]
-       
+
         self._dir_loss_function = WeightedSoftmaxClassificationLoss()
 
         ######## classifization and localization function ########
         cls_loss_function, loc_loss_function = build_losses.build(config)
-        
+
         self._loc_loss_function = loc_loss_function
         self._cls_loss_function = cls_loss_function
         self._cls_loss_weight = config.model.loss.classification_loss_weight
         self._loc_loss_weight = config.model.loss.localization_loss_weight
         self._direction_loss_weight = config.model.loss.direction_loss_weight
         self._post_center_range = config.model.post_process.post_center_limit_range
-     
+
         ####### voxel feature encoder #######
         vfe_class_dict = {
             "VoxelFeatureExtractor": voxel_encoder.VoxelFeatureExtractor,
             "VoxelFeatureExtractorV2": voxel_encoder.VoxelFeatureExtractorV2,
-            "VoxelFeatureExtractorV3": voxel_encoder.VoxelFeatureExtractorV3, 
+            "VoxelFeatureExtractorV3": voxel_encoder.VoxelFeatureExtractorV3,
             "SimpleVoxel": voxel_encoder.SimpleVoxel,
             "PIXORFeatureLayer": pixor_encoder.PIXORFeatureLayer
         }
@@ -79,7 +79,7 @@ class VoxelNet(nn.Module):
         vfe_class = vfe_class_dict[vfe_class_name]
         self._vfe_class_name = vfe_class_name
         logger.info("Voxel Feature Encoder: {}".format(self._vfe_class_name))
-    
+
         if "PIXOR" in self._vfe_class_name:
             self._voxel_feature_extractor = vfe_class(output_shape[:-1])
         else:
@@ -90,21 +90,21 @@ class VoxelNet(nn.Module):
             	with_distance=with_distance,
             	voxel_size=self._voxel_generator.voxel_size,
             	pc_range=self._voxel_generator.point_cloud_range)
-        ######## middle ########  
+        ######## middle ########
         middle_class_dict = {
             "SpMiddleFHD": middle.SpMiddleFHD,
             "None": None,
         }
-    
+
         middle_class_name = config.model.encoder.middle.type
         middle_num_input_features = config.model.encoder.middle.num_input_features
         middle_num_filters_d1 = config.model.encoder.middle.num_filters_down1
         middle_num_filters_d2 = config.model.encoder.middle.num_filters_down2
-    
+
         middle_class = middle_class_dict[middle_class_name]
         self._middle_class_name = middle_class_name
         logger.info("Middle class name: {}".format(middle_class_name))
-    
+
         if "Pixor" in self._middle_class_name:
             self._middle_feature_extractor = middle_class(
                 output_shape=output_shape,
@@ -137,7 +137,7 @@ class VoxelNet(nn.Module):
         rpn_class = rpn_class_dict[rpn_class_name]
         self._rpn_class_name = rpn_class_name
         logger.info("RPN class name: {}".format(self._rpn_class_name))
-    
+
         self._rpn = rpn_class(
             use_norm=True,
             num_classes=num_classes,
@@ -194,7 +194,7 @@ class VoxelNet(nn.Module):
         coordinates = example["coordinates"]
         batch_anchors = example["anchors"]
         batch_size_dev = batch_anchors[0].shape[0]
-        
+
         if "PIXOR" in self._vfe_class_name:
             voxel_features = self._voxel_feature_extractor(
                 voxels, num_points, coordinates, batch_size_dev)
@@ -209,16 +209,16 @@ class VoxelNet(nn.Module):
         # (spatial_features.sum(dim=1)[0].detach().cpu().numpy() / 41.0).tofile(open("./bev.bin", "wb"))
         # example['labels'][1][0].detach().cpu().numpy().tofile(open("labels.bin", "wb"))
         # example['gt_boxes'][1][0].tofile(open("gt_boxes.bin", "wb"))
-        predict_dicts = self._rpn(spatial_features) 
+        predict_dicts = self._rpn(spatial_features)
         rets = []
         for task_id, pred_dict in enumerate(predict_dicts):
-            if self.training: 
-                box_preds = pred_dict["box_preds"] 
+            if self.training:
+                box_preds = pred_dict["box_preds"]
                 cls_preds = pred_dict["cls_preds"]
-     
+
                 labels = example["labels"][task_id]
                 reg_targets = example["reg_targets"][task_id]
-            
+
                 cls_weights, reg_weights, cared = prepare_loss_weights(labels,
                                                                        pos_cls_weight=self._pos_cls_weight,
                                                                        neg_cls_weight=self._neg_cls_weight,
@@ -240,17 +240,17 @@ class VoxelNet(nn.Module):
                                                  encode_rad_error_by_sin=self._encode_rad_error_by_sin,
                                                  encode_background_as_zeros=self._encode_background_as_zeros,
                                                  box_code_size=self._box_coders[task_id].code_size)
-            
-                
+
+
                 loc_loss_reduced = loc_loss.sum() / batch_size_dev
                 loc_loss_reduced *= self._loc_loss_weight
-             
-                cls_pos_loss, cls_neg_loss = get_pos_neg_loss(cls_loss, labels) 
+
+                cls_pos_loss, cls_neg_loss = get_pos_neg_loss(cls_loss, labels)
                 cls_loss_reduced = cls_loss.sum() / batch_size_dev
                 cls_loss_reduced *= self._cls_loss_weight
 
-                loss = loc_loss_reduced + cls_loss_reduced  
-       
+                loss = loc_loss_reduced + cls_loss_reduced
+
                 if self._use_direction_classifier:
                     dir_targets = get_direction_target(example["anchors"][task_id],
                                                        reg_targets,
@@ -312,12 +312,12 @@ class VoxelNet(nn.Module):
 
         anchor_dim = 7 if self._config.input.train.dataset.type == "KittiDataset" else 9
         batch_anchors = example["anchors"][task_id].view(batch_size, -1, anchor_dim)
-        
+
         if "anchors_mask" not in example:
             batch_anchors_mask = [None] * batch_size
         else:
             batch_anchors_mask = example["anchors_mask"][task_id].view(batch_size, -1)
-     
+
         batch_box_preds = preds_dict["box_preds"]
         batch_cls_preds = preds_dict["cls_preds"]
         batch_box_preds = batch_box_preds.view(batch_size, -1, self._box_coders[task_id].code_size)
@@ -325,7 +325,7 @@ class VoxelNet(nn.Module):
         if not self._encode_background_as_zeros:
             num_class_with_bg = self._num_classes[task_id] + 1
         batch_cls_preds = batch_cls_preds.view(batch_size, -1, num_class_with_bg)
-        
+
         batch_box_preds = self._box_coders[task_id].decode_torch(batch_box_preds, batch_anchors)
 
         if self._use_direction_classifier:
