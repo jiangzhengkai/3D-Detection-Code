@@ -7,7 +7,7 @@ input:
         max_num_points: 20
         max_num_voxels: 40000
     train:
-        batch_size: 2
+        batch_size: 5
         num_epochs: 20
         dataset:
             type: "NuScenesDataset"
@@ -16,7 +16,7 @@ input:
             nsweeps: 10
         preprocess:
             shuffle: False
-            num_workers: 3
+            num_workers: 0
             gt_location_noise: [0, 0, 0]
             gt_rotation_noise: [0, 0]
             global_rotation_noise: [-0.3925, 0.3925]
@@ -56,7 +56,7 @@ input:
         preprocess:
             max_num_voxels: 60000
             shuffle: False
-            num_workers: 3
+            num_workers: 5
             anchor_area_threshold: -1
             remove_environment: False
 
@@ -146,7 +146,7 @@ model:
         classification_loss_weight: 1.0
         localization_loss_weight: 1.0
         direction_loss_weight: 0.2
-        rpn_thresholds: [0.1,0.3,0.5,0.7,0.8,0.9]
+        rpn_thresholds: [0.1,0.3,0.5,0.7,0.8,0.9, 0.95]
 
 optimizer:
     type: "adam"

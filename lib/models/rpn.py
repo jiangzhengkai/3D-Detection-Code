@@ -33,10 +33,10 @@ class RPNHead(nn.Module):
             prior_prob = 0.01
             bias_value = -math.log((1 - prior_prob) / prior_prob)
             torch.nn.init.constant_(self.conv_cls.bias, bias_value)
-  
+
 
     def forward(self, x):
-        ret_list = []   
+        ret_list = []
         box_preds = self.conv_box(x).permute(0, 2, 3, 1).contiguous()
         cls_preds = self.conv_cls(x).permute(0, 2, 3, 1).contiguous()
         ret_dict = {"box_preds": box_preds, "cls_preds": cls_preds}
@@ -129,7 +129,7 @@ class RPNBase(nn.Module):
                         stride=upsample_strides[i - self._upsample_start_idx]),
                     BatchNorm2d(
                         num_upsample_filters[i - self._upsample_start_idx]),
-                    nn.ReLU(),
+                    nn.ReLU6(),
                 )
                 deblocks.append(deblock)
         self.blocks = nn.ModuleList(blocks)
@@ -226,6 +226,6 @@ class RPNV2(RPNBase):
         for j in range(num_blocks):
             block.add(Conv2d(planes, planes, 3, padding=1))
             block.add(BatchNorm2d(planes))
-            block.add(nn.ReLU())
+            block.add(nn.ReLU6())
         return block, planes
 

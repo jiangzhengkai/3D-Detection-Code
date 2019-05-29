@@ -456,7 +456,7 @@ def second_box_encode(boxes, anchors, encode_angle_to_vector=False, smooth_dim=F
     else:
         xa, ya, za, wa, la, ha, vxa, vya, ra = np.split(anchors, box_ndim, axis=1)
         xg, yg, zg, wg, lg, hg, vxg, vyg, rg = np.split(boxes, box_ndim, axis=1)
-
+    import pdb; pdb.set_trace()
     diagonal = np.sqrt(la**2 + wa**2)  # 4.3
     xt = (xg - xa) / diagonal
     yt = (yg - ya) / diagonal

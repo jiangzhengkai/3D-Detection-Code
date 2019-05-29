@@ -82,20 +82,6 @@ def train(config, logger=None, model_dir=None, distributed=False):
     for epoch in range(arguments["epoch"]+1, num_epochs+1):
         arguments["epoch"] = epoch
         for i, data_batch in enumerate(DataPrefetch(iter(train_dataloader), max_prefetch=4)):
-            ######## data_device ########
-            #### voxels: num_voxels x max_num_points x 4 
-            #### num_points: num_voxels
-            #### points: max_points x (4 + 1)
-            #### coordinates: num_voxels x 4
-            #### num_voxels: batch_size x 1
-            #### calib.rect: batch_size x 4 x 4
-            #### calib.Trv2c: batch_size x 4 x 4
-            #### calib.P2: batch_size x 4 x 4
-            #### anchors: [batch_size x num_anchors x 7]
-            #### labels: [batch_size x num_anchors]
-            #### reg_targets: [batch_size x num_anchors x 7]
-            #### reg_weights: [batch_size x num_anchors]
-            #### meta_data: [dict_0, dict_1, ... dict_batch_size]
             lr_scheduler.step(net_module.get_global_step())
             arguments["iteration"] += 1
              
@@ -212,9 +198,10 @@ def train(config, logger=None, model_dir=None, distributed=False):
 
             #torch.cuda.empty_cache()
         net_module.clear_metrics()
+        gc.collect()
         checkpoint.save("model_epoch_{:03d}_step_{:06d}".format(
             epoch, step, **arguments))
-        if epoch % 1 == 0 or step == total_steps-1:
+        if epoch % 1 == 0:
             #torch.save(model.state_dict(), config.output_dir+"/model_%d.pth"%epoch)
             logger.info("Finish epoch %d, start eval ..." %(epoch))
             test(val_dataloader, 

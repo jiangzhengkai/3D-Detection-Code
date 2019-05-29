@@ -93,6 +93,7 @@ def second_box_decode(box_encodings, anchors, encode_angle_to_vector=False, smoo
         else:
             xt, yt, zt, wt, lt, ht, rt = torch.split(box_encodings, 1, dim=-1)
 
+    #import pdb; pdb.set_trace()
     diagonal = torch.sqrt(la**2 + wa**2)
     xg = xt * diagonal + xa
     yg = yt * diagonal + ya

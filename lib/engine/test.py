@@ -12,8 +12,7 @@ def compute_on_dataset(model, data_loader, device):
     for batch in tqdm(data_loader):
         example = convert_batch_to_device(batch, device=device)
         with torch.no_grad():
-            output = model(example)
-            outputs = model.loss(example, output)
+            outputs = model(example)
             for output in outputs:
                 token = output['metadata']['token']
                 for k, v in output.items():
