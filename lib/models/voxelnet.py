@@ -90,7 +90,7 @@ class VoxelNet(nn.Module):
             	with_distance=with_distance,
             	voxel_size=self._voxel_generator.voxel_size,
             	pc_range=self._voxel_generator.point_cloud_range)
-  
+        ######## middle ########  
         middle_class_dict = {
             "SpMiddleFHD": middle.SpMiddleFHD,
             "None": None,
@@ -161,6 +161,7 @@ class VoxelNet(nn.Module):
             ],
             logger=logger,
             )
+        ######## metrics ########
         self.rpn_acc = metrics.Accuracy(
             dim=-1,
             encode_background_as_zeros=self._encode_background_as_zeros)
@@ -200,7 +201,6 @@ class VoxelNet(nn.Module):
         else:
             voxel_features = self._voxel_feature_extractor(
                 voxels, num_points, coordinates)
-    
         if "PIXOR" not in self._vfe_class_name:
             spatial_features = self._middle_feature_extractor(
                 voxel_features, coordinates, batch_size_dev)
@@ -371,7 +371,7 @@ class VoxelNet(nn.Module):
                 nms_func = box_torch_ops.nms
 
             feature_map_size_prod = batch_box_preds.shape[
-                1] // self.target_assigners[task_id].num_anchors_per_location
+                1] // self._target_assigners[task_id].num_anchors_per_location
             if self._multiclass_nms:
                 assert self._encode_background_as_zeros is True
                 boxes_for_nms = box_preds[:, [0, 1, 3, 4, -1]]
@@ -412,7 +412,7 @@ class VoxelNet(nn.Module):
                         class_dir_labels = dir_labels
                     else:
                         # anchors_range = self.target_assigner.anchors_range(class_idx)
-                        anchors_range = self.target_assigners[
+                        anchors_range = self._target_assigners[
                             task_id].anchors_range
                         class_scores = total_scores.view(
                             -1, self._num_classes[task_id]

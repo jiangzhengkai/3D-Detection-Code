@@ -7,7 +7,7 @@ input:
         max_num_points: 20
         max_num_voxels: 40000
     train:
-        batch_size: 4
+        batch_size: 2
         num_epochs: 20
         dataset:
             type: "NuScenesDataset"

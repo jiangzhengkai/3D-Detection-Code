@@ -24,7 +24,7 @@ input:
             global_rotation_per_object_range: [0, 0]
             global_translation_noise: [0, 0, 0]
             anchor_area_threshold: -1
-            remove_points_after_sample: False
+            remove_points_after_sample: True
             gt_drop_percentage: 0.0
             gt_drop_max_keep_points: 15
             remove_unknow_examples: False
@@ -152,7 +152,7 @@ optimizer:
         lr:
             type: "one_cycle"
             value: 
-                lr_max: 9.0e-3
+                lr_max: 2.25e-3
                 moms: [0.95, 0.85]
                 div_factor: 10.0
                 pct_start: 0.4

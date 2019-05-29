@@ -32,8 +32,8 @@ def train(config, logger=None, model_dir=None, distributed=False):
     val_dataloader = build_dataloader(config, training=False, logger=logger)
 
     ####### build network ######
-    model = build_network(config, logger=logger)
     device = torch.device('cuda')
+    model = build_network(config, logger=logger, device=device)
     logger.info("Model Articutures: %s"%(model))
     if distributed:
         model = parallel.convert_syncbn_model(model)
@@ -103,7 +103,7 @@ def train(config, logger=None, model_dir=None, distributed=False):
       
             optimizer.zero_grad()
 
-            losses_dict = model(data_device)
+            losses_dict = net_module(data_device)
   
             batch_size = data_device["anchors"][0].shape[0]
             losses = []
