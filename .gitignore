@@ -29,6 +29,7 @@ dist/
 ./ropeproject
 show.py
 show2.py
+./kitti
 /datasets
 /models
 /output

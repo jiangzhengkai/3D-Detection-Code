@@ -1813,3 +1813,23 @@ optimizer:
 2019-05-29 23:55:24,438 Training INFO: epoch: 1 step: 50 Prec prec@10: 0.000925 prec@30: 0.000848 prec@50: 0.003923 prec@70: 0.006887 prec@90: 0.000000
 2019-05-29 23:55:24,439 Training INFO: epoch: 1 step: 50 Reca reca@10: 1.000000 reca@30: 0.888786 reca@50: 0.063913 reca@70: 0.003307 reca@90: 0.000000
 2019-05-29 23:55:24,439 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-29 23:56:00,888 Training INFO: Metrics for task: ['Car'], saved to: kitti
+2019-05-29 23:56:00,891 Training INFO: epoch: 1 step: 100 time 1.003152 Loss_all: 24.133303
+2019-05-29 23:56:00,895 Training INFO: epoch: 1 step: 100 Loss_cls: 23.392479 Loss_loc: 0.603280 Loss_dir: 0.137543
+2019-05-29 23:56:00,896 Training INFO: epoch: 1 step: 100 Loc_elements x: 0.038869 y: 0.035637 z: 0.091941 w: 0.034792 h: 0.052836 l: 0.045815 angle: 0.303390
+2019-05-29 23:56:00,896 Training INFO: epoch: 1 step: 100 Cls_elements cls_neg_rt: 23.186457 cls_pos_rt: 0.206020
+2019-05-29 23:56:00,919 Training INFO: epoch: 1 step: 100 Auxiliraries num_voxels: 61565 num_pos: 58 num_neg: 70254 num_anchors: 70400 lr: 0.000225
+2019-05-29 23:56:00,919 Training INFO: epoch: 1 step: 100 RpnAcc: 0.991590
+2019-05-29 23:56:00,920 Training INFO: epoch: 1 step: 100 Prec prec@10: 0.000913 prec@30: 0.000593 prec@50: 0.003916 prec@70: 0.006887 prec@90: 0.000000
+2019-05-29 23:56:00,921 Training INFO: epoch: 1 step: 100 Reca reca@10: 1.000000 reca@30: 0.511328 reca@50: 0.032389 reca@70: 0.001674 reca@90: 0.000000
+2019-05-29 23:56:00,921 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-05-29 23:56:37,112 Training INFO: Metrics for task: ['Car'], saved to: kitti
+2019-05-29 23:56:37,117 Training INFO: epoch: 1 step: 150 time 1.149348 Loss_all: 11.582508
+2019-05-29 23:56:37,118 Training INFO: epoch: 1 step: 150 Loss_cls: 10.880960 Loss_loc: 0.561621 Loss_dir: 0.139927
+2019-05-29 23:56:37,118 Training INFO: epoch: 1 step: 150 Loc_elements x: 0.044669 y: 0.019177 z: 0.069608 w: 0.027461 h: 0.058117 l: 0.031053 angle: 0.311535
+2019-05-29 23:56:37,118 Training INFO: epoch: 1 step: 150 Cls_elements cls_neg_rt: 10.604606 cls_pos_rt: 0.276355
+2019-05-29 23:56:37,124 Training INFO: epoch: 1 step: 150 Auxiliraries num_voxels: 66328 num_pos: 58 num_neg: 70267 num_anchors: 70400 lr: 0.000225
+2019-05-29 23:56:37,124 Training INFO: epoch: 1 step: 150 RpnAcc: 0.994092
+2019-05-29 23:56:37,124 Training INFO: epoch: 1 step: 150 Prec prec@10: 0.000910 prec@30: 0.000586 prec@50: 0.003916 prec@70: 0.006887 prec@90: 0.000000
+2019-05-29 23:56:37,124 Training INFO: epoch: 1 step: 150 Reca reca@10: 0.999974 reca@30: 0.345629 reca@50: 0.021673 reca@70: 0.001120 reca@90: 0.000000
+2019-05-29 23:56:37,124 Training INFO: -------------------------------------------------------------------------------------------------------------------
