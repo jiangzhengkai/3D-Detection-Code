@@ -42,28 +42,28 @@ def build_dataset(config, training, logger=None):
 
     ####### anchor_caches #######
     rets = [
-	target_assigner.generate_anchors(feature_map_size)
-	for target_assigner in target_assigners
+	    target_assigner.generate_anchors(feature_map_size)
+	    for target_assigner in target_assigners
     ]
     class_names = [
-	target_assigner.classes
-	for target_assigner in target_assigners
+	    target_assigner.classes
+	    for target_assigner in target_assigners
     ]
     anchors_dicts = [
-	target_assigner.generate_anchors_dict(feature_map_size)
-	for target_assigner in target_assigners
+	    target_assigner.generate_anchors_dict(feature_map_size)
+	    for target_assigner in target_assigners
     ]
     anchors = [
-	ret["anchors"].reshape([-1, ret["anchors"].shape[-1]])
-	for ret in rets
+	    ret["anchors"].reshape([-1, ret["anchors"].shape[-1]])
+	    for ret in rets
     ]
     matched_thresholdss = [
-	ret["matched_thresholds"]
-	for ret in rets
+	    ret["matched_thresholds"]
+	    for ret in rets
     ]
     unmatched_thresholdss = [
-	ret["unmatched_thresholds"]
-	for ret in rets
+	    ret["unmatched_thresholds"]
+	    for ret in rets
     ]
     anchors_bvs = [
         box_np_ops.rbbox2d_to_near_bbox(anchor[:, [0, 1, 3, 4, -1]])
@@ -79,25 +79,25 @@ def build_dataset(config, training, logger=None):
 
     ######## prep_pointcloud ########
     prep_func = partial(
-	prep_pointcloud,
+	    prep_pointcloud,
         config=config,
-	root_path=config_dataset.root_path,
-	voxel_generator=voxel_generator,
-	target_assigners=target_assigners,
-	training=training,
+	    root_path=config_dataset.root_path,
+	    voxel_generator=voxel_generator,
+	    target_assigners=target_assigners,
+	    training=training,
         anchor_cache=anchor_cache,
-	remove_outside_points=False,
-	db_sampler=db_sampler,
-	num_point_features=config.input.num_point_features,
-	out_size_factor=out_size_factor)
+	    remove_outside_points=False,
+	    db_sampler=db_sampler,
+	    num_point_features=config.input.num_point_features,
+	    out_size_factor=out_size_factor)
     logging = logger if training else None
     ######## dataset ########
     dataset = dataset_class(
-	info_path=config_dataset.info_path,
-	root_path=config_dataset.root_path,
+	    info_path=config_dataset.info_path,
+	    root_path=config_dataset.root_path,
         num_point_features=config.input.num_point_features,
-	class_names=list(itertools.chain(*class_names)),
-	prep_func=prep_func,
+	    class_names=list(itertools.chain(*class_names)),
+	    prep_func=prep_func,
         nsweeps=config_dataset.nsweeps,
         subset=training,
         logger=logging)
