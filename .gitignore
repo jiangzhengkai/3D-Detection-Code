@@ -21,7 +21,7 @@ dist/
 *.swo
 *.swp
 *~
-
+*.ipynb
 # Pycharm editor settings
 .idea
 *.bin
