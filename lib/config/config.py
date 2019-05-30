@@ -15,7 +15,6 @@ _C.input.voxel = edict()
 _C.input.voxel.voxel_size = [0.05, 0.05, 0.1]
 _C.input.voxel.point_cloud_range = [0, -40.0, -3.0, 70.4, 40.0, 1.0]
 _C.input.voxel.max_num_points = 5
-_C.input.voxel.max_num_voxels = 20000
 # --------------------------------------------------------------------
 # train
 # --------------------------------------------------------------------
@@ -32,10 +31,11 @@ _C.input.train.dataset.nsweeps = 1
 # --------------------------------------------------------------------
 _C.input.train.preprocess = edict()
 _C.input.train.preprocess.shuffle = False
+_C.input.train.preprocess.max_num_voxels = 20000
 _C.input.train.preprocess.num_workers = 0
 _C.input.train.preprocess.gt_location_noise = [0.25, 0.25, 0.25]
 _C.input.train.preprocess.gt_rotation_noise = [-0.15707963267, 0.15707963267]
-_C.input.train.preprocess.global_rotation_noise = [-0.78539816, 0.78539816]    
+_C.input.train.preprocess.global_rotation_noise = [-0.78539816, 0.78539816]
 _C.input.train.preprocess.global_scale_noise = [0.95, 1.05]
 _C.input.train.preprocess.global_rotation_per_object_range = [0, 0]
 _C.input.train.preprocess.global_translation_noise = [0.2, 0.2, 0.2]
@@ -82,7 +82,7 @@ _C.input.eval.dataset = edict()
 _C.input.eval.dataset.type = "KittiDataset"
 _C.input.eval.dataset.root_path = " "
 _C.input.eval.dataset.info_path = " "
-_C.input.eval.dataset.nsweeps = 1 
+_C.input.eval.dataset.nsweeps = 1
 # --------------------------------------------------------------------
 # box_coder
 # --------------------------------------------------------------------

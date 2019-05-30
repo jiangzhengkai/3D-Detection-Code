@@ -1,5 +1,6 @@
 import torch
 import numpy as np
+import time
 from torch import nn
 from lib.models import voxel_encoder, pixor_encoder
 from lib.models import middle, rpn
@@ -28,7 +29,7 @@ class VoxelNet(nn.Module):
         self.name = name
         self.logger = logger
         self._num_classes = num_classes
-        self._target_assigners = target_assigners
+        self.target_assigners = target_assigners
         self._voxel_generator = voxel_generator
         self._encode_background_as_zeros = config.model.loss.encode_background_as_zeros
         self._encode_rad_error_by_sin = config.model.loss.encode_rad_error_by_sin
@@ -194,7 +195,7 @@ class VoxelNet(nn.Module):
         coordinates = example["coordinates"]
         batch_anchors = example["anchors"]
         batch_size_dev = batch_anchors[0].shape[0]
-
+        #import pdb;pdb.set_trace()
         if "PIXOR" in self._vfe_class_name:
             voxel_features = self._voxel_feature_extractor(
                 voxels, num_points, coordinates, batch_size_dev)

@@ -93,15 +93,16 @@ def prep_pointcloud(config,
     """
     convert point cloud to voxels, create targets if ground truths exists
     input_dict format: dataset.get_sensor_data format
-    """ 
+    """
     prep_config = config.input.train.preprocess if training  else config.input.eval.preprocess
     remove_environment = prep_config.remove_environment
-    max_num_voxels = config.input.voxel.max_num_voxels
+
+    max_num_voxels = config.input.train.preprocess.max_num_voxels if training else config.input.eval.preprocess.max_num_voxels
     shuffle_points = prep_config.shuffle
     anchor_area_threshold = prep_config.anchor_area_threshold
-    
+
     if training:
-        remove_unknown = prep_config.remove_unknow_examples 
+        remove_unknown = prep_config.remove_unknow_examples
         gt_rotation_noise = prep_config.gt_rotation_noise
         gt_location_noise_std = prep_config.gt_location_noise
         global_rotation_noise = prep_config.global_rotation_noise
@@ -111,10 +112,10 @@ def prep_pointcloud(config,
         gt_points_drop = prep_config.gt_drop_percentage
         gt_drop_max_keep = prep_config.gt_drop_max_keep_points
         remove_points_after_sample = prep_config.remove_points_after_sample
- 
+
     task_class_names = [target_assigner.classes for target_assigner in target_assigners]
     class_names = list(itertools.chain(*task_class_names))
-  
+
     if config.input.train.dataset.type == "KittiDataset":
         points = input_dict["lidar"]["points"]
     else:
@@ -131,7 +132,7 @@ def prep_pointcloud(config,
             gt_dict["difficulty"] = difficulty
         else:
             gt_dict["difficulty"] = anno_dict["difficulty"]
-    
+
     calib = None
     if "calib" in input_dict:
         calib = input_dict["calib"]
@@ -193,7 +194,7 @@ def prep_pointcloud(config,
                     [gt_dict["gt_boxes"], sampled_gt_boxes])
                 gt_boxes_mask = np.concatenate(
                     [gt_boxes_mask, sampled_gt_masks], axis=0)
-            
+
                 if remove_points_after_sample:
                     masks = box_np_ops.points_in_rbbox(points, sampled_gt_boxes)
                     points = points[np.logical_not(masks.any(-1))]
@@ -217,7 +218,7 @@ def prep_pointcloud(config,
         for class_name in task_class_names:
             task_masks.append([np.where(gt_dict['gt_classes'] == class_name.index(i) + 1 + flag) for i in class_name])
             flag += len(class_name)
- 
+
         task_boxes = []
         task_classes = []
         task_names = []
@@ -251,7 +252,6 @@ def prep_pointcloud(config,
     voxel_size = voxel_generator.voxel_size
     pc_range = voxel_generator.point_cloud_range
     grid_size = voxel_generator.grid_size
-
     voxels, coordinates, num_points = voxel_generator.generate(points, max_num_voxels)
     num_voxels = np.array([voxels.shape[0]], dtype=np.int64)
 

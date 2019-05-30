@@ -3,6 +3,7 @@ import os
 import torch.utils.data
 import itertools
 from functools import partial
+#from spconv.utils import VoxelGenerator
 from lib.core.voxel.voxel_generator import VoxelGenerator
 from lib.core.target.target_assigner import target_assigners_all_classes
 from lib.core.sampler.db_sampler import DBSampler
@@ -15,9 +16,9 @@ from lib.core.bbox import box_np_ops
 def build_dataset(config, training, logger=None):
     ######## voxel generator ########
     voxel_generator = VoxelGenerator(
-	voxel_size=config.input.voxel.voxel_size,
-	point_cloud_range=config.input.voxel.point_cloud_range,
-	max_num_points=config.input.voxel.max_num_points)
+	    voxel_size=config.input.voxel.voxel_size,
+	    point_cloud_range=config.input.voxel.point_cloud_range,
+	    max_num_points=config.input.voxel.max_num_points)
     ####### target assigners ########
     target_assigners = target_assigners_all_classes(config)
     for target_assigner in target_assigners:
@@ -36,32 +37,32 @@ def build_dataset(config, training, logger=None):
     feature_map_size = [*feature_map_size, 1][::-1]
     if logger is not None and training:
         logger.info("feature_map_size: {}".format(feature_map_size))
-    dataset_class = get_dataset_class(config.input.train.dataset.type)    
+    dataset_class = get_dataset_class(config.input.train.dataset.type)
     config_dataset = config.input.train.dataset if training else config.input.eval.dataset
 
     ####### anchor_caches #######
     rets = [
-	target_assigner.generate_anchors(feature_map_size) 
+	target_assigner.generate_anchors(feature_map_size)
 	for target_assigner in target_assigners
     ]
     class_names = [
-	target_assigner.classes 
+	target_assigner.classes
 	for target_assigner in target_assigners
     ]
     anchors_dicts = [
-	target_assigner.generate_anchors_dict(feature_map_size) 
+	target_assigner.generate_anchors_dict(feature_map_size)
 	for target_assigner in target_assigners
     ]
     anchors = [
-	ret["anchors"].reshape([-1, ret["anchors"].shape[-1]]) 
+	ret["anchors"].reshape([-1, ret["anchors"].shape[-1]])
 	for ret in rets
     ]
     matched_thresholdss = [
-	ret["matched_thresholds"] 
+	ret["matched_thresholds"]
 	for ret in rets
     ]
     unmatched_thresholdss = [
-	ret["unmatched_thresholds"] 
+	ret["unmatched_thresholds"]
 	for ret in rets
     ]
     anchors_bvs = [
@@ -75,7 +76,7 @@ def build_dataset(config, training, logger=None):
         "unmatched_thresholds": unmatched_thresholdss,
         "anchors_dict": anchors_dicts,
     }
-    
+
     ######## prep_pointcloud ########
     prep_func = partial(
 	prep_pointcloud,
@@ -98,13 +99,13 @@ def build_dataset(config, training, logger=None):
 	class_names=list(itertools.chain(*class_names)),
 	prep_func=prep_func,
         nsweeps=config_dataset.nsweeps,
-        subset=False,
+        subset=training,
         logger=logging)
     return dataset
 
 def build_dataloader(config, training, logger=None):
     dataset = build_dataset(config, training, logger=logger)
-    
+
     batch_size = config.input.train.batch_size if training else config.input.eval.batch_size
     num_workers = config.input.train.preprocess.num_workers if training else config.input.eval.preprocess.num_workers
     num_gpus = int(
@@ -123,7 +124,7 @@ def build_dataloader(config, training, logger=None):
                                              batch_size=batch_size,
                                              shuffle=False,
                                              num_workers=num_workers,
-                                             pin_memory=False,
+                                             pin_memory=True,
                                              collate_fn=collate_batch_fn,
-					     sampler=sampler)
+					                         sampler=sampler)
     return dataloader

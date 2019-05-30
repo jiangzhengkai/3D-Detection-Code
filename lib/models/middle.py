@@ -40,10 +40,10 @@ class SpMiddleFHD(nn.Module):
         # [1600, 1200, 41]
         self.middle_conv = spconv.SparseSequential(
             SubMConv3d(num_input_features, 16, 3, indice_key="subm0"),
-            nn.BatchNorm1d(16),
+            BatchNorm1d(16),
             nn.ReLU(),
             SubMConv3d(16, 16, 3, indice_key="subm0"),
-            nn.BatchNorm1d(16),
+            BatchNorm1d(16),
             nn.ReLU(),
             SpConv3d(16, 32, 3, 2,
                      padding=1),  # [1600, 1200, 41] -> [800, 600, 21]

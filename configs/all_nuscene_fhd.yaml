@@ -5,7 +5,6 @@ input:
         voxel_size: [0.1, 0.1, 0.2]
         point_cloud_range: [-50.4, -50.4, -5.0, 50.4, 50.4, 3.0]
         max_num_points: 20
-        max_num_voxels: 40000
     train:
         batch_size: 5
         num_epochs: 20
@@ -15,6 +14,7 @@ input:
             info_path: "/unsullied/sharefs/_research_detection/GeneralDetection/NuScenes/full_data/infos_train_10sweeps_withvelo.pkl"
             nsweeps: 10
         preprocess:
+            max_num_voxels: 40000
             shuffle: False
             num_workers: 5
             gt_location_noise: [0, 0, 0]
