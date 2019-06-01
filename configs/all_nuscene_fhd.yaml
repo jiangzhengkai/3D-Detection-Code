@@ -10,8 +10,8 @@ input:
         num_epochs: 20
         dataset:
             type: "NuScenesDataset"
-            root_path: "/unsullied/sharefs/_research_detection/GeneralDetection/NuScenes/full_data"
-            info_path: "/unsullied/sharefs/_research_detection/GeneralDetection/NuScenes/full_data/infos_train_10sweeps_withvelo.pkl"
+            root_path: "/data/datasets/NuScenes"
+            info_path: "/data/datasets/NuScenes/infos_train_10sweeps_withvelo.pkl"
             nsweeps: 10
         preprocess:
             max_num_voxels: 40000
@@ -31,7 +31,7 @@ input:
             remove_environment: False
             db_sampler:
                 enable: True
-                db_info_path: "/unsullied/sharefs/_research_detection/GeneralDetection/NuScenes/full_data/dbinfos_train_10sweeps_withvelo.pkl"
+                db_info_path: "/data/datasets/NuScenes/dbinfos_train_10sweeps_withvelo.pkl"
                 db_preprocess_steps:
                     filter_by_min_num_points:
                         type: "filter_by_min_num_points"
@@ -50,8 +50,8 @@ input:
         batch_size: 5
         dataset:
             type: "NuScenesDataset"
-            root_path: "/unsullied/sharefs/_research_detection/GeneralDetection/NuScenes/full_data"
-            info_path: "/unsullied/sharefs/_research_detection/GeneralDetection/NuScenes/full_data/infos_val_10sweeps_withvelo.pkl"
+            root_path: "/data/datasets/NuScenes"
+            info_path: "/data/datasets/NuScenes/infos_val_10sweeps_withvelo.pkl"
             nsweeps: 10
         preprocess:
             max_num_voxels: 60000

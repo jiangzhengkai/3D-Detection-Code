@@ -30,9 +30,9 @@ dist/
 show.py
 show2.py
 ./kitti
-/datasets
-/models
-/output
-/nusc_output
-/kitti_output
-/kitti_4card
+./datasets
+./models
+./output
+./nusc_output
+./kitti_output
+./kitti_output_8batch

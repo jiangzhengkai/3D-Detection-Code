@@ -9,7 +9,7 @@ from lib.utils.eval import get_coco_eval_result, get_official_eval_result
 from lib.utils.progress_bar import progress_bar_iter as prog_bar
 
 class KittiDataset(Dataset):
-    def __init__(self, root_path, info_path, class_names=None, prep_func=None, num_point_features=None, **kwargs):
+    def __init__(self, root_path, info_path, class_names=None, prep_func=None, num_point_features=4, **kwargs):
         assert info_path is not None
         with open(info_path, 'rb') as f:
             infos = pickle.load(f)

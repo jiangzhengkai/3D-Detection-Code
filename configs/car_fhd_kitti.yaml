@@ -6,12 +6,12 @@ input:
         point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
         max_num_points: 5
     train:
-        batch_size: 4
+        batch_size: 6
         num_epochs: 100
         dataset:
             type: "KittiDataset"
-            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
-            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_train.pkl"
+            root_path: "/data/datasets/KITTI/object"
+            info_path: "/data/datasets/KITTI/object/kitti_infos_train.pkl"
             nsweeps: 1
         preprocess:
             max_num_voxels: 17000
@@ -31,7 +31,7 @@ input:
             remove_environment: False
             db_sampler:
                 enable: True
-                db_info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/dbinfos_train.pkl"
+                db_info_path: "/data/datasets/KITTI/object/dbinfos_train.pkl"
                 db_preprocess_steps:
                     filter_by_min_num_points:
                         type: "filter_by_min_num_points"
@@ -47,10 +47,11 @@ input:
                      values: [15, ]
 
     eval:
+        batch_size: 8
         dataset:
             type: "KittiDataset"
-            root_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object"
-            info_path: "/unsullied/sharefs/jiangzhengkai/datasets/KITTI/object/kitti_infos_val.pkl"
+            root_path: "/data/datasets/KITTI/object"
+            info_path: "/data/datasets/KITTI/object/kitti_infos_val.pkl"
             nsweeps: 1
         preprocess:
             max_num_voxels: 40000

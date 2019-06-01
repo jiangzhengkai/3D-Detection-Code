@@ -55,3 +55,12 @@ Download Nuscenes dataset and create some directories first:
        ├── maps          <-- unused    
        └── v1.0-test     <-- metadata    
 ```
+
+* convert to pickle file
+```
+# KITTI
+python create_data.py kitti_data_prep --root_path=KITTI_DATASET_ROOT
+# nuScenes
+python create_data.py nuscenes_data_prep --root_path=NUSCENES_TRAINVAL_DATASET_ROOT --version="v1.0-trainval" --nsweeps=10
+python create_data.py nuscenes_data_prep --root_path=NUSCENES_TEST_DATASET_ROOT --version="v1.0-test" --nsweeps=10
+```

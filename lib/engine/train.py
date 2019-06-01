@@ -24,7 +24,7 @@ from lib.engine.test import test
 from lib.utils.dist_common import synchronize
 from lib.utils.checkpoint import Det3DCheckpointer
 
-from apex import parallel
+#from apex import parallel
 def train(config, logger=None, model_dir=None, distributed=False):
     logger = setup_logger("Training", model_dir, get_rank())
 
@@ -37,7 +37,7 @@ def train(config, logger=None, model_dir=None, distributed=False):
     model = build_network(config, logger=logger, device=device)
     logger.info("Model Articutures: %s"%(model))
     if distributed:
-        model = parallel.convert_syncbn_model(model)
+        #model = parallel.convert_syncbn_model(model)
         logger.info("Using SyncBn")
         model = torch.nn.parallel.DistributedDataParallel(
             model.to(device),
@@ -197,13 +197,11 @@ def train(config, logger=None, model_dir=None, distributed=False):
                                  pr_metrics["rec@70"], pr_metrics["rec@90"]))
                     logger.info("-------------------------------------------------------------------------------------------------------------------")
 
-            #torch.cuda.empty_cache()
         net_module.clear_metrics()
         gc.collect()
         checkpoint.save("model_epoch_{:03d}_step_{:06d}".format(
             epoch, step, **arguments))
         if epoch % 1 == 0:
-            #torch.save(model.state_dict(), config.output_dir+"/model_%d.pth"%epoch)
             logger.info("Finish epoch %d, start eval ..." %(epoch))
             test(val_dataloader,
                  model,
