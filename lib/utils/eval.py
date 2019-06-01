@@ -172,9 +172,7 @@ def box3d_overlap(boxes, qboxes, criterion=-1, z_axis=1, z_center=1.0):
     bev_axes = list(range(7))
     bev_axes.pop(z_axis + 3)
     bev_axes.pop(z_axis)
-    t = time.time()
     rinc = rotate_iou_gpu_eval(boxes[:, bev_axes], qboxes[:, bev_axes], 2)
-    #rinc = box_np_ops.rinter_cc(boxes[:, bev_axes], qboxes[:, bev_axes])
     box3d_overlap_kernel(boxes, qboxes, rinc, criterion, z_axis, z_center)
     return rinc
 

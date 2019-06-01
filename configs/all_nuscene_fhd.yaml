@@ -16,7 +16,7 @@ input:
         preprocess:
             max_num_voxels: 40000
             shuffle: False
-            num_workers: 5
+            num_workers: 3
             gt_location_noise: [0, 0, 0]
             gt_rotation_noise: [0, 0]
             global_rotation_noise: [-0.3925, 0.3925]
@@ -56,7 +56,7 @@ input:
         preprocess:
             max_num_voxels: 60000
             shuffle: False
-            num_workers: 5
+            num_workers: 3
             anchor_area_threshold: -1
             remove_environment: False
 
@@ -154,7 +154,7 @@ optimizer:
         lr:
             type: "one_cycle"
             value: 
-                lr_max: 0.04
+                lr_max: 0.03
                 moms: [0.95, 0.85]
                 div_factor: 10.0
                 pct_start: 0.4

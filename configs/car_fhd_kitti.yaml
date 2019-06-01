@@ -6,7 +6,7 @@ input:
         point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
         max_num_points: 5
     train:
-        batch_size: 6
+        batch_size: 5
         num_epochs: 100
         dataset:
             type: "KittiDataset"
@@ -14,17 +14,17 @@ input:
             info_path: "/data/datasets/KITTI/object/kitti_infos_train.pkl"
             nsweeps: 1
         preprocess:
-            max_num_voxels: 17000
+            max_num_voxels: 40000
             shuffle: False
             num_workers: 3
             gt_location_noise: [1.0, 1.0, 0.5]
-            gt_rotation_noise: [-0.3141592654, 0.3141592654]
+            gt_rotation_noise: [-0.78539816, 0.78539816]
             global_rotation_noise: [-0.78539816, 0.78539816]
             global_scale_noise: [0.95, 1.05]
             global_rotation_per_object_range: [0, 0]
             global_translation_noise: [0, 0, 0]
             anchor_area_threshold: -1
-            remove_points_after_sample: True
+            remove_points_after_sample: False
             gt_drop_percentage: 0.0
             gt_drop_max_keep_points: 15
             remove_unknow_examples: False
@@ -47,14 +47,14 @@ input:
                      values: [15, ]
 
     eval:
-        batch_size: 8
+        batch_size: 6
         dataset:
             type: "KittiDataset"
             root_path: "/data/datasets/KITTI/object"
             info_path: "/data/datasets/KITTI/object/kitti_infos_val.pkl"
             nsweeps: 1
         preprocess:
-            max_num_voxels: 40000
+            max_num_voxels: 60000
             shuffle: False
             num_workers: 3
             anchor_area_threshold: -1
@@ -72,7 +72,7 @@ target_assigner:
         anchor_types: ["anchor_generator_range",]
         anchor_sizes: [[1.6, 3.9, 1.56],]
         anchor_dims: [7,]
-        anchor_ranges: [[0, -40.0, -1.0, 70.4, 40.0, -1.0],]
+        anchor_ranges: [[0, -40.0, -2.2, 70.4, 40.0, 0.8],]
         anchor_rotations: [[0, 1.57],]
         anchor_matched_thresholds: [0.6,]
         anchor_unmatched_thresholds: [0.45,]
@@ -115,12 +115,12 @@ model:
             use_direction_classifier: True
             direction_offset: 0.0
     post_process:
-        post_center_limit_range: [0, -40.0, -2.2, 70.4, 40.0, 0.8]
+        post_center_limit_range: [0, -40.0, -5.0, 70.4, 40.0, 5.0]
         use_rotate_nms: True
         use_multi_class_nms: False
         nms_pre_max_size: 1000
         nms_post_max_size: 100
-        nms_score_threshold: 0.3
+        nms_score_threshold: 0.4
         nms_iou_threshold: 0.01
 
     loss:

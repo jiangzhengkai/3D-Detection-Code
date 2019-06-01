@@ -129,7 +129,7 @@ class RPNBase(nn.Module):
                         stride=upsample_strides[i - self._upsample_start_idx]),
                     BatchNorm2d(
                         num_upsample_filters[i - self._upsample_start_idx]),
-                    nn.ReLU6(),
+                    nn.ReLU(),
                 )
                 deblocks.append(deblock)
         self.blocks = nn.ModuleList(blocks)
@@ -221,11 +221,11 @@ class RPNV2(RPNBase):
             nn.ZeroPad2d(1),
             Conv2d(inplanes, planes, 3, stride=stride),
             BatchNorm2d(planes),
-            nn.ReLU6(),
+            nn.ReLU(),
         )
         for j in range(num_blocks):
             block.add(Conv2d(planes, planes, 3, padding=1))
             block.add(BatchNorm2d(planes))
-            block.add(nn.ReLU6())
+            block.add(nn.ReLU())
         return block, planes
 

@@ -1,10 +1,17 @@
-import torch
+import functools
 import inspect
+import sys
+from collections import OrderedDict
+
+import numba
+import numpy as np
+import torch
 
 class Sequential(torch.nn.Module):
     r"""A sequential container.
     Modules will be added to it in the order they are passed in the constructor.
     Alternatively, an ordered dict of modules can also be passed in.
+
     To make it easier to understand, given is a small example::
 
         # Example of using Sequential
@@ -68,8 +75,11 @@ class Sequential(torch.nn.Module):
         self.add_module(name, module)
 
     def forward(self, input):
+        # i = 0
         for module in self._modules.values():
+            # print(i)
             input = module(input)
+            # i += 1
         return input
 
 class GroupNorm(torch.nn.GroupNorm):
@@ -79,7 +89,6 @@ class GroupNorm(torch.nn.GroupNorm):
             num_channels=num_channels,
             eps=eps,
             affine=affine)
-
 class Empty(torch.nn.Module):
     def __init__(self, *args, **kwargs):
         super(Empty, self).__init__()
@@ -90,7 +99,7 @@ class Empty(torch.nn.Module):
         elif len(args) == 0:
             return None
         return args
-    
+
 def get_pos_to_kw_map(func):
     pos_to_kw = {}
     fsig = inspect.signature(func)
@@ -100,6 +109,16 @@ def get_pos_to_kw_map(func):
             pos_to_kw[pos] = name
         pos += 1
     return pos_to_kw
+
+
+def get_kw_to_default_map(func):
+    kw_to_default = {}
+    fsig = inspect.signature(func)
+    for name, info in fsig.parameters.items():
+        if info.kind is info.POSITIONAL_OR_KEYWORD:
+            if info.default is not info.empty:
+                kw_to_default[name] = info.default
+    return kw_to_default
 
 def change_default_args(**kwargs):
     def layer_wrapper(layer_class):

@@ -1,26 +1,54 @@
 import torch
-import pickle
 from pathlib import Path
+import pickle
+import time
+from functools import partial
+
 import numpy as np
-from torch.utils.data import Dataset
+
 from lib.core.bbox import box_np_ops
 from lib.datasets import kitti_common as kitti
 from lib.utils.eval import get_coco_eval_result, get_official_eval_result
+from torch.utils.data import Dataset
 from lib.utils.progress_bar import progress_bar_iter as prog_bar
 
 class KittiDataset(Dataset):
-    def __init__(self, root_path, info_path, class_names=None, prep_func=None, num_point_features=4, **kwargs):
+    NumPointFeatures = 4
+
+    def __init__(self,
+                 root_path,
+                 info_path,
+                 class_names=None,
+                 prep_func=None,
+                 num_point_features=None,
+                 **kwargs):
         assert info_path is not None
         with open(info_path, 'rb') as f:
             infos = pickle.load(f)
-        self._root_path = root_path
+        self._root_path = Path(root_path)
         self._kitti_infos = infos
         self._num_point_features = num_point_features
+        # print("remain number of infos:", len(self._kitti_infos))
         self._class_names = class_names
         self._prep_func = prep_func
 
     def __len__(self):
         return len(self._kitti_infos)
+
+    def get_road_plane(self, idx):
+        plane_file = os.path.join(self.plane_dir, '%06d.txt' % idx)
+        with open(plane_file, 'r') as f:
+            lines = f.readlines()
+        lines = [float(i) for i in lines[3].split()]
+        plane = np.asarray(lines)
+
+        # Ensure normal is always facing up, this is in the rectified camera coordinate
+        if plane[1] > 0:
+            plane = -plane
+
+        norm = np.linalg.norm(plane[0:3])
+        plane = plane / norm
+        return plane
 
     @property
     def num_point_features(self):
@@ -31,34 +59,42 @@ class KittiDataset(Dataset):
         if "annos" not in self._kitti_infos[0]:
             return None
         gt_annos = [info["annos"] for info in self._kitti_infos]
+
         return gt_annos
 
     def convert_detection_to_kitti_annos(self, detection):
         class_names = self._class_names
         det_image_idxes = [k for k in detection.keys()]
-        gt_image_idxes = [str(info["image"]["image_idx"]) for info in self._kitti_infos]
-
+        gt_image_idxes = [
+            str(info["image"]["image_idx"]) for info in self._kitti_infos
+        ]
+        # print(f"det_image_idxes: {det_image_idxes[:10]}")
+        # print(f"gt_image_idxes: {gt_image_idxes[:10]}")
         annos = []
+        # for i in range(len(detection)):
         for det_idx in gt_image_idxes:
             det = detection[det_idx]
             info = self._kitti_infos[gt_image_idxes.index(det_idx)]
+            # info = self._kitti_infos[i]
             calib = info["calib"]
             rect = calib["R0_rect"]
             Trv2c = calib["Tr_velo_to_cam"]
             P2 = calib["P2"]
-
             final_box_preds = det["box3d_lidar"].detach().cpu().numpy()
             label_preds = det["label_preds"].detach().cpu().numpy()
             scores = det["scores"].detach().cpu().numpy()
             if final_box_preds.shape[0] != 0:
                 final_box_preds[:, 2] -= final_box_preds[:, 5] / 2
-                box3d_camera = box_np_ops.box_lidar_to_camera(final_box_preds, rect, Trv2c)
+                box3d_camera = box_np_ops.box_lidar_to_camera(
+                    final_box_preds, rect, Trv2c)
                 locs = box3d_camera[:, :3]
                 dims = box3d_camera[:, 3:6]
                 angles = box3d_camera[:, 6]
-                camera_box_region = [0.5, 1.0, 0.5]
-                box_corners = box_np_ops.center_to_corner_box3d(locs, dims, angles, camera_box_region, axis=1)
-                box_corners_in_image = box_np_ops.project_to_image(box_corners, P2)
+                camera_box_origin = [0.5, 1.0, 0.5]
+                box_corners = box_np_ops.center_to_corner_box3d(
+                    locs, dims, angles, camera_box_origin, axis=1)
+                box_corners_in_image = box_np_ops.project_to_image(
+                    box_corners, P2)
                 # box_corners_in_image: [N, 8, 2]
                 minxy = np.min(box_corners_in_image, axis=1)
                 maxxy = np.max(box_corners_in_image, axis=1)
@@ -75,14 +111,20 @@ class KittiDataset(Dataset):
                 bbox[j, 2:] = np.minimum(bbox[j, 2:], image_shape[::-1])
                 bbox[j, :2] = np.maximum(bbox[j, :2], [0, 0])
                 anno["bbox"].append(bbox[j])
-                anno["alpha"].append(-np.arctan2(-box3d_lidar[j, 1], box3d_lidar[j, 0]) + box3d_camera[j, 6])
+                # convert center format to kitti format
+                # box3d_lidar[j, 2] -= box3d_lidar[j, 5] / 2
+                anno["alpha"].append(
+                    -np.arctan2(-box3d_lidar[j, 1], box3d_lidar[j, 0]) +
+                    box3d_camera[j, 6])
                 anno["dimensions"].append(box3d_camera[j, 3:6])
                 anno["location"].append(box3d_camera[j, :3])
                 anno["rotation_y"].append(box3d_camera[j, 6])
+
                 anno["name"].append(class_names[int(label_preds[j])])
                 anno["truncated"].append(0.0)
                 anno["occluded"].append(0)
                 anno["score"].append(scores[j])
+
                 num_example += 1
             if num_example != 0:
                 anno = {n: np.stack(v) for n, v in anno.items()}
@@ -92,6 +134,7 @@ class KittiDataset(Dataset):
             num_example = annos[-1]["name"].shape[0]
             annos[-1]["metadata"] = det["metadata"]
         return annos
+
     def evaluation(self, detections, output_dir):
         """
         detection
@@ -101,26 +144,36 @@ class KittiDataset(Dataset):
         gt_annos = self.ground_truth_annotations
         if gt_annos is None:
             return None
+
         dt_annos = self.convert_detection_to_kitti_annos(detections)
         # firstly convert standard detection to kitti-format dt annos
         z_axis = 1  # KITTI camera format use y as regular "z" axis.
         z_center = 1.0  # KITTI camera box's center is [0.5, 1, 0.5]
         # for regular raw lidar data, z_axis = 2, z_center = 0.5.
-        result_official_dict = get_official_eval_result(gt_annos,
-            						dt_annos,
-            						self._class_names,
-            						z_axis=z_axis,
-            						z_center=z_center)
-        result_coco = get_coco_eval_result(gt_annos,
-            				   dt_annos,
-            				   self._class_names,
-            				   z_axis=z_axis,
-            				   z_center=z_center)
-        return  {"results": {"official": result_official_dict["result"],
-                             "coco": result_coco["result"],},
-                 "detail": {"eval.kitti": {"official": result_official_dict["detail"], "coco": result_coco["detail"]}
-                          },
+        result_official_dict = get_official_eval_result(
+            gt_annos,
+            dt_annos,
+            self._class_names,
+            z_axis=z_axis,
+            z_center=z_center)
+        result_coco = get_coco_eval_result(
+            gt_annos,
+            dt_annos,
+            self._class_names,
+            z_axis=z_axis,
+            z_center=z_center)
+        return {
+            "results": {
+                "official": result_official_dict["result"],
+                "coco": result_coco["result"],
+            },
+            "detail": {
+                "eval.kitti": {
+                    "official": result_official_dict["detail"],
+                    "coco": result_coco["detail"]
                 }
+            },
+        }
 
     def __getitem__(self, idx):
         input_dict = self.get_sensor_data(idx)
@@ -133,6 +186,8 @@ class KittiDataset(Dataset):
         return example
 
     def get_sensor_data(self, query):
+        # assert isinstance(query, int)
+        # info = self._kitti_infos[query]
         read_image = False
         idx = query
         if isinstance(query, dict):
@@ -145,6 +200,11 @@ class KittiDataset(Dataset):
                 "type": "lidar",
                 "points": None,
             },
+            # "cam2": {
+            #     "type": "camera",
+            #     "data": None,
+            #     "datatype": "png",
+            # },
             "metadata": {
                 "image_idx": info["image"]["image_idx"],
                 "image_shape": info["image"]["image_shape"],
@@ -153,15 +213,18 @@ class KittiDataset(Dataset):
             "calib": None,
             "cam": {},
         }
+
         pc_info = info["point_cloud"]
-        velo_path = Path(pc_info["velodyne_path"])
+        velo_path = Path(pc_info['velodyne_path'])
         if not velo_path.is_absolute():
             velo_path = Path(self._root_path) / pc_info['velodyne_path']
         velo_reduced_path = velo_path.parent.parent / (
             velo_path.parent.stem + '_reduced') / velo_path.name
         if velo_reduced_path.exists():
             velo_path = velo_reduced_path
-        points = np.fromfile(str(velo_path), dtype=np.float32, count=-1).reshape([-1, self._num_point_features])
+        points = np.fromfile(
+            str(velo_path), dtype=np.float32,
+            count=-1).reshape([-1, self._num_point_features])
         res["lidar"]["points"] = points
         image_info = info["image"]
         image_path = image_info['image_path']
@@ -175,6 +238,7 @@ class KittiDataset(Dataset):
                 "data": image_str,
                 "datatype": "png",
             }
+
         calib = info["calib"]
         calib_dict = {
             'rect': calib['R0_rect'],
@@ -212,7 +276,10 @@ class KittiDataset(Dataset):
 
         return res
 
-def convert_to_kitti_info(info):
+
+def convert_to_kitti_info_version2(info):
+    """convert kitti info v1 to v2 if possible.
+    """
     if "image" not in info or "calib" not in info or "point_cloud" not in info:
         info["image"] = {
             'image_shape': info["img_shape"],
@@ -227,6 +294,7 @@ def convert_to_kitti_info(info):
         info["point_cloud"] = {
             "velodyne_path": info['velodyne_path'],
         }
+
 
 def kitti_anno_to_label_file(annos, folder):
     folder = Path(folder)
@@ -250,10 +318,12 @@ def kitti_anno_to_label_file(annos, folder):
         with open(label_file, 'w') as f:
             f.write(label_str)
 
+
 def _read_imageset_file(path):
     with open(path, 'r') as f:
         lines = f.readlines()
     return [int(line) for line in lines]
+
 
 def _calculate_num_points_in_gt(data_path,
                                 infos,
@@ -268,7 +338,8 @@ def _calculate_num_points_in_gt(data_path,
             v_path = str(Path(data_path) / pc_info["velodyne_path"])
         else:
             v_path = pc_info["velodyne_path"]
-        points_v = np.fromfile(v_path, dtype=np.float32, count=-1).reshape([-1, num_features])
+        points_v = np.fromfile(
+            v_path, dtype=np.float32, count=-1).reshape([-1, num_features])
         rect = calib['R0_rect']
         Trv2c = calib['Tr_velo_to_cam']
         P2 = calib['P2']
@@ -295,7 +366,7 @@ def _calculate_num_points_in_gt(data_path,
         annos["num_points_in_gt"] = num_points_in_gt.astype(np.int32)
 
 
-def create_kitti_info_file(data_path, save_path=None, relative_path=False):
+def create_kitti_info_file(data_path, save_path=None, relative_path=True):
     imageset_folder = Path(__file__).resolve().parent / "ImageSets"
     train_img_ids = _read_imageset_file(str(imageset_folder / "train.txt"))
     val_img_ids = _read_imageset_file(str(imageset_folder / "val.txt"))
@@ -348,6 +419,7 @@ def create_kitti_info_file(data_path, save_path=None, relative_path=False):
     with open(filename, 'wb') as f:
         pickle.dump(kitti_infos_test, f)
 
+
 def _create_reduced_point_cloud(data_path,
                                 info_path,
                                 save_path=None,
@@ -361,7 +433,8 @@ def _create_reduced_point_cloud(data_path,
 
         v_path = pc_info['velodyne_path']
         v_path = Path(data_path) / v_path
-        points_v = np.fromfile(str(v_path), dtype=np.float32, count=-1).reshape([-1, 4])
+        points_v = np.fromfile(
+            str(v_path), dtype=np.float32, count=-1).reshape([-1, 4])
         rect = calib['R0_rect']
         P2 = calib['P2']
         Trv2c = calib['Tr_velo_to_cam']
@@ -411,6 +484,3 @@ def create_reduced_point_cloud(data_path,
         _create_reduced_point_cloud(
             data_path, test_info_path, save_path, back=True)
 
-
-if __name__ == "__main__":
-    fire.Fire()

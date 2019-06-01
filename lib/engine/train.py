@@ -24,7 +24,7 @@ from lib.engine.test import test
 from lib.utils.dist_common import synchronize
 from lib.utils.checkpoint import Det3DCheckpointer
 
-#from apex import parallel
+from apex import parallel
 def train(config, logger=None, model_dir=None, distributed=False):
     logger = setup_logger("Training", model_dir, get_rank())
 
@@ -35,9 +35,8 @@ def train(config, logger=None, model_dir=None, distributed=False):
     ####### build network ######
     device = torch.device('cuda')
     model = build_network(config, logger=logger, device=device)
-    logger.info("Model Articutures: %s"%(model))
     if distributed:
-        #model = parallel.convert_syncbn_model(model)
+        model = parallel.convert_syncbn_model(model)
         logger.info("Using SyncBn")
         model = torch.nn.parallel.DistributedDataParallel(
             model.to(device),
@@ -50,6 +49,7 @@ def train(config, logger=None, model_dir=None, distributed=False):
         net_module = model.to(device)
         logger.info("Training use Single-GPU")
 
+    logger.info("Model Articutures: %s"%(model))
     ####### optimizer #######
     optimizer = build_optimizer(config, net_module)
 
@@ -90,7 +90,7 @@ def train(config, logger=None, model_dir=None, distributed=False):
 
             optimizer.zero_grad()
 
-            losses_dict = net_module(data_device)
+            losses_dict = model(data_device)
 
             batch_size = data_device["anchors"][0].shape[0]
             losses = []

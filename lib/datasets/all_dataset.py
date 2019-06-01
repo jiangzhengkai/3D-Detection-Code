@@ -121,7 +121,7 @@ def create_groundtruth_database(
 
     print("dataset length: ", len(dataset))
 
-    print(f"finish {nsweep}'s dbinfos preprocess")
+    print(f"finish {nsweeps}'s dbinfos preprocess")
 
     for k, v in all_db_infos.items():
         print(f"load {len(v)} {k} database infos")
