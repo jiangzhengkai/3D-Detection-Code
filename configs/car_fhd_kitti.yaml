@@ -6,7 +6,7 @@ input:
         point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
         max_num_points: 5
     train:
-        batch_size: 5
+        batch_size: 2
         num_epochs: 100
         dataset:
             type: "KittiDataset"
