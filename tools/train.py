@@ -34,7 +34,7 @@ def main():
     with open(args.cfg, "r") as cf:
         config_str = "\n" + cf.read()
         logger.info(config_str)
-    train(cfg, logger=logger, model_dir=output_dir, distributed=args.distributed)
+    train(cfg, logger=logger, model_dir=output_dir, local_rank=args.local_rank, distributed=args.distributed)
 
 if __name__ == "__main__":
     main()

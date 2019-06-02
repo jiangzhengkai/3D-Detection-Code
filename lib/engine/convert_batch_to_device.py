@@ -29,7 +29,7 @@ class DataPrefetch(threading.Thread):
 
 
 def convert_batch_to_device(data_batch, dtype=torch.float32, device=None):
-    device = device if device is not None else torch.device("cuda:0")
+    #device = device if device is not None else torch.device("cuda:0")
 
     data_batch_torch = {}
     for k, v in data_batch.items():

@@ -25,7 +25,7 @@ from lib.utils.dist_common import synchronize
 from lib.utils.checkpoint import Det3DCheckpointer
 
 from apex import parallel
-def train(config, logger=None, model_dir=None, distributed=False):
+def train(config, logger=None, model_dir=None, local_rank=None, distributed=False):
     logger = setup_logger("Training", model_dir, get_rank())
 
     ####### dataloader #######
@@ -40,8 +40,8 @@ def train(config, logger=None, model_dir=None, distributed=False):
         logger.info("Using SyncBn")
         model = torch.nn.parallel.DistributedDataParallel(
             model.to(device),
-            device_ids=[config.local_rank],
-            output_device=config.local_rank,
+            device_ids=[local_rank],
+            output_device=local_rank,
         )
         net_module = model.module
     else:

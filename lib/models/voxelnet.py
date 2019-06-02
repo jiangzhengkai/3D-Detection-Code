@@ -2,7 +2,7 @@ import torch
 import numpy as np
 import time
 from torch import nn
-from lib.models import voxel_encoder, pixor_encoder
+from lib.models import voxel_encoder, pixor_encoder, pillar_encoder
 from lib.models import middle, rpn
 from lib.solver import build_losses
 from lib.core.bbox import box_torch_ops
@@ -72,6 +72,7 @@ class VoxelNet(nn.Module):
             "VoxelFeatureExtractorV2": voxel_encoder.VoxelFeatureExtractorV2,
             "VoxelFeatureExtractorV3": voxel_encoder.VoxelFeatureExtractorV3,
             "SimpleVoxel": voxel_encoder.SimpleVoxel,
+            "PillarFeatureNet": pillar_encoder.PillarFeatureNet,
             "PIXORFeatureLayer": pixor_encoder.PIXORFeatureLayer
         }
         vfe_class_name = config.model.encoder.vfe.type
@@ -94,6 +95,7 @@ class VoxelNet(nn.Module):
         ######## middle ########
         middle_class_dict = {
             "SpMiddleFHD": middle.SpMiddleFHD,
+            "PointPillarsScatter": pillar_encoder.PointPillarsScatter,
             "None": None,
         }
 
@@ -106,7 +108,7 @@ class VoxelNet(nn.Module):
         self._middle_class_name = middle_class_name
         logger.info("Middle class name: {}".format(middle_class_name))
 
-        if "Pixor" in self._middle_class_name:
+        if "Pillar" in self._middle_class_name:
             self._middle_feature_extractor = middle_class(
                 output_shape=output_shape,
                 num_input_features=vfe_num_filters[-1])

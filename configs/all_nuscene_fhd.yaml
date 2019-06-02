@@ -1,4 +1,3 @@
-local_rank: 0
 input:
     num_point_features: 5
     voxel:
@@ -35,19 +34,58 @@ input:
                 db_preprocess_steps:
                     filter_by_min_num_points:
                         type: "filter_by_min_num_points"
-                        classes: ["car","truck", "construction_vehicle", "bus", "trailer", "barrier", "motorcycle", "bicycle", "pedestrian", "traffic_cone"] 
-                        values: [5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+                        classes: 
+                        - "car"
+                        - "truck" 
+                        - "construction_vehicle"
+                        - "bus"
+                        - "trailer"
+                        - "barrier"
+                        - "motorcycle"
+                        - "bicycle"
+                        - "pedestrian"
+                        - "traffic_cone"
+                        values:
+                        - 5
+                        - 5
+                        - 5
+                        - 5
+                        - 5
+                        - 5
+                        - 5
+                        - 5
+                        - 5
+                        - 5
                     filter_by_difficulty:
                         type: "filter_by_difficulty"
                         value: [-1,]
                 global_random_rotation_range_per_object: [0, 0]
                 rate: 1.0
                 sample_groups:
-                     classes: ["car","truck", "construction_vehicle", "bus", "trailer", "barrier", "motorcycle", "bicycle", "pedestrian", "traffic_cone"] 
-                     values: [2, 3, 7, 4, 6, 2, 6, 6, 2, 2]
-
+                     classes:
+                     - "car"
+                     - "truck"
+                     - "construction_vehicle"
+                     - "bus"
+                     - "trailer"
+                     - "barrier"
+                     - "motorcycle"
+                     - "bicycle"
+                     - "pedestrian"
+                     - "traffic_cone"
+                     values: 
+                     - 2
+                     - 3
+                     - 7
+                     - 4
+                     - 6
+                     - 2
+                     - 6
+                     - 6
+                     - 2
+                     - 2
     eval:
-        batch_size: 5
+        batch_size: 4
         dataset:
             type: "NuScenesDataset"
             root_path: "/data/datasets/NuScenes"
@@ -69,15 +107,95 @@ box_coder:
 
 target_assigner:
     anchor_generators:
-        anchor_types: ["anchor_generator_range","anchor_generator_range","anchor_generator_range","anchor_generator_range","anchor_generator_range","anchor_generator_range","anchor_generator_range","anchor_generator_range","anchor_generator_range","anchor_generator_range"]
+        anchor_types:
+        - "anchor_generator_range"
+        - "anchor_generator_range"
+        - "anchor_generator_range"
+        - "anchor_generator_range"
+        - "anchor_generator_range"
+        - "anchor_generator_range"
+        - "anchor_generator_range"
+        - "anchor_generator_range"
+        - "anchor_generator_range"
+        - "anchor_generator_range"
         anchor_dims: [9,9,9,9,9,9,9,9,9,9]
-        anchor_sizes: [[1.97, 4.63, 1.74],[2.51, 6.93, 2.84],[2.85, 6.37, 3.19],[2.94, 10.5, 3.47],[2.90, 12.29, 3.87],[2.53, 0.50, 0.98],[0.77, 2.11, 1.47],[0.60, 1.70, 1.28],[0.67, 0.73, 1.77],[0.41, 0.41, 1.07]]
-        anchor_ranges: [[-50.4, -50.4, -0.95, 50.4, 50.4, -0.95],[-50.4, -50.4, -0.40, 50.4, 50.4, -0.40],[-50.4, -50.4, -0.225, 50.4, 50.4, -0.225],[-50.4, -50.4, -0.085, 50.4, 50.4, -0.085],[-50.4, -50.4, 0.115, 50.4, 50.4, 0.115],[-50.4, -50.4, -1.33, 50.4, 50.4, -1.33],[-50.4, -50.4, -1.085, 50.4, 50.4, -1.085],[-50.4, -50.4, -1.18, 50.4, 50.4, -1.18],[-50.4, -50.4, -0.935, 50.4, 50.4, -0.935],[-50.4, -50.4, -1.285, 50.4, 50.4, -1.285]]
-        anchor_rotations: [[0, 1.57],[0, 1.57],[0, 1.57],[0, 1.57],[0, 1.57],[0, 1.57],[0, 1.57],[0, 1.57],[0, 1.57],[0, 1.57]]
-        anchor_velocities: [[0, 0],[0, 0],[0, 0],[0, 0],[0, 0],[0, 0],[0, 0],[0, 0],[0, 0],[0, 0]]
-        anchor_matched_thresholds: [0.6,0.55,0.5,0.55,0.5,0.55,0.5,0.5,0.6,0.6]
-        anchor_unmatched_thresholds: [0.45,0.4,0.3,0.4,0.35,0.4,0.3,0.35,0.4,0.4]
-        anchor_class_names: ["car","truck", "construction_vehicle", "bus", "trailer", "barrier", "motorcycle", "bicycle", "pedestrian", "traffic_cone"]
+        anchor_sizes:
+        - [1.97, 4.63, 1.74]
+        - [2.51, 6.93, 2.84]
+        - [2.85, 6.37, 3.19]
+        - [2.94, 10.5, 3.47]
+        - [2.90, 12.29, 3.87]
+        - [2.53, 0.50, 0.98]
+        - [0.77, 2.11, 1.47]
+        - [0.60, 1.70, 1.28]
+        - [0.67, 0.73, 1.77]
+        - [0.41, 0.41, 1.07]
+        anchor_ranges:
+        - [-50.4, -50.4, -0.95, 50.4, 50.4, -0.95]
+        - [-50.4, -50.4, -0.40, 50.4, 50.4, -0.40]
+        - [-50.4, -50.4, -0.225, 50.4, 50.4, -0.225]
+        - [-50.4, -50.4, -0.085, 50.4, 50.4, -0.085]
+        - [-50.4, -50.4, 0.115, 50.4, 50.4, 0.115]
+        - [-50.4, -50.4, -1.33, 50.4, 50.4, -1.33]
+        - [-50.4, -50.4, -1.085, 50.4, 50.4, -1.085]
+        - [-50.4, -50.4, -1.18, 50.4, 50.4, -1.18]
+        - [-50.4, -50.4, -0.935, 50.4, 50.4, -0.935]
+        - [-50.4, -50.4, -1.285, 50.4, 50.4, -1.285]
+        anchor_rotations:
+        - [0, 1.57]
+        - [0, 1.57]
+        - [0, 1.57]
+        - [0, 1.57]
+        - [0, 1.57]
+        - [0, 1.57]
+        - [0, 1.57]
+        - [0, 1.57]
+        - [0, 1.57]
+        - [0, 1.57]
+        anchor_velocities: 
+        - [0, 0]
+        - [0, 0]
+        - [0, 0]
+        - [0, 0]
+        - [0, 0]
+        - [0, 0]
+        - [0, 0]
+        - [0, 0]
+        - [0, 0]
+        - [0, 0]
+        anchor_matched_thresholds: 
+        - 0.6
+        - 0.55
+        - 0.5
+        - 0.55
+        - 0.5
+        - 0.55
+        - 0.5
+        - 0.5
+        - 0.6
+        - 0.6
+        anchor_unmatched_thresholds: 
+        - 0.45
+        - 0.4
+        - 0.3
+        - 0.4
+        - 0.35
+        - 0.4
+        - 0.3
+        - 0.35
+        - 0.4
+        - 0.4
+        anchor_class_names: 
+        - "car"
+        - "truck"
+        - "construction_vehicle"
+        - "bus"
+        - "trailer"
+        - "barrier"
+        - "motorcycle"
+        - "bicycle"
+        - "pedestrian"
+        - "traffic_cone"
         sample_positive_fraction: -1
         sample_size: 512
         region_similarity_calculator: 
@@ -86,12 +204,12 @@ target_assigner:
 model:
     encoder:
         vfe:
-            type: "VoxelFeatureExtractorV3" #"PIXORFeatureLayer"
+            type: "VoxelFeatureExtractorV3" # "PillarFeatureNet" # "VoxelFeatureExtractorV3" #"PIXORFeatureLayer"
             num_filters: [16,]
             with_distance: False
             num_input_features: 5
         middle:
-            type: "SpMiddleFHD"
+            type: "SpMiddleFHD" #"PointPillarsScatter" # "SpMiddleFHD"
             num_filters_down1: []
             num_filters_down2: []
             downsample_factor: 8
@@ -109,9 +227,27 @@ model:
             num_input_features: 128
         head:
             tasks:
-                num_classes: [1, 2, 2, 1, 2, 2]
-                class_names: [["car"], ["truck", "construction_vehicle"], ["bus", "trailer"], ["barrier"], ["motorcycle", "bicycle"], ["pedestrian", "traffic_cone"]]
-            weights: [0.7, 1.2, 1.5, 1.2, 1.5, 0.8]
+                num_classes: 
+                - 1
+                - 2
+                - 2
+                - 1
+                - 2
+                - 2
+                class_names: 
+                - ["car"]
+                - ["truck", "construction_vehicle"]
+                - ["bus", "trailer"]
+                - ["barrier"]
+                - ["motorcycle", "bicycle"]
+                - ["pedestrian", "traffic_cone"]
+            weights:
+            - 0.7
+            - 1.2
+            - 1.5
+            - 1.2
+            - 1.5
+            - 0.8
         auxiliary:
             use_direction_classifier: True
             direction_offset: 0.785
@@ -154,7 +290,7 @@ optimizer:
         lr:
             type: "one_cycle"
             value: 
-                lr_max: 0.03
+                lr_max: 0.04
                 moms: [0.95, 0.85]
                 div_factor: 10.0
                 pct_start: 0.4
