@@ -42,7 +42,6 @@ def train(config, logger=None, model_dir=None, distributed=False):
             model.to(device),
             device_ids=[config.local_rank],
             output_device=config.local_rank,
-            broadcast_buffers=False,
         )
         net_module = model.module
     else:
@@ -85,7 +84,6 @@ def train(config, logger=None, model_dir=None, distributed=False):
         for i, data_batch in enumerate(DataPrefetch(iter(train_dataloader), max_prefetch=4)):
             lr_scheduler.step(net_module.get_global_step())
             arguments["iteration"] += 1
-
             data_device = convert_batch_to_device(data_batch, device=device)
 
             optimizer.zero_grad()
