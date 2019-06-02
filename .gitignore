@@ -34,6 +34,7 @@ show2.py
 ./datasets
 ./models
 ./output
-./nusc_output
+nusc/
+nusc_output/
 ./kitti_output
 ./kitti_output_8batch

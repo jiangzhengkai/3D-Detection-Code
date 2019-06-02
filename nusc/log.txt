@@ -4306,3 +4306,903 @@ optimizer:
 2019-06-02 17:29:57,326 Training INFO: epoch: 1 step: 2300 Prec prec@10: 0.033524 prec@30: 0.024528 prec@50: 0.016775 prec@70: 0.063165 prec@90: 0.000000
 2019-06-02 17:29:57,326 Training INFO: epoch: 1 step: 2300 Reca reca@10: 0.384297 reca@30: 0.087419 reca@50: 0.014481 reca@70: 0.000509 reca@90: 0.000000
 2019-06-02 17:29:57,326 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:34:51,399 Training INFO: Metrics for task: ['car'], saved to: nusc
+2019-06-02 17:34:51,401 Training INFO: epoch: 1 step: 2350 time 15.748989 Loss_all: 1.966851
+2019-06-02 17:34:51,401 Training INFO: epoch: 1 step: 2350 Loss_cls: 0.566241 Loss_loc: 1.312363 Loss_dir: 0.088248
+2019-06-02 17:34:51,401 Training INFO: epoch: 1 step: 2350 Loc_elements x: 0.013073 y: 0.011859 z: 0.089965 w: 0.026363 h: 0.021496 l: 0.044788 vx: 0.270940 vy: 0.686988 angle: 0.146890
+2019-06-02 17:34:51,401 Training INFO: epoch: 1 step: 2350 Cls_elements cls_neg_rt: 0.101633 cls_pos_rt: 0.464608
+2019-06-02 17:34:51,404 Training INFO: epoch: 1 step: 2350 Auxiliraries num_voxels: 160000 num_pos: 8 num_neg: 31734 num_anchors: 31752 lr: 0.004476
+2019-06-02 17:34:51,404 Training INFO: epoch: 1 step: 2350 RpnAcc: 0.999187
+2019-06-02 17:34:51,404 Training INFO: epoch: 1 step: 2350 Prec prec@10: 0.034282 prec@30: 0.025814 prec@50: 0.018263 prec@70: 0.074408 prec@90: 0.000000
+2019-06-02 17:34:51,404 Training INFO: epoch: 1 step: 2350 Reca reca@10: 0.388936 reca@30: 0.090240 reca@50: 0.015460 reca@70: 0.000594 reca@90: 0.000000
+2019-06-02 17:34:51,404 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:34:51,414 Training INFO: Metrics for task: ['truck', 'construction_vehicle'], saved to: nusc
+2019-06-02 17:34:51,415 Training INFO: epoch: 1 step: 2350 time 0.014870 Loss_all: 1.265381
+2019-06-02 17:34:51,415 Training INFO: epoch: 1 step: 2350 Loss_cls: 0.380124 Loss_loc: 0.751443 Loss_dir: 0.133814
+2019-06-02 17:34:51,415 Training INFO: epoch: 1 step: 2350 Loc_elements x: 0.031592 y: 0.039335 z: 0.102375 w: 0.089781 h: 0.135340 l: 0.106446 vx: 0.007160 vy: 0.048672 angle: 0.190742
+2019-06-02 17:34:51,415 Training INFO: epoch: 1 step: 2350 Cls_elements cls_neg_rt: 0.117287 cls_pos_rt: 0.262837
+2019-06-02 17:34:51,417 Training INFO: epoch: 1 step: 2350 Auxiliraries num_voxels: 160000 num_pos: 14 num_neg: 63458 num_anchors: 63504 lr: 0.004476
+2019-06-02 17:34:51,418 Training INFO: epoch: 1 step: 2350 RpnAcc: 0.999187
+2019-06-02 17:34:51,418 Training INFO: epoch: 1 step: 2350 Prec prec@10: 0.034286 prec@30: 0.025822 prec@50: 0.018271 prec@70: 0.074408 prec@90: 0.000000
+2019-06-02 17:34:51,418 Training INFO: epoch: 1 step: 2350 Reca reca@10: 0.388973 reca@30: 0.090261 reca@50: 0.015465 reca@70: 0.000594 reca@90: 0.000000
+2019-06-02 17:34:51,418 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:34:51,423 Training INFO: Metrics for task: ['bus', 'trailer'], saved to: nusc
+2019-06-02 17:34:51,424 Training INFO: epoch: 1 step: 2350 time 0.009816 Loss_all: 1.170213
+2019-06-02 17:34:51,424 Training INFO: epoch: 1 step: 2350 Loss_cls: 0.413014 Loss_loc: 0.611079 Loss_dir: 0.146121
+2019-06-02 17:34:51,424 Training INFO: epoch: 1 step: 2350 Loc_elements x: 0.024540 y: 0.052731 z: 0.073941 w: 0.040931 h: 0.086743 l: 0.089397 vx: 0.024283 vy: 0.066658 angle: 0.151854
+2019-06-02 17:34:51,425 Training INFO: epoch: 1 step: 2350 Cls_elements cls_neg_rt: 0.086574 cls_pos_rt: 0.326440
+2019-06-02 17:34:51,427 Training INFO: epoch: 1 step: 2350 Auxiliraries num_voxels: 160000 num_pos: 79 num_neg: 63303 num_anchors: 63504 lr: 0.004476
+2019-06-02 17:34:51,427 Training INFO: epoch: 1 step: 2350 RpnAcc: 0.999187
+2019-06-02 17:34:51,427 Training INFO: epoch: 1 step: 2350 Prec prec@10: 0.034294 prec@30: 0.025836 prec@50: 0.018290 prec@70: 0.074733 prec@90: 0.000000
+2019-06-02 17:34:51,427 Training INFO: epoch: 1 step: 2350 Reca reca@10: 0.389026 reca@30: 0.090294 reca@50: 0.015479 reca@70: 0.000597 reca@90: 0.000000
+2019-06-02 17:34:51,427 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:34:51,433 Training INFO: Metrics for task: ['barrier'], saved to: nusc
+2019-06-02 17:34:51,434 Training INFO: epoch: 1 step: 2350 time 0.009810 Loss_all: 1.133503
+2019-06-02 17:34:51,434 Training INFO: epoch: 1 step: 2350 Loss_cls: 0.492890 Loss_loc: 0.523719 Loss_dir: 0.116895
+2019-06-02 17:34:51,434 Training INFO: epoch: 1 step: 2350 Loc_elements x: 0.017440 y: 0.051190 z: 0.113832 w: 0.073315 h: 0.160307 l: 0.065761 vx: 0.000151 vy: 0.001815 angle: 0.039908
+2019-06-02 17:34:51,434 Training INFO: epoch: 1 step: 2350 Cls_elements cls_neg_rt: 0.060353 cls_pos_rt: 0.432536
+2019-06-02 17:34:51,436 Training INFO: epoch: 1 step: 2350 Auxiliraries num_voxels: 160000 num_pos: 2 num_neg: 31750 num_anchors: 31752 lr: 0.004476
+2019-06-02 17:34:51,437 Training INFO: epoch: 1 step: 2350 RpnAcc: 0.999187
+2019-06-02 17:34:51,437 Training INFO: epoch: 1 step: 2350 Prec prec@10: 0.034295 prec@30: 0.025836 prec@50: 0.018290 prec@70: 0.074733 prec@90: 0.000000
+2019-06-02 17:34:51,437 Training INFO: epoch: 1 step: 2350 Reca reca@10: 0.389013 reca@30: 0.090289 reca@50: 0.015478 reca@70: 0.000597 reca@90: 0.000000
+2019-06-02 17:34:51,437 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:34:51,443 Training INFO: Metrics for task: ['motorcycle', 'bicycle'], saved to: nusc
+2019-06-02 17:34:51,444 Training INFO: epoch: 1 step: 2350 time 0.009499 Loss_all: 1.122489
+2019-06-02 17:34:51,444 Training INFO: epoch: 1 step: 2350 Loss_cls: 0.402612 Loss_loc: 0.591194 Loss_dir: 0.128684
+2019-06-02 17:34:51,444 Training INFO: epoch: 1 step: 2350 Loc_elements x: 0.017920 y: 0.029585 z: 0.049496 w: 0.125595 h: 0.042074 l: 0.063194 vx: 0.057264 vy: 0.105712 angle: 0.100354
+2019-06-02 17:34:51,444 Training INFO: epoch: 1 step: 2350 Cls_elements cls_neg_rt: 0.195654 cls_pos_rt: 0.206958
+2019-06-02 17:34:51,446 Training INFO: epoch: 1 step: 2350 Auxiliraries num_voxels: 160000 num_pos: 12 num_neg: 63483 num_anchors: 63504 lr: 0.004476
+2019-06-02 17:34:51,446 Training INFO: epoch: 1 step: 2350 RpnAcc: 0.999187
+2019-06-02 17:34:51,446 Training INFO: epoch: 1 step: 2350 Prec prec@10: 0.034296 prec@30: 0.025837 prec@50: 0.018290 prec@70: 0.074733 prec@90: 0.000000
+2019-06-02 17:34:51,446 Training INFO: epoch: 1 step: 2350 Reca reca@10: 0.389025 reca@30: 0.090292 reca@50: 0.015478 reca@70: 0.000597 reca@90: 0.000000
+2019-06-02 17:34:51,446 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:34:51,452 Training INFO: Metrics for task: ['pedestrian', 'traffic_cone'], saved to: nusc
+2019-06-02 17:34:51,453 Training INFO: epoch: 1 step: 2350 time 0.009645 Loss_all: 1.915192
+2019-06-02 17:34:51,454 Training INFO: epoch: 1 step: 2350 Loss_cls: 0.666545 Loss_loc: 1.109716 Loss_dir: 0.138932
+2019-06-02 17:34:51,454 Training INFO: epoch: 1 step: 2350 Loc_elements x: 0.090424 y: 0.108940 z: 0.096636 w: 0.086425 h: 0.179339 l: 0.118387 vx: 0.003630 vy: 0.005881 angle: 0.420054
+2019-06-02 17:34:51,454 Training INFO: epoch: 1 step: 2350 Cls_elements cls_neg_rt: 0.159438 cls_pos_rt: 0.507107
+2019-06-02 17:34:51,464 Training INFO: epoch: 1 step: 2350 Auxiliraries num_voxels: 160000 num_pos: 9 num_neg: 63495 num_anchors: 63504 lr: 0.004476
+2019-06-02 17:34:51,464 Training INFO: epoch: 1 step: 2350 RpnAcc: 0.999187
+2019-06-02 17:34:51,464 Training INFO: epoch: 1 step: 2350 Prec prec@10: 0.034299 prec@30: 0.025839 prec@50: 0.018290 prec@70: 0.074733 prec@90: 0.000000
+2019-06-02 17:34:51,464 Training INFO: epoch: 1 step: 2350 Reca reca@10: 0.389032 reca@30: 0.090292 reca@50: 0.015476 reca@70: 0.000597 reca@90: 0.000000
+2019-06-02 17:34:51,465 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:39:23,303 Training INFO: Metrics for task: ['car'], saved to: nusc
+2019-06-02 17:39:23,305 Training INFO: epoch: 1 step: 2400 time 0.935120 Loss_all: 1.055988
+2019-06-02 17:39:23,305 Training INFO: epoch: 1 step: 2400 Loss_cls: 0.474614 Loss_loc: 0.451601 Loss_dir: 0.129773
+2019-06-02 17:39:23,305 Training INFO: epoch: 1 step: 2400 Loc_elements x: 0.017840 y: 0.010618 z: 0.083063 w: 0.027226 h: 0.040524 l: 0.054688 vx: 0.023181 vy: 0.045130 angle: 0.149331
+2019-06-02 17:39:23,305 Training INFO: epoch: 1 step: 2400 Cls_elements cls_neg_rt: 0.045858 cls_pos_rt: 0.428756
+2019-06-02 17:39:23,307 Training INFO: epoch: 1 step: 2400 Auxiliraries num_voxels: 142734 num_pos: 7 num_neg: 31735 num_anchors: 31752 lr: 0.004496
+2019-06-02 17:39:23,308 Training INFO: epoch: 1 step: 2400 RpnAcc: 0.999196
+2019-06-02 17:39:23,308 Training INFO: epoch: 1 step: 2400 Prec prec@10: 0.035058 prec@30: 0.027126 prec@50: 0.019727 prec@70: 0.085232 prec@90: 0.000000
+2019-06-02 17:39:23,308 Training INFO: epoch: 1 step: 2400 Reca reca@10: 0.393868 reca@30: 0.093030 reca@50: 0.016377 reca@70: 0.000674 reca@90: 0.000000
+2019-06-02 17:39:23,308 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:39:23,313 Training INFO: Metrics for task: ['truck', 'construction_vehicle'], saved to: nusc
+2019-06-02 17:39:23,314 Training INFO: epoch: 1 step: 2400 time 0.010024 Loss_all: 1.203285
+2019-06-02 17:39:23,314 Training INFO: epoch: 1 step: 2400 Loss_cls: 0.473600 Loss_loc: 0.607756 Loss_dir: 0.121929
+2019-06-02 17:39:23,314 Training INFO: epoch: 1 step: 2400 Loc_elements x: 0.016564 y: 0.026660 z: 0.081211 w: 0.104878 h: 0.112668 l: 0.090867 vx: 0.007888 vy: 0.021794 angle: 0.145226
+2019-06-02 17:39:23,314 Training INFO: epoch: 1 step: 2400 Cls_elements cls_neg_rt: 0.156296 cls_pos_rt: 0.317303
+2019-06-02 17:39:23,317 Training INFO: epoch: 1 step: 2400 Auxiliraries num_voxels: 142734 num_pos: 60 num_neg: 63299 num_anchors: 63504 lr: 0.004496
+2019-06-02 17:39:23,317 Training INFO: epoch: 1 step: 2400 RpnAcc: 0.999196
+2019-06-02 17:39:23,317 Training INFO: epoch: 1 step: 2400 Prec prec@10: 0.035062 prec@30: 0.027131 prec@50: 0.019735 prec@70: 0.085232 prec@90: 0.000000
+2019-06-02 17:39:23,317 Training INFO: epoch: 1 step: 2400 Reca reca@10: 0.393893 reca@30: 0.093035 reca@50: 0.016381 reca@70: 0.000674 reca@90: 0.000000
+2019-06-02 17:39:23,317 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:39:23,322 Training INFO: Metrics for task: ['bus', 'trailer'], saved to: nusc
+2019-06-02 17:39:23,323 Training INFO: epoch: 1 step: 2400 time 0.009181 Loss_all: 1.457695
+2019-06-02 17:39:23,323 Training INFO: epoch: 1 step: 2400 Loss_cls: 0.514491 Loss_loc: 0.800684 Loss_dir: 0.142520
+2019-06-02 17:39:23,324 Training INFO: epoch: 1 step: 2400 Loc_elements x: 0.022700 y: 0.025190 z: 0.046424 w: 0.023078 h: 0.108459 l: 0.059010 vx: 0.155362 vy: 0.292936 angle: 0.067525
+2019-06-02 17:39:23,324 Training INFO: epoch: 1 step: 2400 Cls_elements cls_neg_rt: 0.168764 cls_pos_rt: 0.345727
+2019-06-02 17:39:23,325 Training INFO: epoch: 1 step: 2400 Auxiliraries num_voxels: 142734 num_pos: 79 num_neg: 63296 num_anchors: 63504 lr: 0.004496
+2019-06-02 17:39:23,326 Training INFO: epoch: 1 step: 2400 RpnAcc: 0.999196
+2019-06-02 17:39:23,326 Training INFO: epoch: 1 step: 2400 Prec prec@10: 0.035065 prec@30: 0.027139 prec@50: 0.019739 prec@70: 0.085232 prec@90: 0.000000
+2019-06-02 17:39:23,326 Training INFO: epoch: 1 step: 2400 Reca reca@10: 0.393917 reca@30: 0.093053 reca@50: 0.016382 reca@70: 0.000674 reca@90: 0.000000
+2019-06-02 17:39:23,326 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:39:23,331 Training INFO: Metrics for task: ['barrier'], saved to: nusc
+2019-06-02 17:39:23,332 Training INFO: epoch: 1 step: 2400 time 0.008750 Loss_all: 1.353168
+2019-06-02 17:39:23,332 Training INFO: epoch: 1 step: 2400 Loss_cls: 0.652713 Loss_loc: 0.590147 Loss_dir: 0.110308
+2019-06-02 17:39:23,332 Training INFO: epoch: 1 step: 2400 Loc_elements x: 0.009110 y: 0.032727 z: 0.067486 w: 0.140096 h: 0.225344 l: 0.074111 vx: 0.001152 vy: 0.000384 angle: 0.039738
+2019-06-02 17:39:23,332 Training INFO: epoch: 1 step: 2400 Cls_elements cls_neg_rt: 0.138007 cls_pos_rt: 0.514706
+2019-06-02 17:39:23,334 Training INFO: epoch: 1 step: 2400 Auxiliraries num_voxels: 142734 num_pos: 2 num_neg: 31748 num_anchors: 31752 lr: 0.004496
+2019-06-02 17:39:23,334 Training INFO: epoch: 1 step: 2400 RpnAcc: 0.999196
+2019-06-02 17:39:23,334 Training INFO: epoch: 1 step: 2400 Prec prec@10: 0.035066 prec@30: 0.027139 prec@50: 0.019739 prec@70: 0.085232 prec@90: 0.000000
+2019-06-02 17:39:23,334 Training INFO: epoch: 1 step: 2400 Reca reca@10: 0.393916 reca@30: 0.093054 reca@50: 0.016383 reca@70: 0.000674 reca@90: 0.000000
+2019-06-02 17:39:23,334 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:39:23,340 Training INFO: Metrics for task: ['motorcycle', 'bicycle'], saved to: nusc
+2019-06-02 17:39:23,341 Training INFO: epoch: 1 step: 2400 time 0.008922 Loss_all: 1.484017
+2019-06-02 17:39:23,341 Training INFO: epoch: 1 step: 2400 Loss_cls: 0.408290 Loss_loc: 0.953750 Loss_dir: 0.121976
+2019-06-02 17:39:23,341 Training INFO: epoch: 1 step: 2400 Loc_elements x: 0.020986 y: 0.023117 z: 0.082602 w: 0.108864 h: 0.045004 l: 0.068158 vx: 0.176794 vy: 0.295898 angle: 0.132327
+2019-06-02 17:39:23,341 Training INFO: epoch: 1 step: 2400 Cls_elements cls_neg_rt: 0.276028 cls_pos_rt: 0.132263
+2019-06-02 17:39:23,343 Training INFO: epoch: 1 step: 2400 Auxiliraries num_voxels: 142734 num_pos: 7 num_neg: 63494 num_anchors: 63504 lr: 0.004496
+2019-06-02 17:39:23,343 Training INFO: epoch: 1 step: 2400 RpnAcc: 0.999197
+2019-06-02 17:39:23,344 Training INFO: epoch: 1 step: 2400 Prec prec@10: 0.035067 prec@30: 0.027142 prec@50: 0.019741 prec@70: 0.085311 prec@90: 0.000000
+2019-06-02 17:39:23,344 Training INFO: epoch: 1 step: 2400 Reca reca@10: 0.393926 reca@30: 0.093060 reca@50: 0.016384 reca@70: 0.000675 reca@90: 0.000000
+2019-06-02 17:39:23,344 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:39:23,350 Training INFO: Metrics for task: ['pedestrian', 'traffic_cone'], saved to: nusc
+2019-06-02 17:39:23,351 Training INFO: epoch: 1 step: 2400 time 0.009776 Loss_all: 2.035543
+2019-06-02 17:39:23,351 Training INFO: epoch: 1 step: 2400 Loss_cls: 0.481789 Loss_loc: 1.418537 Loss_dir: 0.135217
+2019-06-02 17:39:23,351 Training INFO: epoch: 1 step: 2400 Loc_elements x: 0.094990 y: 0.128603 z: 0.082412 w: 0.121861 h: 0.152645 l: 0.140586 vx: 0.023259 vy: 0.048842 angle: 0.625339
+2019-06-02 17:39:23,351 Training INFO: epoch: 1 step: 2400 Cls_elements cls_neg_rt: 0.160680 cls_pos_rt: 0.321109
+2019-06-02 17:39:23,353 Training INFO: epoch: 1 step: 2400 Auxiliraries num_voxels: 142734 num_pos: 8 num_neg: 63494 num_anchors: 63504 lr: 0.004496
+2019-06-02 17:39:23,353 Training INFO: epoch: 1 step: 2400 RpnAcc: 0.999197
+2019-06-02 17:39:23,353 Training INFO: epoch: 1 step: 2400 Prec prec@10: 0.035069 prec@30: 0.027143 prec@50: 0.019741 prec@70: 0.085311 prec@90: 0.000000
+2019-06-02 17:39:23,353 Training INFO: epoch: 1 step: 2400 Reca reca@10: 0.393935 reca@30: 0.093057 reca@50: 0.016383 reca@70: 0.000675 reca@90: 0.000000
+2019-06-02 17:39:23,353 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:44:13,282 Training INFO: Metrics for task: ['car'], saved to: nusc
+2019-06-02 17:44:13,284 Training INFO: epoch: 1 step: 2450 time 1.137898 Loss_all: 1.361223
+2019-06-02 17:44:13,284 Training INFO: epoch: 1 step: 2450 Loss_cls: 0.540704 Loss_loc: 0.720504 Loss_dir: 0.100016
+2019-06-02 17:44:13,284 Training INFO: epoch: 1 step: 2450 Loc_elements x: 0.016773 y: 0.022902 z: 0.127140 w: 0.030249 h: 0.031388 l: 0.066363 vx: 0.060902 vy: 0.268137 angle: 0.096649
+2019-06-02 17:44:13,284 Training INFO: epoch: 1 step: 2450 Cls_elements cls_neg_rt: 0.030278 cls_pos_rt: 0.510426
+2019-06-02 17:44:13,287 Training INFO: epoch: 1 step: 2450 Auxiliraries num_voxels: 142839 num_pos: 19 num_neg: 31707 num_anchors: 31752 lr: 0.004517
+2019-06-02 17:44:13,287 Training INFO: epoch: 1 step: 2450 RpnAcc: 0.999207
+2019-06-02 17:44:13,287 Training INFO: epoch: 1 step: 2450 Prec prec@10: 0.035781 prec@30: 0.028344 prec@50: 0.021212 prec@70: 0.094564 prec@90: 0.000000
+2019-06-02 17:44:13,287 Training INFO: epoch: 1 step: 2450 Reca reca@10: 0.398040 reca@30: 0.095417 reca@50: 0.017280 reca@70: 0.000741 reca@90: 0.000000
+2019-06-02 17:44:13,288 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:44:13,293 Training INFO: Metrics for task: ['truck', 'construction_vehicle'], saved to: nusc
+2019-06-02 17:44:13,294 Training INFO: epoch: 1 step: 2450 time 0.011739 Loss_all: 1.350769
+2019-06-02 17:44:13,295 Training INFO: epoch: 1 step: 2450 Loss_cls: 0.515191 Loss_loc: 0.715537 Loss_dir: 0.120040
+2019-06-02 17:44:13,295 Training INFO: epoch: 1 step: 2450 Loc_elements x: 0.017850 y: 0.038095 z: 0.068737 w: 0.088193 h: 0.196414 l: 0.116499 vx: 0.007890 vy: 0.004600 angle: 0.177260
+2019-06-02 17:44:13,295 Training INFO: epoch: 1 step: 2450 Cls_elements cls_neg_rt: 0.159691 cls_pos_rt: 0.355500
+2019-06-02 17:44:13,297 Training INFO: epoch: 1 step: 2450 Auxiliraries num_voxels: 142839 num_pos: 23 num_neg: 63373 num_anchors: 63504 lr: 0.004517
+2019-06-02 17:44:13,298 Training INFO: epoch: 1 step: 2450 RpnAcc: 0.999207
+2019-06-02 17:44:13,298 Training INFO: epoch: 1 step: 2450 Prec prec@10: 0.035784 prec@30: 0.028346 prec@50: 0.021215 prec@70: 0.094564 prec@90: 0.000000
+2019-06-02 17:44:13,298 Training INFO: epoch: 1 step: 2450 Reca reca@10: 0.398061 reca@30: 0.095416 reca@50: 0.017280 reca@70: 0.000741 reca@90: 0.000000
+2019-06-02 17:44:13,298 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:44:13,304 Training INFO: Metrics for task: ['bus', 'trailer'], saved to: nusc
+2019-06-02 17:44:13,305 Training INFO: epoch: 1 step: 2450 time 0.010814 Loss_all: 1.818527
+2019-06-02 17:44:13,305 Training INFO: epoch: 1 step: 2450 Loss_cls: 0.578091 Loss_loc: 1.074773 Loss_dir: 0.165662
+2019-06-02 17:44:13,305 Training INFO: epoch: 1 step: 2450 Loc_elements x: 0.059516 y: 0.022050 z: 0.136902 w: 0.042669 h: 0.180815 l: 0.059220 vx: 0.187790 vy: 0.241168 angle: 0.144644
+2019-06-02 17:44:13,305 Training INFO: epoch: 1 step: 2450 Cls_elements cls_neg_rt: 0.161750 cls_pos_rt: 0.416342
+2019-06-02 17:44:13,308 Training INFO: epoch: 1 step: 2450 Auxiliraries num_voxels: 142839 num_pos: 49 num_neg: 63370 num_anchors: 63504 lr: 0.004517
+2019-06-02 17:44:13,308 Training INFO: epoch: 1 step: 2450 RpnAcc: 0.999207
+2019-06-02 17:44:13,308 Training INFO: epoch: 1 step: 2450 Prec prec@10: 0.035786 prec@30: 0.028353 prec@50: 0.021232 prec@70: 0.095030 prec@90: 0.000000
+2019-06-02 17:44:13,308 Training INFO: epoch: 1 step: 2450 Reca reca@10: 0.398065 reca@30: 0.095429 reca@50: 0.017293 reca@70: 0.000745 reca@90: 0.000000
+2019-06-02 17:44:13,308 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:44:13,314 Training INFO: Metrics for task: ['barrier'], saved to: nusc
+2019-06-02 17:44:13,315 Training INFO: epoch: 1 step: 2450 time 0.009741 Loss_all: 1.322189
+2019-06-02 17:44:13,315 Training INFO: epoch: 1 step: 2450 Loss_cls: 0.638056 Loss_loc: 0.536144 Loss_dir: 0.147988
+2019-06-02 17:44:13,315 Training INFO: epoch: 1 step: 2450 Loc_elements x: 0.028744 y: 0.024856 z: 0.142389 w: 0.131015 h: 0.085094 l: 0.020742 vx: 0.000359 vy: 0.000133 angle: 0.102811
+2019-06-02 17:44:13,315 Training INFO: epoch: 1 step: 2450 Cls_elements cls_neg_rt: 0.048308 cls_pos_rt: 0.589749
+2019-06-02 17:44:13,317 Training INFO: epoch: 1 step: 2450 Auxiliraries num_voxels: 142839 num_pos: 15 num_neg: 31732 num_anchors: 31752 lr: 0.004517
+2019-06-02 17:44:13,317 Training INFO: epoch: 1 step: 2450 RpnAcc: 0.999207
+2019-06-02 17:44:13,318 Training INFO: epoch: 1 step: 2450 Prec prec@10: 0.035787 prec@30: 0.028353 prec@50: 0.021232 prec@70: 0.095030 prec@90: 0.000000
+2019-06-02 17:44:13,318 Training INFO: epoch: 1 step: 2450 Reca reca@10: 0.398064 reca@30: 0.095427 reca@50: 0.017293 reca@70: 0.000745 reca@90: 0.000000
+2019-06-02 17:44:13,318 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:44:13,323 Training INFO: Metrics for task: ['motorcycle', 'bicycle'], saved to: nusc
+2019-06-02 17:44:13,324 Training INFO: epoch: 1 step: 2450 time 0.009098 Loss_all: 1.386095
+2019-06-02 17:44:13,324 Training INFO: epoch: 1 step: 2450 Loss_cls: 0.516384 Loss_loc: 0.742031 Loss_dir: 0.127679
+2019-06-02 17:44:13,324 Training INFO: epoch: 1 step: 2450 Loc_elements x: 0.034652 y: 0.040545 z: 0.114209 w: 0.121650 h: 0.046828 l: 0.067043 vx: 0.068860 vy: 0.059729 angle: 0.188515
+2019-06-02 17:44:13,324 Training INFO: epoch: 1 step: 2450 Cls_elements cls_neg_rt: 0.246621 cls_pos_rt: 0.269764
+2019-06-02 17:44:13,326 Training INFO: epoch: 1 step: 2450 Auxiliraries num_voxels: 142839 num_pos: 12 num_neg: 63488 num_anchors: 63504 lr: 0.004517
+2019-06-02 17:44:13,327 Training INFO: epoch: 1 step: 2450 RpnAcc: 0.999207
+2019-06-02 17:44:13,327 Training INFO: epoch: 1 step: 2450 Prec prec@10: 0.035788 prec@30: 0.028354 prec@50: 0.021233 prec@70: 0.095030 prec@90: 0.000000
+2019-06-02 17:44:13,327 Training INFO: epoch: 1 step: 2450 Reca reca@10: 0.398069 reca@30: 0.095427 reca@50: 0.017293 reca@70: 0.000745 reca@90: 0.000000
+2019-06-02 17:44:13,327 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:44:13,332 Training INFO: Metrics for task: ['pedestrian', 'traffic_cone'], saved to: nusc
+2019-06-02 17:44:13,333 Training INFO: epoch: 1 step: 2450 time 0.009110 Loss_all: 2.009697
+2019-06-02 17:44:13,333 Training INFO: epoch: 1 step: 2450 Loss_cls: 0.516061 Loss_loc: 1.365955 Loss_dir: 0.127681
+2019-06-02 17:44:13,333 Training INFO: epoch: 1 step: 2450 Loc_elements x: 0.109469 y: 0.127087 z: 0.098205 w: 0.242153 h: 0.249414 l: 0.119744 vx: 0.017923 vy: 0.063209 angle: 0.338751
+2019-06-02 17:44:13,333 Training INFO: epoch: 1 step: 2450 Cls_elements cls_neg_rt: 0.303232 cls_pos_rt: 0.212830
+2019-06-02 17:44:13,336 Training INFO: epoch: 1 step: 2450 Auxiliraries num_voxels: 142839 num_pos: 6 num_neg: 63498 num_anchors: 63504 lr: 0.004517
+2019-06-02 17:44:13,336 Training INFO: epoch: 1 step: 2450 RpnAcc: 0.999207
+2019-06-02 17:44:13,336 Training INFO: epoch: 1 step: 2450 Prec prec@10: 0.035789 prec@30: 0.028355 prec@50: 0.021233 prec@70: 0.095030 prec@90: 0.000000
+2019-06-02 17:44:13,336 Training INFO: epoch: 1 step: 2450 Reca reca@10: 0.398077 reca@30: 0.095429 reca@50: 0.017293 reca@70: 0.000745 reca@90: 0.000000
+2019-06-02 17:44:13,336 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:48:58,310 Training INFO: Metrics for task: ['car'], saved to: nusc
+2019-06-02 17:48:58,315 Training INFO: epoch: 1 step: 2500 time 12.949469 Loss_all: 1.677385
+2019-06-02 17:48:58,316 Training INFO: epoch: 1 step: 2500 Loss_cls: 0.508391 Loss_loc: 1.050857 Loss_dir: 0.118137
+2019-06-02 17:48:58,316 Training INFO: epoch: 1 step: 2500 Loc_elements x: 0.014025 y: 0.011961 z: 0.058411 w: 0.033402 h: 0.019659 l: 0.045560 vx: 0.354282 vy: 0.461033 angle: 0.052523
+2019-06-02 17:48:58,316 Training INFO: epoch: 1 step: 2500 Cls_elements cls_neg_rt: 0.090288 cls_pos_rt: 0.418103
+2019-06-02 17:48:58,533 Training INFO: epoch: 1 step: 2500 Auxiliraries num_voxels: 122260 num_pos: 3 num_neg: 31743 num_anchors: 31752 lr: 0.004538
+2019-06-02 17:48:58,533 Training INFO: epoch: 1 step: 2500 RpnAcc: 0.999215
+2019-06-02 17:48:58,533 Training INFO: epoch: 1 step: 2500 Prec prec@10: 0.036477 prec@30: 0.029615 prec@50: 0.022855 prec@70: 0.108626 prec@90: 0.000000
+2019-06-02 17:48:58,533 Training INFO: epoch: 1 step: 2500 Reca reca@10: 0.401952 reca@30: 0.097882 reca@50: 0.018277 reca@70: 0.000847 reca@90: 0.000000
+2019-06-02 17:48:58,533 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:48:58,544 Training INFO: Metrics for task: ['truck', 'construction_vehicle'], saved to: nusc
+2019-06-02 17:48:58,546 Training INFO: epoch: 1 step: 2500 time 0.233932 Loss_all: 1.153535
+2019-06-02 17:48:58,546 Training INFO: epoch: 1 step: 2500 Loss_cls: 0.480516 Loss_loc: 0.556286 Loss_dir: 0.116732
+2019-06-02 17:48:58,546 Training INFO: epoch: 1 step: 2500 Loc_elements x: 0.031462 y: 0.031858 z: 0.102447 w: 0.062944 h: 0.097855 l: 0.064079 vx: 0.017506 vy: 0.041831 angle: 0.106304
+2019-06-02 17:48:58,547 Training INFO: epoch: 1 step: 2500 Cls_elements cls_neg_rt: 0.090552 cls_pos_rt: 0.389965
+2019-06-02 17:48:58,550 Training INFO: epoch: 1 step: 2500 Auxiliraries num_voxels: 122260 num_pos: 28 num_neg: 63430 num_anchors: 63504 lr: 0.004538
+2019-06-02 17:48:58,550 Training INFO: epoch: 1 step: 2500 RpnAcc: 0.999215
+2019-06-02 17:48:58,550 Training INFO: epoch: 1 step: 2500 Prec prec@10: 0.036480 prec@30: 0.029622 prec@50: 0.022862 prec@70: 0.108776 prec@90: 0.000000
+2019-06-02 17:48:58,550 Training INFO: epoch: 1 step: 2500 Reca reca@10: 0.401975 reca@30: 0.097897 reca@50: 0.018281 reca@70: 0.000848 reca@90: 0.000000
+2019-06-02 17:48:58,550 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:48:58,560 Training INFO: Metrics for task: ['bus', 'trailer'], saved to: nusc
+2019-06-02 17:48:58,561 Training INFO: epoch: 1 step: 2500 time 0.015744 Loss_all: 1.259377
+2019-06-02 17:48:58,562 Training INFO: epoch: 1 step: 2500 Loss_cls: 0.448401 Loss_loc: 0.682230 Loss_dir: 0.128746
+2019-06-02 17:48:58,562 Training INFO: epoch: 1 step: 2500 Loc_elements x: 0.005246 y: 0.049117 z: 0.071775 w: 0.050028 h: 0.139137 l: 0.048354 vx: 0.070847 vy: 0.149743 angle: 0.097984
+2019-06-02 17:48:58,562 Training INFO: epoch: 1 step: 2500 Cls_elements cls_neg_rt: 0.128172 cls_pos_rt: 0.320229
+2019-06-02 17:48:58,565 Training INFO: epoch: 1 step: 2500 Auxiliraries num_voxels: 122260 num_pos: 46 num_neg: 63411 num_anchors: 63504 lr: 0.004538
+2019-06-02 17:48:58,566 Training INFO: epoch: 1 step: 2500 RpnAcc: 0.999216
+2019-06-02 17:48:58,566 Training INFO: epoch: 1 step: 2500 Prec prec@10: 0.036485 prec@30: 0.029636 prec@50: 0.022887 prec@70: 0.108776 prec@90: 0.000000
+2019-06-02 17:48:58,566 Training INFO: epoch: 1 step: 2500 Reca reca@10: 0.401999 reca@30: 0.097932 reca@50: 0.018299 reca@70: 0.000848 reca@90: 0.000000
+2019-06-02 17:48:58,566 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:48:58,573 Training INFO: Metrics for task: ['barrier'], saved to: nusc
+2019-06-02 17:48:58,574 Training INFO: epoch: 1 step: 2500 time 0.012687 Loss_all: 1.453589
+2019-06-02 17:48:58,574 Training INFO: epoch: 1 step: 2500 Loss_cls: 0.628721 Loss_loc: 0.687184 Loss_dir: 0.137684
+2019-06-02 17:48:58,574 Training INFO: epoch: 1 step: 2500 Loc_elements x: 0.022334 y: 0.048321 z: 0.163006 w: 0.078271 h: 0.138344 l: 0.101326 vx: 0.000256 vy: 0.000988 angle: 0.134337
+2019-06-02 17:48:58,574 Training INFO: epoch: 1 step: 2500 Cls_elements cls_neg_rt: 0.043171 cls_pos_rt: 0.585550
+2019-06-02 17:48:58,641 Training INFO: epoch: 1 step: 2500 Auxiliraries num_voxels: 122260 num_pos: 79 num_neg: 31662 num_anchors: 31752 lr: 0.004538
+2019-06-02 17:48:58,642 Training INFO: epoch: 1 step: 2500 RpnAcc: 0.999216
+2019-06-02 17:48:58,642 Training INFO: epoch: 1 step: 2500 Prec prec@10: 0.036486 prec@30: 0.029636 prec@50: 0.022888 prec@70: 0.108776 prec@90: 0.000000
+2019-06-02 17:48:58,643 Training INFO: epoch: 1 step: 2500 Reca reca@10: 0.401988 reca@30: 0.097927 reca@50: 0.018298 reca@70: 0.000848 reca@90: 0.000000
+2019-06-02 17:48:58,643 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:48:58,651 Training INFO: Metrics for task: ['motorcycle', 'bicycle'], saved to: nusc
+2019-06-02 17:48:58,653 Training INFO: epoch: 1 step: 2500 time 0.078523 Loss_all: 1.252328
+2019-06-02 17:48:58,653 Training INFO: epoch: 1 step: 2500 Loss_cls: 0.311873 Loss_loc: 0.812150 Loss_dir: 0.128305
+2019-06-02 17:48:58,654 Training INFO: epoch: 1 step: 2500 Loc_elements x: 0.020355 y: 0.022297 z: 0.078419 w: 0.111371 h: 0.041195 l: 0.062882 vx: 0.197185 vy: 0.197363 angle: 0.081083
+2019-06-02 17:48:58,654 Training INFO: epoch: 1 step: 2500 Cls_elements cls_neg_rt: 0.129261 cls_pos_rt: 0.182612
+2019-06-02 17:48:58,672 Training INFO: epoch: 1 step: 2500 Auxiliraries num_voxels: 122260 num_pos: 13 num_neg: 63483 num_anchors: 63504 lr: 0.004538
+2019-06-02 17:48:58,672 Training INFO: epoch: 1 step: 2500 RpnAcc: 0.999216
+2019-06-02 17:48:58,673 Training INFO: epoch: 1 step: 2500 Prec prec@10: 0.036488 prec@30: 0.029640 prec@50: 0.022893 prec@70: 0.108776 prec@90: 0.000000
+2019-06-02 17:48:58,673 Training INFO: epoch: 1 step: 2500 Reca reca@10: 0.402003 reca@30: 0.097937 reca@50: 0.018302 reca@70: 0.000848 reca@90: 0.000000
+2019-06-02 17:48:58,673 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:48:58,681 Training INFO: Metrics for task: ['pedestrian', 'traffic_cone'], saved to: nusc
+2019-06-02 17:48:58,695 Training INFO: epoch: 1 step: 2500 time 0.029659 Loss_all: 2.154022
+2019-06-02 17:48:58,699 Training INFO: epoch: 1 step: 2500 Loss_cls: 0.575423 Loss_loc: 1.440596 Loss_dir: 0.138003
+2019-06-02 17:48:58,700 Training INFO: epoch: 1 step: 2500 Loc_elements x: 0.136748 y: 0.069760 z: 0.150031 w: 0.277846 h: 0.103816 l: 0.081454 vx: 0.039848 vy: 0.018793 angle: 0.562301
+2019-06-02 17:48:58,701 Training INFO: epoch: 1 step: 2500 Cls_elements cls_neg_rt: 0.339963 cls_pos_rt: 0.235460
+2019-06-02 17:48:58,719 Training INFO: epoch: 1 step: 2500 Auxiliraries num_voxels: 122260 num_pos: 8 num_neg: 63496 num_anchors: 63504 lr: 0.004538
+2019-06-02 17:48:58,720 Training INFO: epoch: 1 step: 2500 RpnAcc: 0.999216
+2019-06-02 17:48:58,720 Training INFO: epoch: 1 step: 2500 Prec prec@10: 0.036488 prec@30: 0.029641 prec@50: 0.022893 prec@70: 0.108776 prec@90: 0.000000
+2019-06-02 17:48:58,721 Training INFO: epoch: 1 step: 2500 Reca reca@10: 0.402004 reca@30: 0.097939 reca@50: 0.018302 reca@70: 0.000848 reca@90: 0.000000
+2019-06-02 17:48:58,721 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:53:31,524 Training INFO: Metrics for task: ['car'], saved to: nusc
+2019-06-02 17:53:31,525 Training INFO: epoch: 1 step: 2550 time 1.874608 Loss_all: 1.656006
+2019-06-02 17:53:31,525 Training INFO: epoch: 1 step: 2550 Loss_cls: 0.529686 Loss_loc: 0.968259 Loss_dir: 0.158061
+2019-06-02 17:53:31,525 Training INFO: epoch: 1 step: 2550 Loc_elements x: 0.016415 y: 0.013890 z: 0.150449 w: 0.033303 h: 0.031342 l: 0.054641 vx: 0.301469 vy: 0.272502 angle: 0.094248
+2019-06-02 17:53:31,526 Training INFO: epoch: 1 step: 2550 Cls_elements cls_neg_rt: 0.163532 cls_pos_rt: 0.366155
+2019-06-02 17:53:31,529 Training INFO: epoch: 1 step: 2550 Auxiliraries num_voxels: 151342 num_pos: 40 num_neg: 31666 num_anchors: 31752 lr: 0.004560
+2019-06-02 17:53:31,529 Training INFO: epoch: 1 step: 2550 RpnAcc: 0.999224
+2019-06-02 17:53:31,529 Training INFO: epoch: 1 step: 2550 Prec prec@10: 0.037175 prec@30: 0.030932 prec@50: 0.024466 prec@70: 0.121454 prec@90: 0.000000
+2019-06-02 17:53:31,529 Training INFO: epoch: 1 step: 2550 Reca reca@10: 0.405887 reca@30: 0.100452 reca@50: 0.019219 reca@70: 0.000942 reca@90: 0.000000
+2019-06-02 17:53:31,529 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:53:31,535 Training INFO: Metrics for task: ['truck', 'construction_vehicle'], saved to: nusc
+2019-06-02 17:53:31,536 Training INFO: epoch: 1 step: 2550 time 0.011284 Loss_all: 1.673730
+2019-06-02 17:53:31,536 Training INFO: epoch: 1 step: 2550 Loss_cls: 0.460718 Loss_loc: 1.077268 Loss_dir: 0.135744
+2019-06-02 17:53:31,536 Training INFO: epoch: 1 step: 2550 Loc_elements x: 0.054173 y: 0.049940 z: 0.091353 w: 0.131915 h: 0.119015 l: 0.124947 vx: 0.192807 vy: 0.145578 angle: 0.167541
+2019-06-02 17:53:31,536 Training INFO: epoch: 1 step: 2550 Cls_elements cls_neg_rt: 0.223393 cls_pos_rt: 0.237325
+2019-06-02 17:53:31,538 Training INFO: epoch: 1 step: 2550 Auxiliraries num_voxels: 151342 num_pos: 46 num_neg: 63381 num_anchors: 63504 lr: 0.004560
+2019-06-02 17:53:31,539 Training INFO: epoch: 1 step: 2550 RpnAcc: 0.999224
+2019-06-02 17:53:31,539 Training INFO: epoch: 1 step: 2550 Prec prec@10: 0.037180 prec@30: 0.030938 prec@50: 0.024479 prec@70: 0.121454 prec@90: 0.000000
+2019-06-02 17:53:31,539 Training INFO: epoch: 1 step: 2550 Reca reca@10: 0.405926 reca@30: 0.100463 reca@50: 0.019228 reca@70: 0.000942 reca@90: 0.000000
+2019-06-02 17:53:31,539 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:53:31,545 Training INFO: Metrics for task: ['bus', 'trailer'], saved to: nusc
+2019-06-02 17:53:31,546 Training INFO: epoch: 1 step: 2550 time 0.009938 Loss_all: 1.217062
+2019-06-02 17:53:31,546 Training INFO: epoch: 1 step: 2550 Loss_cls: 0.449681 Loss_loc: 0.625750 Loss_dir: 0.141631
+2019-06-02 17:53:31,546 Training INFO: epoch: 1 step: 2550 Loc_elements x: 0.039056 y: 0.005098 z: 0.061579 w: 0.027156 h: 0.094370 l: 0.026266 vx: 0.104958 vy: 0.218476 angle: 0.048792
+2019-06-02 17:53:31,546 Training INFO: epoch: 1 step: 2550 Cls_elements cls_neg_rt: 0.139496 cls_pos_rt: 0.310184
+2019-06-02 17:53:31,548 Training INFO: epoch: 1 step: 2550 Auxiliraries num_voxels: 151342 num_pos: 31 num_neg: 63414 num_anchors: 63504 lr: 0.004560
+2019-06-02 17:53:31,548 Training INFO: epoch: 1 step: 2550 RpnAcc: 0.999224
+2019-06-02 17:53:31,549 Training INFO: epoch: 1 step: 2550 Prec prec@10: 0.037185 prec@30: 0.030954 prec@50: 0.024516 prec@70: 0.122184 prec@90: 0.000000
+2019-06-02 17:53:31,549 Training INFO: epoch: 1 step: 2550 Reca reca@10: 0.405952 reca@30: 0.100502 reca@50: 0.019255 reca@70: 0.000948 reca@90: 0.000000
+2019-06-02 17:53:31,549 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:53:31,554 Training INFO: Metrics for task: ['barrier'], saved to: nusc
+2019-06-02 17:53:31,555 Training INFO: epoch: 1 step: 2550 time 0.009145 Loss_all: 1.519846
+2019-06-02 17:53:31,555 Training INFO: epoch: 1 step: 2550 Loss_cls: 0.527920 Loss_loc: 0.879042 Loss_dir: 0.112884
+2019-06-02 17:53:31,555 Training INFO: epoch: 1 step: 2550 Loc_elements x: 0.050701 y: 0.034633 z: 0.133795 w: 0.190707 h: 0.307653 l: 0.050885 vx: 0.000504 vy: 0.000159 angle: 0.110004
+2019-06-02 17:53:31,555 Training INFO: epoch: 1 step: 2550 Cls_elements cls_neg_rt: 0.106218 cls_pos_rt: 0.421702
+2019-06-02 17:53:31,557 Training INFO: epoch: 1 step: 2550 Auxiliraries num_voxels: 151342 num_pos: 2 num_neg: 31748 num_anchors: 31752 lr: 0.004560
+2019-06-02 17:53:31,558 Training INFO: epoch: 1 step: 2550 RpnAcc: 0.999224
+2019-06-02 17:53:31,558 Training INFO: epoch: 1 step: 2550 Prec prec@10: 0.037185 prec@30: 0.030955 prec@50: 0.024516 prec@70: 0.122184 prec@90: 0.000000
+2019-06-02 17:53:31,558 Training INFO: epoch: 1 step: 2550 Reca reca@10: 0.405954 reca@30: 0.100503 reca@50: 0.019254 reca@70: 0.000948 reca@90: 0.000000
+2019-06-02 17:53:31,558 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:53:31,563 Training INFO: Metrics for task: ['motorcycle', 'bicycle'], saved to: nusc
+2019-06-02 17:53:31,564 Training INFO: epoch: 1 step: 2550 time 0.009152 Loss_all: 1.293605
+2019-06-02 17:53:31,564 Training INFO: epoch: 1 step: 2550 Loss_cls: 0.457557 Loss_loc: 0.711341 Loss_dir: 0.124707
+2019-06-02 17:53:31,564 Training INFO: epoch: 1 step: 2550 Loc_elements x: 0.022552 y: 0.032067 z: 0.058381 w: 0.133886 h: 0.067068 l: 0.080350 vx: 0.069182 vy: 0.063540 angle: 0.184315
+2019-06-02 17:53:31,565 Training INFO: epoch: 1 step: 2550 Cls_elements cls_neg_rt: 0.210352 cls_pos_rt: 0.247206
+2019-06-02 17:53:31,566 Training INFO: epoch: 1 step: 2550 Auxiliraries num_voxels: 151342 num_pos: 10 num_neg: 63491 num_anchors: 63504 lr: 0.004560
+2019-06-02 17:53:31,567 Training INFO: epoch: 1 step: 2550 RpnAcc: 0.999224
+2019-06-02 17:53:31,567 Training INFO: epoch: 1 step: 2550 Prec prec@10: 0.037186 prec@30: 0.030957 prec@50: 0.024516 prec@70: 0.122184 prec@90: 0.000000
+2019-06-02 17:53:31,567 Training INFO: epoch: 1 step: 2550 Reca reca@10: 0.405960 reca@30: 0.100509 reca@50: 0.019254 reca@70: 0.000948 reca@90: 0.000000
+2019-06-02 17:53:31,567 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:53:31,572 Training INFO: Metrics for task: ['pedestrian', 'traffic_cone'], saved to: nusc
+2019-06-02 17:53:31,573 Training INFO: epoch: 1 step: 2550 time 0.009112 Loss_all: 2.244690
+2019-06-02 17:53:31,574 Training INFO: epoch: 1 step: 2550 Loss_cls: 0.571045 Loss_loc: 1.540792 Loss_dir: 0.132853
+2019-06-02 17:53:31,574 Training INFO: epoch: 1 step: 2550 Loc_elements x: 0.098285 y: 0.092636 z: 0.092854 w: 0.144106 h: 0.165655 l: 0.151540 vx: 0.051352 vy: 0.025456 angle: 0.718907
+2019-06-02 17:53:31,574 Training INFO: epoch: 1 step: 2550 Cls_elements cls_neg_rt: 0.283601 cls_pos_rt: 0.287444
+2019-06-02 17:53:31,576 Training INFO: epoch: 1 step: 2550 Auxiliraries num_voxels: 151342 num_pos: 16 num_neg: 63487 num_anchors: 63504 lr: 0.004560
+2019-06-02 17:53:31,576 Training INFO: epoch: 1 step: 2550 RpnAcc: 0.999224
+2019-06-02 17:53:31,576 Training INFO: epoch: 1 step: 2550 Prec prec@10: 0.037187 prec@30: 0.030958 prec@50: 0.024516 prec@70: 0.122184 prec@90: 0.000000
+2019-06-02 17:53:31,576 Training INFO: epoch: 1 step: 2550 Reca reca@10: 0.405958 reca@30: 0.100508 reca@50: 0.019253 reca@70: 0.000948 reca@90: 0.000000
+2019-06-02 17:53:31,576 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:58:40,247 Training INFO: Metrics for task: ['car'], saved to: nusc
+2019-06-02 17:58:40,248 Training INFO: epoch: 1 step: 2600 time 1.128479 Loss_all: 1.095212
+2019-06-02 17:58:40,248 Training INFO: epoch: 1 step: 2600 Loss_cls: 0.518786 Loss_loc: 0.451814 Loss_dir: 0.124612
+2019-06-02 17:58:40,248 Training INFO: epoch: 1 step: 2600 Loc_elements x: 0.017739 y: 0.013640 z: 0.064436 w: 0.022817 h: 0.026222 l: 0.046455 vx: 0.010168 vy: 0.104041 angle: 0.146297
+2019-06-02 17:58:40,248 Training INFO: epoch: 1 step: 2600 Cls_elements cls_neg_rt: 0.069775 cls_pos_rt: 0.449011
+2019-06-02 17:58:40,251 Training INFO: epoch: 1 step: 2600 Auxiliraries num_voxels: 160000 num_pos: 96 num_neg: 31539 num_anchors: 31752 lr: 0.004582
+2019-06-02 17:58:40,251 Training INFO: epoch: 1 step: 2600 RpnAcc: 0.999232
+2019-06-02 17:58:40,251 Training INFO: epoch: 1 step: 2600 Prec prec@10: 0.037836 prec@30: 0.032150 prec@50: 0.026105 prec@70: 0.138628 prec@90: 0.000000
+2019-06-02 17:58:40,251 Training INFO: epoch: 1 step: 2600 Reca reca@10: 0.409404 reca@30: 0.102582 reca@50: 0.020147 reca@70: 0.001076 reca@90: 0.000000
+2019-06-02 17:58:40,251 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:58:40,257 Training INFO: Metrics for task: ['truck', 'construction_vehicle'], saved to: nusc
+2019-06-02 17:58:40,258 Training INFO: epoch: 1 step: 2600 time 0.010614 Loss_all: 1.200264
+2019-06-02 17:58:40,258 Training INFO: epoch: 1 step: 2600 Loss_cls: 0.489825 Loss_loc: 0.582393 Loss_dir: 0.128046
+2019-06-02 17:58:40,258 Training INFO: epoch: 1 step: 2600 Loc_elements x: 0.026784 y: 0.024651 z: 0.071535 w: 0.060896 h: 0.083497 l: 0.097891 vx: 0.015895 vy: 0.054877 angle: 0.146366
+2019-06-02 17:58:40,258 Training INFO: epoch: 1 step: 2600 Cls_elements cls_neg_rt: 0.251542 cls_pos_rt: 0.238283
+2019-06-02 17:58:40,260 Training INFO: epoch: 1 step: 2600 Auxiliraries num_voxels: 160000 num_pos: 39 num_neg: 63374 num_anchors: 63504 lr: 0.004582
+2019-06-02 17:58:40,261 Training INFO: epoch: 1 step: 2600 RpnAcc: 0.999232
+2019-06-02 17:58:40,261 Training INFO: epoch: 1 step: 2600 Prec prec@10: 0.037839 prec@30: 0.032158 prec@50: 0.026118 prec@70: 0.138628 prec@90: 0.000000
+2019-06-02 17:58:40,261 Training INFO: epoch: 1 step: 2600 Reca reca@10: 0.409421 reca@30: 0.102597 reca@50: 0.020155 reca@70: 0.001076 reca@90: 0.000000
+2019-06-02 17:58:40,261 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:58:40,266 Training INFO: Metrics for task: ['bus', 'trailer'], saved to: nusc
+2019-06-02 17:58:40,267 Training INFO: epoch: 1 step: 2600 time 0.009200 Loss_all: 1.499869
+2019-06-02 17:58:40,267 Training INFO: epoch: 1 step: 2600 Loss_cls: 0.448985 Loss_loc: 0.925496 Loss_dir: 0.125389
+2019-06-02 17:58:40,268 Training INFO: epoch: 1 step: 2600 Loc_elements x: 0.034838 y: 0.014171 z: 0.085611 w: 0.038666 h: 0.158660 l: 0.092930 vx: 0.245514 vy: 0.188824 angle: 0.066282
+2019-06-02 17:58:40,268 Training INFO: epoch: 1 step: 2600 Cls_elements cls_neg_rt: 0.061068 cls_pos_rt: 0.387916
+2019-06-02 17:58:40,270 Training INFO: epoch: 1 step: 2600 Auxiliraries num_voxels: 160000 num_pos: 31 num_neg: 63443 num_anchors: 63504 lr: 0.004582
+2019-06-02 17:58:40,270 Training INFO: epoch: 1 step: 2600 RpnAcc: 0.999232
+2019-06-02 17:58:40,270 Training INFO: epoch: 1 step: 2600 Prec prec@10: 0.037843 prec@30: 0.032169 prec@50: 0.026133 prec@70: 0.138699 prec@90: 0.000000
+2019-06-02 17:58:40,270 Training INFO: epoch: 1 step: 2600 Reca reca@10: 0.409427 reca@30: 0.102619 reca@50: 0.020164 reca@70: 0.001076 reca@90: 0.000000
+2019-06-02 17:58:40,270 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:58:40,276 Training INFO: Metrics for task: ['barrier'], saved to: nusc
+2019-06-02 17:58:40,277 Training INFO: epoch: 1 step: 2600 time 0.009827 Loss_all: 1.498545
+2019-06-02 17:58:40,277 Training INFO: epoch: 1 step: 2600 Loss_cls: 0.688623 Loss_loc: 0.702475 Loss_dir: 0.107447
+2019-06-02 17:58:40,277 Training INFO: epoch: 1 step: 2600 Loc_elements x: 0.043228 y: 0.036778 z: 0.148229 w: 0.174361 h: 0.131880 l: 0.063499 vx: 0.000491 vy: 0.000627 angle: 0.103382
+2019-06-02 17:58:40,278 Training INFO: epoch: 1 step: 2600 Cls_elements cls_neg_rt: 0.044871 cls_pos_rt: 0.643752
+2019-06-02 17:58:40,280 Training INFO: epoch: 1 step: 2600 Auxiliraries num_voxels: 160000 num_pos: 19 num_neg: 31727 num_anchors: 31752 lr: 0.004582
+2019-06-02 17:58:40,280 Training INFO: epoch: 1 step: 2600 RpnAcc: 0.999232
+2019-06-02 17:58:40,280 Training INFO: epoch: 1 step: 2600 Prec prec@10: 0.037844 prec@30: 0.032170 prec@50: 0.026133 prec@70: 0.138699 prec@90: 0.000000
+2019-06-02 17:58:40,280 Training INFO: epoch: 1 step: 2600 Reca reca@10: 0.409422 reca@30: 0.102618 reca@50: 0.020163 reca@70: 0.001076 reca@90: 0.000000
+2019-06-02 17:58:40,280 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:58:40,286 Training INFO: Metrics for task: ['motorcycle', 'bicycle'], saved to: nusc
+2019-06-02 17:58:40,287 Training INFO: epoch: 1 step: 2600 time 0.009858 Loss_all: 1.270228
+2019-06-02 17:58:40,287 Training INFO: epoch: 1 step: 2600 Loss_cls: 0.414238 Loss_loc: 0.734260 Loss_dir: 0.121730
+2019-06-02 17:58:40,287 Training INFO: epoch: 1 step: 2600 Loc_elements x: 0.022480 y: 0.030222 z: 0.041143 w: 0.137188 h: 0.051142 l: 0.064247 vx: 0.095798 vy: 0.175578 angle: 0.116462
+2019-06-02 17:58:40,287 Training INFO: epoch: 1 step: 2600 Cls_elements cls_neg_rt: 0.176359 cls_pos_rt: 0.237879
+2019-06-02 17:58:40,289 Training INFO: epoch: 1 step: 2600 Auxiliraries num_voxels: 160000 num_pos: 13 num_neg: 63488 num_anchors: 63504 lr: 0.004582
+2019-06-02 17:58:40,290 Training INFO: epoch: 1 step: 2600 RpnAcc: 0.999232
+2019-06-02 17:58:40,290 Training INFO: epoch: 1 step: 2600 Prec prec@10: 0.037845 prec@30: 0.032172 prec@50: 0.026134 prec@70: 0.138699 prec@90: 0.000000
+2019-06-02 17:58:40,290 Training INFO: epoch: 1 step: 2600 Reca reca@10: 0.409431 reca@30: 0.102621 reca@50: 0.020163 reca@70: 0.001076 reca@90: 0.000000
+2019-06-02 17:58:40,290 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 17:58:40,296 Training INFO: Metrics for task: ['pedestrian', 'traffic_cone'], saved to: nusc
+2019-06-02 17:58:40,297 Training INFO: epoch: 1 step: 2600 time 0.009746 Loss_all: 1.507743
+2019-06-02 17:58:40,297 Training INFO: epoch: 1 step: 2600 Loss_cls: 0.433452 Loss_loc: 0.939484 Loss_dir: 0.134807
+2019-06-02 17:58:40,297 Training INFO: epoch: 1 step: 2600 Loc_elements x: 0.085484 y: 0.094878 z: 0.047182 w: 0.141918 h: 0.145936 l: 0.064237 vx: 0.018454 vy: 0.026810 angle: 0.314585
+2019-06-02 17:58:40,297 Training INFO: epoch: 1 step: 2600 Cls_elements cls_neg_rt: 0.190881 cls_pos_rt: 0.242572
+2019-06-02 17:58:40,299 Training INFO: epoch: 1 step: 2600 Auxiliraries num_voxels: 160000 num_pos: 26 num_neg: 63477 num_anchors: 63504 lr: 0.004582
+2019-06-02 17:58:40,300 Training INFO: epoch: 1 step: 2600 RpnAcc: 0.999233
+2019-06-02 17:58:40,300 Training INFO: epoch: 1 step: 2600 Prec prec@10: 0.037848 prec@30: 0.032175 prec@50: 0.026134 prec@70: 0.138699 prec@90: 0.000000
+2019-06-02 17:58:40,300 Training INFO: epoch: 1 step: 2600 Reca reca@10: 0.409451 reca@30: 0.102626 reca@50: 0.020162 reca@70: 0.001076 reca@90: 0.000000
+2019-06-02 17:58:40,300 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:04:26,316 Training INFO: Metrics for task: ['car'], saved to: nusc
+2019-06-02 18:04:26,317 Training INFO: epoch: 1 step: 2650 time 20.700566 Loss_all: 1.163038
+2019-06-02 18:04:26,317 Training INFO: epoch: 1 step: 2650 Loss_cls: 0.482548 Loss_loc: 0.583932 Loss_dir: 0.096558
+2019-06-02 18:04:26,317 Training INFO: epoch: 1 step: 2650 Loc_elements x: 0.021099 y: 0.013731 z: 0.046491 w: 0.028249 h: 0.029680 l: 0.055979 vx: 0.149368 vy: 0.136111 angle: 0.103224
+2019-06-02 18:04:26,317 Training INFO: epoch: 1 step: 2650 Cls_elements cls_neg_rt: 0.066683 cls_pos_rt: 0.415865
+2019-06-02 18:04:26,321 Training INFO: epoch: 1 step: 2650 Auxiliraries num_voxels: 146760 num_pos: 11 num_neg: 31729 num_anchors: 31752 lr: 0.004604
+2019-06-02 18:04:26,321 Training INFO: epoch: 1 step: 2650 RpnAcc: 0.999240
+2019-06-02 18:04:26,321 Training INFO: epoch: 1 step: 2650 Prec prec@10: 0.038511 prec@30: 0.033415 prec@50: 0.027689 prec@70: 0.153976 prec@90: 0.000681
+2019-06-02 18:04:26,321 Training INFO: epoch: 1 step: 2650 Reca reca@10: 0.413020 reca@30: 0.104813 reca@50: 0.021003 reca@70: 0.001194 reca@90: 0.000001
+2019-06-02 18:04:26,321 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:04:26,327 Training INFO: Metrics for task: ['truck', 'construction_vehicle'], saved to: nusc
+2019-06-02 18:04:26,328 Training INFO: epoch: 1 step: 2650 time 0.011230 Loss_all: 1.352132
+2019-06-02 18:04:26,328 Training INFO: epoch: 1 step: 2650 Loss_cls: 0.465652 Loss_loc: 0.767684 Loss_dir: 0.118797
+2019-06-02 18:04:26,328 Training INFO: epoch: 1 step: 2650 Loc_elements x: 0.022870 y: 0.027800 z: 0.081326 w: 0.186009 h: 0.145724 l: 0.113138 vx: 0.013077 vy: 0.073796 angle: 0.103942
+2019-06-02 18:04:26,328 Training INFO: epoch: 1 step: 2650 Cls_elements cls_neg_rt: 0.155015 cls_pos_rt: 0.310637
+2019-06-02 18:04:26,330 Training INFO: epoch: 1 step: 2650 Auxiliraries num_voxels: 146760 num_pos: 27 num_neg: 63431 num_anchors: 63504 lr: 0.004604
+2019-06-02 18:04:26,330 Training INFO: epoch: 1 step: 2650 RpnAcc: 0.999240
+2019-06-02 18:04:26,330 Training INFO: epoch: 1 step: 2650 Prec prec@10: 0.038514 prec@30: 0.033420 prec@50: 0.027693 prec@70: 0.153976 prec@90: 0.000681
+2019-06-02 18:04:26,330 Training INFO: epoch: 1 step: 2650 Reca reca@10: 0.413043 reca@30: 0.104821 reca@50: 0.021004 reca@70: 0.001194 reca@90: 0.000001
+2019-06-02 18:04:26,330 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:04:26,336 Training INFO: Metrics for task: ['bus', 'trailer'], saved to: nusc
+2019-06-02 18:04:26,337 Training INFO: epoch: 1 step: 2650 time 0.009281 Loss_all: 1.395665
+2019-06-02 18:04:26,337 Training INFO: epoch: 1 step: 2650 Loss_cls: 0.341547 Loss_loc: 0.927367 Loss_dir: 0.126751
+2019-06-02 18:04:26,337 Training INFO: epoch: 1 step: 2650 Loc_elements x: 0.016310 y: 0.013822 z: 0.049253 w: 0.078379 h: 0.193384 l: 0.067160 vx: 0.211235 vy: 0.217870 angle: 0.079956
+2019-06-02 18:04:26,338 Training INFO: epoch: 1 step: 2650 Cls_elements cls_neg_rt: 0.126112 cls_pos_rt: 0.215434
+2019-06-02 18:04:26,339 Training INFO: epoch: 1 step: 2650 Auxiliraries num_voxels: 146760 num_pos: 37 num_neg: 63397 num_anchors: 63504 lr: 0.004604
+2019-06-02 18:04:26,340 Training INFO: epoch: 1 step: 2650 RpnAcc: 0.999240
+2019-06-02 18:04:26,340 Training INFO: epoch: 1 step: 2650 Prec prec@10: 0.038518 prec@30: 0.033431 prec@50: 0.027704 prec@70: 0.154043 prec@90: 0.000681
+2019-06-02 18:04:26,340 Training INFO: epoch: 1 step: 2650 Reca reca@10: 0.413080 reca@30: 0.104848 reca@50: 0.021011 reca@70: 0.001195 reca@90: 0.000001
+2019-06-02 18:04:26,340 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:04:26,346 Training INFO: Metrics for task: ['barrier'], saved to: nusc
+2019-06-02 18:04:26,347 Training INFO: epoch: 1 step: 2650 time 0.009442 Loss_all: 1.688106
+2019-06-02 18:04:26,347 Training INFO: epoch: 1 step: 2650 Loss_cls: 0.601467 Loss_loc: 0.913445 Loss_dir: 0.173194
+2019-06-02 18:04:26,347 Training INFO: epoch: 1 step: 2650 Loc_elements x: 0.033447 y: 0.071714 z: 0.096211 w: 0.249039 h: 0.218219 l: 0.073183 vx: 0.000154 vy: 0.001416 angle: 0.170061
+2019-06-02 18:04:26,347 Training INFO: epoch: 1 step: 2650 Cls_elements cls_neg_rt: 0.050629 cls_pos_rt: 0.550838
+2019-06-02 18:04:26,349 Training INFO: epoch: 1 step: 2650 Auxiliraries num_voxels: 146760 num_pos: 1 num_neg: 31751 num_anchors: 31752 lr: 0.004604
+2019-06-02 18:04:26,350 Training INFO: epoch: 1 step: 2650 RpnAcc: 0.999240
+2019-06-02 18:04:26,350 Training INFO: epoch: 1 step: 2650 Prec prec@10: 0.038519 prec@30: 0.033432 prec@50: 0.027705 prec@70: 0.154043 prec@90: 0.000681
+2019-06-02 18:04:26,350 Training INFO: epoch: 1 step: 2650 Reca reca@10: 0.413077 reca@30: 0.104847 reca@50: 0.021011 reca@70: 0.001195 reca@90: 0.000001
+2019-06-02 18:04:26,350 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:04:26,356 Training INFO: Metrics for task: ['motorcycle', 'bicycle'], saved to: nusc
+2019-06-02 18:04:26,357 Training INFO: epoch: 1 step: 2650 time 0.010049 Loss_all: 1.440875
+2019-06-02 18:04:26,357 Training INFO: epoch: 1 step: 2650 Loss_cls: 0.477398 Loss_loc: 0.833591 Loss_dir: 0.129885
+2019-06-02 18:04:26,357 Training INFO: epoch: 1 step: 2650 Loc_elements x: 0.025959 y: 0.031252 z: 0.114739 w: 0.136189 h: 0.088796 l: 0.097418 vx: 0.082944 vy: 0.130980 angle: 0.125314
+2019-06-02 18:04:26,357 Training INFO: epoch: 1 step: 2650 Cls_elements cls_neg_rt: 0.251028 cls_pos_rt: 0.226370
+2019-06-02 18:04:26,359 Training INFO: epoch: 1 step: 2650 Auxiliraries num_voxels: 146760 num_pos: 12 num_neg: 63488 num_anchors: 63504 lr: 0.004604
+2019-06-02 18:04:26,359 Training INFO: epoch: 1 step: 2650 RpnAcc: 0.999240
+2019-06-02 18:04:26,359 Training INFO: epoch: 1 step: 2650 Prec prec@10: 0.038520 prec@30: 0.033434 prec@50: 0.027705 prec@70: 0.154043 prec@90: 0.000681
+2019-06-02 18:04:26,359 Training INFO: epoch: 1 step: 2650 Reca reca@10: 0.413088 reca@30: 0.104851 reca@50: 0.021011 reca@70: 0.001195 reca@90: 0.000001
+2019-06-02 18:04:26,359 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:04:26,365 Training INFO: Metrics for task: ['pedestrian', 'traffic_cone'], saved to: nusc
+2019-06-02 18:04:26,366 Training INFO: epoch: 1 step: 2650 time 0.009325 Loss_all: 1.819378
+2019-06-02 18:04:26,366 Training INFO: epoch: 1 step: 2650 Loss_cls: 0.509672 Loss_loc: 1.176663 Loss_dir: 0.133044
+2019-06-02 18:04:26,366 Training INFO: epoch: 1 step: 2650 Loc_elements x: 0.112676 y: 0.119632 z: 0.075570 w: 0.098971 h: 0.135395 l: 0.046250 vx: 0.051457 vy: 0.053421 angle: 0.483291
+2019-06-02 18:04:26,366 Training INFO: epoch: 1 step: 2650 Cls_elements cls_neg_rt: 0.358104 cls_pos_rt: 0.151567
+2019-06-02 18:04:26,369 Training INFO: epoch: 1 step: 2650 Auxiliraries num_voxels: 146760 num_pos: 19 num_neg: 63483 num_anchors: 63504 lr: 0.004604
+2019-06-02 18:04:26,370 Training INFO: epoch: 1 step: 2650 RpnAcc: 0.999240
+2019-06-02 18:04:26,370 Training INFO: epoch: 1 step: 2650 Prec prec@10: 0.038522 prec@30: 0.033436 prec@50: 0.027708 prec@70: 0.154043 prec@90: 0.000681
+2019-06-02 18:04:26,370 Training INFO: epoch: 1 step: 2650 Reca reca@10: 0.413099 reca@30: 0.104851 reca@50: 0.021012 reca@70: 0.001194 reca@90: 0.000001
+2019-06-02 18:04:26,370 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:10:18,713 Training INFO: Metrics for task: ['car'], saved to: nusc
+2019-06-02 18:10:18,715 Training INFO: epoch: 1 step: 2700 time 0.809427 Loss_all: 1.350427
+2019-06-02 18:10:18,715 Training INFO: epoch: 1 step: 2700 Loss_cls: 0.473109 Loss_loc: 0.742689 Loss_dir: 0.134628
+2019-06-02 18:10:18,715 Training INFO: epoch: 1 step: 2700 Loc_elements x: 0.008544 y: 0.014767 z: 0.085913 w: 0.037014 h: 0.024000 l: 0.044543 vx: 0.197696 vy: 0.257779 angle: 0.072434
+2019-06-02 18:10:18,715 Training INFO: epoch: 1 step: 2700 Cls_elements cls_neg_rt: 0.096537 cls_pos_rt: 0.376572
+2019-06-02 18:10:18,726 Training INFO: epoch: 1 step: 2700 Auxiliraries num_voxels: 160000 num_pos: 13 num_neg: 31717 num_anchors: 31752 lr: 0.004627
+2019-06-02 18:10:18,727 Training INFO: epoch: 1 step: 2700 RpnAcc: 0.999247
+2019-06-02 18:10:18,727 Training INFO: epoch: 1 step: 2700 Prec prec@10: 0.039185 prec@30: 0.034723 prec@50: 0.029339 prec@70: 0.164743 prec@90: 0.000681
+2019-06-02 18:10:18,727 Training INFO: epoch: 1 step: 2700 Reca reca@10: 0.416582 reca@30: 0.107089 reca@50: 0.021878 reca@70: 0.001270 reca@90: 0.000001
+2019-06-02 18:10:18,727 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:10:18,733 Training INFO: Metrics for task: ['truck', 'construction_vehicle'], saved to: nusc
+2019-06-02 18:10:18,734 Training INFO: epoch: 1 step: 2700 time 0.020032 Loss_all: 1.391597
+2019-06-02 18:10:18,734 Training INFO: epoch: 1 step: 2700 Loss_cls: 0.477684 Loss_loc: 0.794444 Loss_dir: 0.119469
+2019-06-02 18:10:18,734 Training INFO: epoch: 1 step: 2700 Loc_elements x: 0.033850 y: 0.029436 z: 0.079968 w: 0.133393 h: 0.172856 l: 0.174059 vx: 0.005194 vy: 0.041132 angle: 0.124555
+2019-06-02 18:10:18,734 Training INFO: epoch: 1 step: 2700 Cls_elements cls_neg_rt: 0.212683 cls_pos_rt: 0.265001
+2019-06-02 18:10:18,736 Training INFO: epoch: 1 step: 2700 Auxiliraries num_voxels: 160000 num_pos: 69 num_neg: 63303 num_anchors: 63504 lr: 0.004627
+2019-06-02 18:10:18,736 Training INFO: epoch: 1 step: 2700 RpnAcc: 0.999247
+2019-06-02 18:10:18,736 Training INFO: epoch: 1 step: 2700 Prec prec@10: 0.039189 prec@30: 0.034731 prec@50: 0.029348 prec@70: 0.164809 prec@90: 0.000681
+2019-06-02 18:10:18,736 Training INFO: epoch: 1 step: 2700 Reca reca@10: 0.416603 reca@30: 0.107101 reca@50: 0.021881 reca@70: 0.001270 reca@90: 0.000001
+2019-06-02 18:10:18,737 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:10:18,742 Training INFO: Metrics for task: ['bus', 'trailer'], saved to: nusc
+2019-06-02 18:10:18,743 Training INFO: epoch: 1 step: 2700 time 0.009734 Loss_all: 0.919125
+2019-06-02 18:10:18,744 Training INFO: epoch: 1 step: 2700 Loss_cls: 0.332679 Loss_loc: 0.459033 Loss_dir: 0.127413
+2019-06-02 18:10:18,744 Training INFO: epoch: 1 step: 2700 Loc_elements x: 0.026579 y: 0.016724 z: 0.083830 w: 0.048179 h: 0.130161 l: 0.048189 vx: 0.031169 vy: 0.029989 angle: 0.044213
+2019-06-02 18:10:18,744 Training INFO: epoch: 1 step: 2700 Cls_elements cls_neg_rt: 0.050101 cls_pos_rt: 0.282577
+2019-06-02 18:10:18,746 Training INFO: epoch: 1 step: 2700 Auxiliraries num_voxels: 160000 num_pos: 60 num_neg: 63363 num_anchors: 63504 lr: 0.004627
+2019-06-02 18:10:18,747 Training INFO: epoch: 1 step: 2700 RpnAcc: 0.999247
+2019-06-02 18:10:18,747 Training INFO: epoch: 1 step: 2700 Prec prec@10: 0.039198 prec@30: 0.034753 prec@50: 0.029389 prec@70: 0.165403 prec@90: 0.000681
+2019-06-02 18:10:18,747 Training INFO: epoch: 1 step: 2700 Reca reca@10: 0.416656 reca@30: 0.107155 reca@50: 0.021910 reca@70: 0.001276 reca@90: 0.000001
+2019-06-02 18:10:18,747 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:10:18,752 Training INFO: Metrics for task: ['barrier'], saved to: nusc
+2019-06-02 18:10:18,753 Training INFO: epoch: 1 step: 2700 time 0.009742 Loss_all: 1.239766
+2019-06-02 18:10:18,753 Training INFO: epoch: 1 step: 2700 Loss_cls: 0.540868 Loss_loc: 0.567116 Loss_dir: 0.131782
+2019-06-02 18:10:18,754 Training INFO: epoch: 1 step: 2700 Loc_elements x: 0.037528 y: 0.022513 z: 0.095349 w: 0.058392 h: 0.118761 l: 0.068257 vx: 0.001571 vy: 0.001108 angle: 0.163638
+2019-06-02 18:10:18,754 Training INFO: epoch: 1 step: 2700 Cls_elements cls_neg_rt: 0.061372 cls_pos_rt: 0.479496
+2019-06-02 18:10:18,756 Training INFO: epoch: 1 step: 2700 Auxiliraries num_voxels: 160000 num_pos: 8 num_neg: 31744 num_anchors: 31752 lr: 0.004627
+2019-06-02 18:10:18,756 Training INFO: epoch: 1 step: 2700 RpnAcc: 0.999247
+2019-06-02 18:10:18,756 Training INFO: epoch: 1 step: 2700 Prec prec@10: 0.039198 prec@30: 0.034754 prec@50: 0.029389 prec@70: 0.165403 prec@90: 0.000681
+2019-06-02 18:10:18,756 Training INFO: epoch: 1 step: 2700 Reca reca@10: 0.416654 reca@30: 0.107155 reca@50: 0.021909 reca@70: 0.001276 reca@90: 0.000001
+2019-06-02 18:10:18,756 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:10:18,762 Training INFO: Metrics for task: ['motorcycle', 'bicycle'], saved to: nusc
+2019-06-02 18:10:18,763 Training INFO: epoch: 1 step: 2700 time 0.009885 Loss_all: 1.081373
+2019-06-02 18:10:18,763 Training INFO: epoch: 1 step: 2700 Loss_cls: 0.414097 Loss_loc: 0.540633 Loss_dir: 0.126643
+2019-06-02 18:10:18,763 Training INFO: epoch: 1 step: 2700 Loc_elements x: 0.018218 y: 0.020105 z: 0.055762 w: 0.152140 h: 0.071518 l: 0.078621 vx: 0.010352 vy: 0.004194 angle: 0.129725
+2019-06-02 18:10:18,763 Training INFO: epoch: 1 step: 2700 Cls_elements cls_neg_rt: 0.173206 cls_pos_rt: 0.240891
+2019-06-02 18:10:18,766 Training INFO: epoch: 1 step: 2700 Auxiliraries num_voxels: 160000 num_pos: 12 num_neg: 63486 num_anchors: 63504 lr: 0.004627
+2019-06-02 18:10:18,766 Training INFO: epoch: 1 step: 2700 RpnAcc: 0.999247
+2019-06-02 18:10:18,766 Training INFO: epoch: 1 step: 2700 Prec prec@10: 0.039199 prec@30: 0.034755 prec@50: 0.029390 prec@70: 0.165403 prec@90: 0.000681
+2019-06-02 18:10:18,766 Training INFO: epoch: 1 step: 2700 Reca reca@10: 0.416664 reca@30: 0.107158 reca@50: 0.021909 reca@70: 0.001276 reca@90: 0.000001
+2019-06-02 18:10:18,766 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:10:18,772 Training INFO: Metrics for task: ['pedestrian', 'traffic_cone'], saved to: nusc
+2019-06-02 18:10:18,773 Training INFO: epoch: 1 step: 2700 time 0.009863 Loss_all: 1.966846
+2019-06-02 18:10:18,773 Training INFO: epoch: 1 step: 2700 Loss_cls: 0.509891 Loss_loc: 1.307745 Loss_dir: 0.149211
+2019-06-02 18:10:18,773 Training INFO: epoch: 1 step: 2700 Loc_elements x: 0.157350 y: 0.072394 z: 0.029637 w: 0.162832 h: 0.252933 l: 0.190815 vx: 0.004489 vy: 0.024804 angle: 0.412491
+2019-06-02 18:10:18,773 Training INFO: epoch: 1 step: 2700 Cls_elements cls_neg_rt: 0.153194 cls_pos_rt: 0.356697
+2019-06-02 18:10:18,775 Training INFO: epoch: 1 step: 2700 Auxiliraries num_voxels: 160000 num_pos: 5 num_neg: 63499 num_anchors: 63504 lr: 0.004627
+2019-06-02 18:10:18,776 Training INFO: epoch: 1 step: 2700 RpnAcc: 0.999247
+2019-06-02 18:10:18,776 Training INFO: epoch: 1 step: 2700 Prec prec@10: 0.039200 prec@30: 0.034756 prec@50: 0.029390 prec@70: 0.165403 prec@90: 0.000681
+2019-06-02 18:10:18,776 Training INFO: epoch: 1 step: 2700 Reca reca@10: 0.416669 reca@30: 0.107159 reca@50: 0.021909 reca@70: 0.001276 reca@90: 0.000001
+2019-06-02 18:10:18,776 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:16:25,977 Training INFO: Metrics for task: ['car'], saved to: nusc
+2019-06-02 18:16:25,979 Training INFO: epoch: 1 step: 2750 time 0.922158 Loss_all: 1.132939
+2019-06-02 18:16:25,979 Training INFO: epoch: 1 step: 2750 Loss_cls: 0.473939 Loss_loc: 0.563149 Loss_dir: 0.095852
+2019-06-02 18:16:25,979 Training INFO: epoch: 1 step: 2750 Loc_elements x: 0.022349 y: 0.009880 z: 0.076554 w: 0.029774 h: 0.020419 l: 0.051229 vx: 0.083894 vy: 0.166841 angle: 0.102208
+2019-06-02 18:16:25,979 Training INFO: epoch: 1 step: 2750 Cls_elements cls_neg_rt: 0.104617 cls_pos_rt: 0.369322
+2019-06-02 18:16:25,981 Training INFO: epoch: 1 step: 2750 Auxiliraries num_voxels: 160000 num_pos: 3 num_neg: 31743 num_anchors: 31752 lr: 0.004651
+2019-06-02 18:16:25,982 Training INFO: epoch: 1 step: 2750 RpnAcc: 0.999254
+2019-06-02 18:16:25,982 Training INFO: epoch: 1 step: 2750 Prec prec@10: 0.039862 prec@30: 0.036045 prec@50: 0.030992 prec@70: 0.177396 prec@90: 0.000681
+2019-06-02 18:16:25,982 Training INFO: epoch: 1 step: 2750 Reca reca@10: 0.420267 reca@30: 0.109372 reca@50: 0.022733 reca@70: 0.001364 reca@90: 0.000001
+2019-06-02 18:16:25,982 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:16:25,988 Training INFO: Metrics for task: ['truck', 'construction_vehicle'], saved to: nusc
+2019-06-02 18:16:25,989 Training INFO: epoch: 1 step: 2750 time 0.010884 Loss_all: 1.339696
+2019-06-02 18:16:25,989 Training INFO: epoch: 1 step: 2750 Loss_cls: 0.528119 Loss_loc: 0.683956 Loss_dir: 0.127621
+2019-06-02 18:16:25,989 Training INFO: epoch: 1 step: 2750 Loc_elements x: 0.036446 y: 0.016599 z: 0.075862 w: 0.135358 h: 0.157077 l: 0.142262 vx: 0.001575 vy: 0.016266 angle: 0.102511
+2019-06-02 18:16:25,989 Training INFO: epoch: 1 step: 2750 Cls_elements cls_neg_rt: 0.195633 cls_pos_rt: 0.332486
+2019-06-02 18:16:25,992 Training INFO: epoch: 1 step: 2750 Auxiliraries num_voxels: 160000 num_pos: 21 num_neg: 63412 num_anchors: 63504 lr: 0.004651
+2019-06-02 18:16:25,992 Training INFO: epoch: 1 step: 2750 RpnAcc: 0.999254
+2019-06-02 18:16:25,992 Training INFO: epoch: 1 step: 2750 Prec prec@10: 0.039863 prec@30: 0.036048 prec@50: 0.031000 prec@70: 0.177396 prec@90: 0.000681
+2019-06-02 18:16:25,992 Training INFO: epoch: 1 step: 2750 Reca reca@10: 0.420276 reca@30: 0.109378 reca@50: 0.022738 reca@70: 0.001364 reca@90: 0.000001
+2019-06-02 18:16:25,992 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:16:25,999 Training INFO: Metrics for task: ['bus', 'trailer'], saved to: nusc
+2019-06-02 18:16:26,000 Training INFO: epoch: 1 step: 2750 time 0.011101 Loss_all: 1.163948
+2019-06-02 18:16:26,000 Training INFO: epoch: 1 step: 2750 Loss_cls: 0.448300 Loss_loc: 0.623648 Loss_dir: 0.092000
+2019-06-02 18:16:26,000 Training INFO: epoch: 1 step: 2750 Loc_elements x: 0.007134 y: 0.023582 z: 0.058845 w: 0.031248 h: 0.063631 l: 0.041696 vx: 0.126496 vy: 0.184653 angle: 0.086363
+2019-06-02 18:16:26,000 Training INFO: epoch: 1 step: 2750 Cls_elements cls_neg_rt: 0.112712 cls_pos_rt: 0.335588
+2019-06-02 18:16:26,004 Training INFO: epoch: 1 step: 2750 Auxiliraries num_voxels: 160000 num_pos: 55 num_neg: 63354 num_anchors: 63504 lr: 0.004651
+2019-06-02 18:16:26,004 Training INFO: epoch: 1 step: 2750 RpnAcc: 0.999254
+2019-06-02 18:16:26,004 Training INFO: epoch: 1 step: 2750 Prec prec@10: 0.039868 prec@30: 0.036058 prec@50: 0.031015 prec@70: 0.177396 prec@90: 0.000681
+2019-06-02 18:16:26,004 Training INFO: epoch: 1 step: 2750 Reca reca@10: 0.420313 reca@30: 0.109397 reca@50: 0.022746 reca@70: 0.001363 reca@90: 0.000001
+2019-06-02 18:16:26,005 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:16:26,013 Training INFO: Metrics for task: ['barrier'], saved to: nusc
+2019-06-02 18:16:26,014 Training INFO: epoch: 1 step: 2750 time 0.013631 Loss_all: 1.064821
+2019-06-02 18:16:26,014 Training INFO: epoch: 1 step: 2750 Loss_cls: 0.438398 Loss_loc: 0.523771 Loss_dir: 0.102653
+2019-06-02 18:16:26,014 Training INFO: epoch: 1 step: 2750 Loc_elements x: 0.010745 y: 0.016840 z: 0.036042 w: 0.081300 h: 0.296804 l: 0.058926 vx: 0.002214 vy: 0.004270 angle: 0.016628
+2019-06-02 18:16:26,015 Training INFO: epoch: 1 step: 2750 Cls_elements cls_neg_rt: 0.127555 cls_pos_rt: 0.310843
+2019-06-02 18:16:26,017 Training INFO: epoch: 1 step: 2750 Auxiliraries num_voxels: 160000 num_pos: 2 num_neg: 31750 num_anchors: 31752 lr: 0.004651
+2019-06-02 18:16:26,017 Training INFO: epoch: 1 step: 2750 RpnAcc: 0.999254
+2019-06-02 18:16:26,017 Training INFO: epoch: 1 step: 2750 Prec prec@10: 0.039868 prec@30: 0.036059 prec@50: 0.031015 prec@70: 0.177396 prec@90: 0.000681
+2019-06-02 18:16:26,017 Training INFO: epoch: 1 step: 2750 Reca reca@10: 0.420315 reca@30: 0.109399 reca@50: 0.022747 reca@70: 0.001363 reca@90: 0.000001
+2019-06-02 18:16:26,018 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:16:26,024 Training INFO: Metrics for task: ['motorcycle', 'bicycle'], saved to: nusc
+2019-06-02 18:16:26,025 Training INFO: epoch: 1 step: 2750 time 0.010803 Loss_all: 1.067810
+2019-06-02 18:16:26,025 Training INFO: epoch: 1 step: 2750 Loss_cls: 0.390732 Loss_loc: 0.564683 Loss_dir: 0.112394
+2019-06-02 18:16:26,025 Training INFO: epoch: 1 step: 2750 Loc_elements x: 0.023497 y: 0.022195 z: 0.056447 w: 0.129399 h: 0.055327 l: 0.070329 vx: 0.025908 vy: 0.045450 angle: 0.136133
+2019-06-02 18:16:26,025 Training INFO: epoch: 1 step: 2750 Cls_elements cls_neg_rt: 0.164909 cls_pos_rt: 0.225824
+2019-06-02 18:16:26,030 Training INFO: epoch: 1 step: 2750 Auxiliraries num_voxels: 160000 num_pos: 8 num_neg: 63495 num_anchors: 63504 lr: 0.004651
+2019-06-02 18:16:26,030 Training INFO: epoch: 1 step: 2750 RpnAcc: 0.999254
+2019-06-02 18:16:26,030 Training INFO: epoch: 1 step: 2750 Prec prec@10: 0.039870 prec@30: 0.036062 prec@50: 0.031017 prec@70: 0.177396 prec@90: 0.000681
+2019-06-02 18:16:26,030 Training INFO: epoch: 1 step: 2750 Reca reca@10: 0.420326 reca@30: 0.109405 reca@50: 0.022747 reca@70: 0.001363 reca@90: 0.000001
+2019-06-02 18:16:26,030 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:16:26,039 Training INFO: Metrics for task: ['pedestrian', 'traffic_cone'], saved to: nusc
+2019-06-02 18:16:26,040 Training INFO: epoch: 1 step: 2750 time 0.015086 Loss_all: 1.770181
+2019-06-02 18:16:26,040 Training INFO: epoch: 1 step: 2750 Loss_cls: 0.419674 Loss_loc: 1.196516 Loss_dir: 0.153991
+2019-06-02 18:16:26,040 Training INFO: epoch: 1 step: 2750 Loc_elements x: 0.064102 y: 0.086753 z: 0.086028 w: 0.074100 h: 0.120345 l: 0.137776 vx: 0.017755 vy: 0.038368 angle: 0.571288
+2019-06-02 18:16:26,040 Training INFO: epoch: 1 step: 2750 Cls_elements cls_neg_rt: 0.163701 cls_pos_rt: 0.255973
+2019-06-02 18:16:26,162 Training INFO: epoch: 1 step: 2750 Auxiliraries num_voxels: 160000 num_pos: 3 num_neg: 63501 num_anchors: 63504 lr: 0.004651
+2019-06-02 18:16:26,162 Training INFO: epoch: 1 step: 2750 RpnAcc: 0.999254
+2019-06-02 18:16:26,162 Training INFO: epoch: 1 step: 2750 Prec prec@10: 0.039870 prec@30: 0.036063 prec@50: 0.031017 prec@70: 0.177396 prec@90: 0.000681
+2019-06-02 18:16:26,162 Training INFO: epoch: 1 step: 2750 Reca reca@10: 0.420330 reca@30: 0.109407 reca@50: 0.022747 reca@70: 0.001363 reca@90: 0.000001
+2019-06-02 18:16:26,162 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:22:43,510 Training INFO: Metrics for task: ['car'], saved to: nusc
+2019-06-02 18:22:43,512 Training INFO: epoch: 1 step: 2800 time 16.854194 Loss_all: 1.496634
+2019-06-02 18:22:43,512 Training INFO: epoch: 1 step: 2800 Loss_cls: 0.538404 Loss_loc: 0.775808 Loss_dir: 0.182422
+2019-06-02 18:22:43,512 Training INFO: epoch: 1 step: 2800 Loc_elements x: 0.015006 y: 0.021090 z: 0.105671 w: 0.034857 h: 0.046273 l: 0.037365 vx: 0.014991 vy: 0.431250 angle: 0.069303
+2019-06-02 18:22:43,512 Training INFO: epoch: 1 step: 2800 Cls_elements cls_neg_rt: 0.143544 cls_pos_rt: 0.394860
+2019-06-02 18:22:43,516 Training INFO: epoch: 1 step: 2800 Auxiliraries num_voxels: 150333 num_pos: 12 num_neg: 31725 num_anchors: 31752 lr: 0.004674
+2019-06-02 18:22:43,516 Training INFO: epoch: 1 step: 2800 RpnAcc: 0.999261
+2019-06-02 18:22:43,517 Training INFO: epoch: 1 step: 2800 Prec prec@10: 0.040535 prec@30: 0.037437 prec@50: 0.032918 prec@70: 0.195233 prec@90: 0.000681
+2019-06-02 18:22:43,517 Training INFO: epoch: 1 step: 2800 Reca reca@10: 0.423967 reca@30: 0.111851 reca@50: 0.023775 reca@70: 0.001507 reca@90: 0.000001
+2019-06-02 18:22:43,517 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:22:43,522 Training INFO: Metrics for task: ['truck', 'construction_vehicle'], saved to: nusc
+2019-06-02 18:22:43,523 Training INFO: epoch: 1 step: 2800 time 0.012170 Loss_all: 0.958751
+2019-06-02 18:22:43,523 Training INFO: epoch: 1 step: 2800 Loss_cls: 0.345642 Loss_loc: 0.494236 Loss_dir: 0.118872
+2019-06-02 18:22:43,523 Training INFO: epoch: 1 step: 2800 Loc_elements x: 0.016386 y: 0.014958 z: 0.063934 w: 0.107591 h: 0.081607 l: 0.119900 vx: 0.005043 vy: 0.004051 angle: 0.080766
+2019-06-02 18:22:43,523 Training INFO: epoch: 1 step: 2800 Cls_elements cls_neg_rt: 0.104599 cls_pos_rt: 0.241043
+2019-06-02 18:22:43,527 Training INFO: epoch: 1 step: 2800 Auxiliraries num_voxels: 150333 num_pos: 31 num_neg: 63409 num_anchors: 63504 lr: 0.004674
+2019-06-02 18:22:43,527 Training INFO: epoch: 1 step: 2800 RpnAcc: 0.999261
+2019-06-02 18:22:43,527 Training INFO: epoch: 1 step: 2800 Prec prec@10: 0.040539 prec@30: 0.037445 prec@50: 0.032923 prec@70: 0.195233 prec@90: 0.000681
+2019-06-02 18:22:43,527 Training INFO: epoch: 1 step: 2800 Reca reca@10: 0.424009 reca@30: 0.111866 reca@50: 0.023777 reca@70: 0.001507 reca@90: 0.000001
+2019-06-02 18:22:43,527 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:22:43,533 Training INFO: Metrics for task: ['bus', 'trailer'], saved to: nusc
+2019-06-02 18:22:43,534 Training INFO: epoch: 1 step: 2800 time 0.011163 Loss_all: 1.121750
+2019-06-02 18:22:43,534 Training INFO: epoch: 1 step: 2800 Loss_cls: 0.518215 Loss_loc: 0.466039 Loss_dir: 0.137496
+2019-06-02 18:22:43,534 Training INFO: epoch: 1 step: 2800 Loc_elements x: 0.016895 y: 0.017735 z: 0.075313 w: 0.032909 h: 0.109493 l: 0.040196 vx: 0.045416 vy: 0.082922 angle: 0.045159
+2019-06-02 18:22:43,535 Training INFO: epoch: 1 step: 2800 Cls_elements cls_neg_rt: 0.175064 cls_pos_rt: 0.343152
+2019-06-02 18:22:43,537 Training INFO: epoch: 1 step: 2800 Auxiliraries num_voxels: 150333 num_pos: 2 num_neg: 63502 num_anchors: 63504 lr: 0.004674
+2019-06-02 18:22:43,537 Training INFO: epoch: 1 step: 2800 RpnAcc: 0.999261
+2019-06-02 18:22:43,537 Training INFO: epoch: 1 step: 2800 Prec prec@10: 0.040545 prec@30: 0.037455 prec@50: 0.032927 prec@70: 0.195233 prec@90: 0.000681
+2019-06-02 18:22:43,537 Training INFO: epoch: 1 step: 2800 Reca reca@10: 0.424042 reca@30: 0.111885 reca@50: 0.023777 reca@70: 0.001507 reca@90: 0.000001
+2019-06-02 18:22:43,537 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:22:43,543 Training INFO: Metrics for task: ['barrier'], saved to: nusc
+2019-06-02 18:22:43,544 Training INFO: epoch: 1 step: 2800 time 0.009958 Loss_all: 1.092739
+2019-06-02 18:22:43,544 Training INFO: epoch: 1 step: 2800 Loss_cls: 0.522724 Loss_loc: 0.467342 Loss_dir: 0.102673
+2019-06-02 18:22:43,544 Training INFO: epoch: 1 step: 2800 Loc_elements x: 0.022236 y: 0.042122 z: 0.125671 w: 0.063468 h: 0.078616 l: 0.024827 vx: 0.000589 vy: 0.000465 angle: 0.109348
+2019-06-02 18:22:43,544 Training INFO: epoch: 1 step: 2800 Cls_elements cls_neg_rt: 0.067576 cls_pos_rt: 0.455148
+2019-06-02 18:22:43,546 Training INFO: epoch: 1 step: 2800 Auxiliraries num_voxels: 150333 num_pos: 22 num_neg: 31723 num_anchors: 31752 lr: 0.004674
+2019-06-02 18:22:43,547 Training INFO: epoch: 1 step: 2800 RpnAcc: 0.999261
+2019-06-02 18:22:43,547 Training INFO: epoch: 1 step: 2800 Prec prec@10: 0.040546 prec@30: 0.037455 prec@50: 0.032927 prec@70: 0.195233 prec@90: 0.000681
+2019-06-02 18:22:43,547 Training INFO: epoch: 1 step: 2800 Reca reca@10: 0.424041 reca@30: 0.111881 reca@50: 0.023775 reca@70: 0.001507 reca@90: 0.000001
+2019-06-02 18:22:43,547 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:22:43,552 Training INFO: Metrics for task: ['motorcycle', 'bicycle'], saved to: nusc
+2019-06-02 18:22:43,553 Training INFO: epoch: 1 step: 2800 time 0.009159 Loss_all: 1.057951
+2019-06-02 18:22:43,554 Training INFO: epoch: 1 step: 2800 Loss_cls: 0.395431 Loss_loc: 0.531324 Loss_dir: 0.131196
+2019-06-02 18:22:43,554 Training INFO: epoch: 1 step: 2800 Loc_elements x: 0.023605 y: 0.033574 z: 0.078912 w: 0.106093 h: 0.055867 l: 0.055977 vx: 0.025075 vy: 0.075550 angle: 0.076672
+2019-06-02 18:22:43,554 Training INFO: epoch: 1 step: 2800 Cls_elements cls_neg_rt: 0.146647 cls_pos_rt: 0.248784
+2019-06-02 18:22:43,556 Training INFO: epoch: 1 step: 2800 Auxiliraries num_voxels: 150333 num_pos: 10 num_neg: 63489 num_anchors: 63504 lr: 0.004674
+2019-06-02 18:22:43,556 Training INFO: epoch: 1 step: 2800 RpnAcc: 0.999261
+2019-06-02 18:22:43,556 Training INFO: epoch: 1 step: 2800 Prec prec@10: 0.040547 prec@30: 0.037459 prec@50: 0.032931 prec@70: 0.195295 prec@90: 0.000681
+2019-06-02 18:22:43,556 Training INFO: epoch: 1 step: 2800 Reca reca@10: 0.424051 reca@30: 0.111890 reca@50: 0.023778 reca@70: 0.001508 reca@90: 0.000001
+2019-06-02 18:22:43,556 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:22:43,562 Training INFO: Metrics for task: ['pedestrian', 'traffic_cone'], saved to: nusc
+2019-06-02 18:22:43,563 Training INFO: epoch: 1 step: 2800 time 0.009906 Loss_all: 1.752846
+2019-06-02 18:22:43,563 Training INFO: epoch: 1 step: 2800 Loss_cls: 0.478892 Loss_loc: 1.137705 Loss_dir: 0.136249
+2019-06-02 18:22:43,563 Training INFO: epoch: 1 step: 2800 Loc_elements x: 0.104167 y: 0.141123 z: 0.060766 w: 0.119188 h: 0.165997 l: 0.084196 vx: 0.003039 vy: 0.047562 angle: 0.411667
+2019-06-02 18:22:43,564 Training INFO: epoch: 1 step: 2800 Cls_elements cls_neg_rt: 0.222520 cls_pos_rt: 0.256372
+2019-06-02 18:22:43,566 Training INFO: epoch: 1 step: 2800 Auxiliraries num_voxels: 150333 num_pos: 22 num_neg: 63481 num_anchors: 63504 lr: 0.004674
+2019-06-02 18:22:43,566 Training INFO: epoch: 1 step: 2800 RpnAcc: 0.999261
+2019-06-02 18:22:43,566 Training INFO: epoch: 1 step: 2800 Prec prec@10: 0.040548 prec@30: 0.037461 prec@50: 0.032931 prec@70: 0.195295 prec@90: 0.000681
+2019-06-02 18:22:43,566 Training INFO: epoch: 1 step: 2800 Reca reca@10: 0.424057 reca@30: 0.111892 reca@50: 0.023777 reca@70: 0.001508 reca@90: 0.000001
+2019-06-02 18:22:43,566 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:28:58,229 Training INFO: Metrics for task: ['car'], saved to: nusc
+2019-06-02 18:28:58,230 Training INFO: epoch: 1 step: 2850 time 2.528472 Loss_all: 1.211142
+2019-06-02 18:28:58,231 Training INFO: epoch: 1 step: 2850 Loss_cls: 0.483853 Loss_loc: 0.639040 Loss_dir: 0.088249
+2019-06-02 18:28:58,231 Training INFO: epoch: 1 step: 2850 Loc_elements x: 0.010143 y: 0.018535 z: 0.132202 w: 0.023938 h: 0.015511 l: 0.035082 vx: 0.080831 vy: 0.251133 angle: 0.071666
+2019-06-02 18:28:58,231 Training INFO: epoch: 1 step: 2850 Cls_elements cls_neg_rt: 0.109605 cls_pos_rt: 0.374249
+2019-06-02 18:28:58,233 Training INFO: epoch: 1 step: 2850 Auxiliraries num_voxels: 146091 num_pos: 4 num_neg: 31738 num_anchors: 31752 lr: 0.004698
+2019-06-02 18:28:58,234 Training INFO: epoch: 1 step: 2850 RpnAcc: 0.999267
+2019-06-02 18:28:58,234 Training INFO: epoch: 1 step: 2850 Prec prec@10: 0.041172 prec@30: 0.038776 prec@50: 0.034756 prec@70: 0.209026 prec@90: 0.000681
+2019-06-02 18:28:58,234 Training INFO: epoch: 1 step: 2850 Reca reca@10: 0.427300 reca@30: 0.114039 reca@50: 0.024708 reca@70: 0.001613 reca@90: 0.000001
+2019-06-02 18:28:58,234 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:28:58,239 Training INFO: Metrics for task: ['truck', 'construction_vehicle'], saved to: nusc
+2019-06-02 18:28:58,240 Training INFO: epoch: 1 step: 2850 time 0.010384 Loss_all: 1.493870
+2019-06-02 18:28:58,240 Training INFO: epoch: 1 step: 2850 Loss_cls: 0.523106 Loss_loc: 0.818329 Loss_dir: 0.152435
+2019-06-02 18:28:58,240 Training INFO: epoch: 1 step: 2850 Loc_elements x: 0.024781 y: 0.022289 z: 0.091774 w: 0.111536 h: 0.119517 l: 0.091779 vx: 0.093817 vy: 0.142447 angle: 0.120389
+2019-06-02 18:28:58,241 Training INFO: epoch: 1 step: 2850 Cls_elements cls_neg_rt: 0.167904 cls_pos_rt: 0.355202
+2019-06-02 18:28:58,242 Training INFO: epoch: 1 step: 2850 Auxiliraries num_voxels: 146091 num_pos: 33 num_neg: 63419 num_anchors: 63504 lr: 0.004698
+2019-06-02 18:28:58,243 Training INFO: epoch: 1 step: 2850 RpnAcc: 0.999267
+2019-06-02 18:28:58,243 Training INFO: epoch: 1 step: 2850 Prec prec@10: 0.041173 prec@30: 0.038780 prec@50: 0.034756 prec@70: 0.209026 prec@90: 0.000681
+2019-06-02 18:28:58,243 Training INFO: epoch: 1 step: 2850 Reca reca@10: 0.427321 reca@30: 0.114044 reca@50: 0.024707 reca@70: 0.001613 reca@90: 0.000001
+2019-06-02 18:28:58,243 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:28:58,248 Training INFO: Metrics for task: ['bus', 'trailer'], saved to: nusc
+2019-06-02 18:28:58,249 Training INFO: epoch: 1 step: 2850 time 0.009179 Loss_all: 1.460476
+2019-06-02 18:28:58,250 Training INFO: epoch: 1 step: 2850 Loss_cls: 0.505785 Loss_loc: 0.846291 Loss_dir: 0.108400
+2019-06-02 18:28:58,250 Training INFO: epoch: 1 step: 2850 Loc_elements x: 0.025079 y: 0.025811 z: 0.083826 w: 0.047854 h: 0.133898 l: 0.054355 vx: 0.110746 vy: 0.231667 angle: 0.133056
+2019-06-02 18:28:58,250 Training INFO: epoch: 1 step: 2850 Cls_elements cls_neg_rt: 0.192695 cls_pos_rt: 0.313090
+2019-06-02 18:28:58,252 Training INFO: epoch: 1 step: 2850 Auxiliraries num_voxels: 146091 num_pos: 38 num_neg: 63411 num_anchors: 63504 lr: 0.004698
+2019-06-02 18:28:58,252 Training INFO: epoch: 1 step: 2850 RpnAcc: 0.999267
+2019-06-02 18:28:58,252 Training INFO: epoch: 1 step: 2850 Prec prec@10: 0.041176 prec@30: 0.038788 prec@50: 0.034776 prec@70: 0.209144 prec@90: 0.000681
+2019-06-02 18:28:58,252 Training INFO: epoch: 1 step: 2850 Reca reca@10: 0.427334 reca@30: 0.114056 reca@50: 0.024719 reca@70: 0.001614 reca@90: 0.000001
+2019-06-02 18:28:58,252 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:28:58,257 Training INFO: Metrics for task: ['barrier'], saved to: nusc
+2019-06-02 18:28:58,258 Training INFO: epoch: 1 step: 2850 time 0.008861 Loss_all: 1.077155
+2019-06-02 18:28:58,258 Training INFO: epoch: 1 step: 2850 Loss_cls: 0.498979 Loss_loc: 0.422359 Loss_dir: 0.155816
+2019-06-02 18:28:58,258 Training INFO: epoch: 1 step: 2850 Loc_elements x: 0.010952 y: 0.059267 z: 0.051797 w: 0.051901 h: 0.108484 l: 0.073523 vx: 0.000524 vy: 0.000428 angle: 0.065483
+2019-06-02 18:28:58,259 Training INFO: epoch: 1 step: 2850 Cls_elements cls_neg_rt: 0.022956 cls_pos_rt: 0.476023
+2019-06-02 18:28:58,260 Training INFO: epoch: 1 step: 2850 Auxiliraries num_voxels: 146091 num_pos: 5 num_neg: 31747 num_anchors: 31752 lr: 0.004698
+2019-06-02 18:28:58,261 Training INFO: epoch: 1 step: 2850 RpnAcc: 0.999267
+2019-06-02 18:28:58,261 Training INFO: epoch: 1 step: 2850 Prec prec@10: 0.041176 prec@30: 0.038788 prec@50: 0.034777 prec@70: 0.209144 prec@90: 0.000681
+2019-06-02 18:28:58,261 Training INFO: epoch: 1 step: 2850 Reca reca@10: 0.427327 reca@30: 0.114054 reca@50: 0.024719 reca@70: 0.001614 reca@90: 0.000001
+2019-06-02 18:28:58,261 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:28:58,266 Training INFO: Metrics for task: ['motorcycle', 'bicycle'], saved to: nusc
+2019-06-02 18:28:58,267 Training INFO: epoch: 1 step: 2850 time 0.008822 Loss_all: 1.025180
+2019-06-02 18:28:58,267 Training INFO: epoch: 1 step: 2850 Loss_cls: 0.386969 Loss_loc: 0.519358 Loss_dir: 0.118854
+2019-06-02 18:28:58,267 Training INFO: epoch: 1 step: 2850 Loc_elements x: 0.022563 y: 0.037595 z: 0.042724 w: 0.098184 h: 0.049317 l: 0.042135 vx: 0.076775 vy: 0.073176 angle: 0.076888
+2019-06-02 18:28:58,267 Training INFO: epoch: 1 step: 2850 Cls_elements cls_neg_rt: 0.137931 cls_pos_rt: 0.249038
+2019-06-02 18:28:58,269 Training INFO: epoch: 1 step: 2850 Auxiliraries num_voxels: 146091 num_pos: 13 num_neg: 63486 num_anchors: 63504 lr: 0.004698
+2019-06-02 18:28:58,269 Training INFO: epoch: 1 step: 2850 RpnAcc: 0.999267
+2019-06-02 18:28:58,270 Training INFO: epoch: 1 step: 2850 Prec prec@10: 0.041178 prec@30: 0.038790 prec@50: 0.034782 prec@70: 0.209144 prec@90: 0.000681
+2019-06-02 18:28:58,270 Training INFO: epoch: 1 step: 2850 Reca reca@10: 0.427337 reca@30: 0.114057 reca@50: 0.024722 reca@70: 0.001614 reca@90: 0.000001
+2019-06-02 18:28:58,270 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:28:58,275 Training INFO: Metrics for task: ['pedestrian', 'traffic_cone'], saved to: nusc
+2019-06-02 18:28:58,276 Training INFO: epoch: 1 step: 2850 time 0.008949 Loss_all: 1.715767
+2019-06-02 18:28:58,276 Training INFO: epoch: 1 step: 2850 Loss_cls: 0.459452 Loss_loc: 1.118504 Loss_dir: 0.137811
+2019-06-02 18:28:58,276 Training INFO: epoch: 1 step: 2850 Loc_elements x: 0.049978 y: 0.072265 z: 0.081880 w: 0.119465 h: 0.182433 l: 0.097018 vx: 0.015987 vy: 0.023138 angle: 0.476340
+2019-06-02 18:28:58,276 Training INFO: epoch: 1 step: 2850 Cls_elements cls_neg_rt: 0.104155 cls_pos_rt: 0.355297
+2019-06-02 18:28:58,278 Training INFO: epoch: 1 step: 2850 Auxiliraries num_voxels: 146091 num_pos: 6 num_neg: 63497 num_anchors: 63504 lr: 0.004698
+2019-06-02 18:28:58,278 Training INFO: epoch: 1 step: 2850 RpnAcc: 0.999267
+2019-06-02 18:28:58,278 Training INFO: epoch: 1 step: 2850 Prec prec@10: 0.041180 prec@30: 0.038791 prec@50: 0.034782 prec@70: 0.209144 prec@90: 0.000681
+2019-06-02 18:28:58,278 Training INFO: epoch: 1 step: 2850 Reca reca@10: 0.427348 reca@30: 0.114055 reca@50: 0.024721 reca@70: 0.001614 reca@90: 0.000001
+2019-06-02 18:28:58,279 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:36:08,309 Training INFO: Metrics for task: ['car'], saved to: nusc
+2019-06-02 18:36:08,310 Training INFO: epoch: 1 step: 2900 time 1.719352 Loss_all: 1.087317
+2019-06-02 18:36:08,311 Training INFO: epoch: 1 step: 2900 Loss_cls: 0.449296 Loss_loc: 0.513517 Loss_dir: 0.124504
+2019-06-02 18:36:08,311 Training INFO: epoch: 1 step: 2900 Loc_elements x: 0.013552 y: 0.016157 z: 0.051853 w: 0.034463 h: 0.019139 l: 0.058131 vx: 0.083329 vy: 0.137129 angle: 0.099763
+2019-06-02 18:36:08,311 Training INFO: epoch: 1 step: 2900 Cls_elements cls_neg_rt: 0.080555 cls_pos_rt: 0.368741
+2019-06-02 18:36:08,313 Training INFO: epoch: 1 step: 2900 Auxiliraries num_voxels: 160000 num_pos: 6 num_neg: 31734 num_anchors: 31752 lr: 0.004723
+2019-06-02 18:36:08,314 Training INFO: epoch: 1 step: 2900 RpnAcc: 0.999274
+2019-06-02 18:36:08,314 Training INFO: epoch: 1 step: 2900 Prec prec@10: 0.041796 prec@30: 0.040111 prec@50: 0.036618 prec@70: 0.225324 prec@90: 0.000681
+2019-06-02 18:36:08,314 Training INFO: epoch: 1 step: 2900 Reca reca@10: 0.430660 reca@30: 0.116210 reca@50: 0.025645 reca@70: 0.001746 reca@90: 0.000001
+2019-06-02 18:36:08,314 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:36:08,319 Training INFO: Metrics for task: ['truck', 'construction_vehicle'], saved to: nusc
+2019-06-02 18:36:08,320 Training INFO: epoch: 1 step: 2900 time 0.010466 Loss_all: 1.301913
+2019-06-02 18:36:08,320 Training INFO: epoch: 1 step: 2900 Loss_cls: 0.444439 Loss_loc: 0.729786 Loss_dir: 0.127688
+2019-06-02 18:36:08,321 Training INFO: epoch: 1 step: 2900 Loc_elements x: 0.011392 y: 0.037402 z: 0.091244 w: 0.099463 h: 0.159308 l: 0.098232 vx: 0.018426 vy: 0.038082 angle: 0.176238
+2019-06-02 18:36:08,321 Training INFO: epoch: 1 step: 2900 Cls_elements cls_neg_rt: 0.206184 cls_pos_rt: 0.238255
+2019-06-02 18:36:08,322 Training INFO: epoch: 1 step: 2900 Auxiliraries num_voxels: 160000 num_pos: 24 num_neg: 63399 num_anchors: 63504 lr: 0.004723
+2019-06-02 18:36:08,323 Training INFO: epoch: 1 step: 2900 RpnAcc: 0.999274
+2019-06-02 18:36:08,323 Training INFO: epoch: 1 step: 2900 Prec prec@10: 0.041798 prec@30: 0.040117 prec@50: 0.036625 prec@70: 0.225324 prec@90: 0.000681
+2019-06-02 18:36:08,323 Training INFO: epoch: 1 step: 2900 Reca reca@10: 0.430675 reca@30: 0.116219 reca@50: 0.025647 reca@70: 0.001746 reca@90: 0.000001
+2019-06-02 18:36:08,323 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:36:08,328 Training INFO: Metrics for task: ['bus', 'trailer'], saved to: nusc
+2019-06-02 18:36:08,329 Training INFO: epoch: 1 step: 2900 time 0.009119 Loss_all: 1.328405
+2019-06-02 18:36:08,330 Training INFO: epoch: 1 step: 2900 Loss_cls: 0.580906 Loss_loc: 0.631311 Loss_dir: 0.116188
+2019-06-02 18:36:08,330 Training INFO: epoch: 1 step: 2900 Loc_elements x: 0.011517 y: 0.029018 z: 0.088089 w: 0.035760 h: 0.072458 l: 0.055555 vx: 0.063740 vy: 0.134689 angle: 0.140484
+2019-06-02 18:36:08,330 Training INFO: epoch: 1 step: 2900 Cls_elements cls_neg_rt: 0.224032 cls_pos_rt: 0.356874
+2019-06-02 18:36:08,333 Training INFO: epoch: 1 step: 2900 Auxiliraries num_voxels: 160000 num_pos: 30 num_neg: 63435 num_anchors: 63504 lr: 0.004723
+2019-06-02 18:36:08,334 Training INFO: epoch: 1 step: 2900 RpnAcc: 0.999274
+2019-06-02 18:36:08,334 Training INFO: epoch: 1 step: 2900 Prec prec@10: 0.041800 prec@30: 0.040122 prec@50: 0.036637 prec@70: 0.225324 prec@90: 0.000681
+2019-06-02 18:36:08,334 Training INFO: epoch: 1 step: 2900 Reca reca@10: 0.430688 reca@30: 0.116222 reca@50: 0.025654 reca@70: 0.001746 reca@90: 0.000001
+2019-06-02 18:36:08,334 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:36:08,339 Training INFO: Metrics for task: ['barrier'], saved to: nusc
+2019-06-02 18:36:08,340 Training INFO: epoch: 1 step: 2900 time 0.010606 Loss_all: 1.226704
+2019-06-02 18:36:08,340 Training INFO: epoch: 1 step: 2900 Loss_cls: 0.516807 Loss_loc: 0.546064 Loss_dir: 0.163833
+2019-06-02 18:36:08,340 Training INFO: epoch: 1 step: 2900 Loc_elements x: 0.024016 y: 0.032060 z: 0.124251 w: 0.104311 h: 0.086498 l: 0.094394 vx: 0.002739 vy: 0.002069 angle: 0.075725
+2019-06-02 18:36:08,340 Training INFO: epoch: 1 step: 2900 Cls_elements cls_neg_rt: 0.042047 cls_pos_rt: 0.474760
+2019-06-02 18:36:08,342 Training INFO: epoch: 1 step: 2900 Auxiliraries num_voxels: 160000 num_pos: 50 num_neg: 31694 num_anchors: 31752 lr: 0.004723
+2019-06-02 18:36:08,342 Training INFO: epoch: 1 step: 2900 RpnAcc: 0.999274
+2019-06-02 18:36:08,342 Training INFO: epoch: 1 step: 2900 Prec prec@10: 0.041801 prec@30: 0.040123 prec@50: 0.036639 prec@70: 0.225324 prec@90: 0.000681
+2019-06-02 18:36:08,342 Training INFO: epoch: 1 step: 2900 Reca reca@10: 0.430685 reca@30: 0.116220 reca@50: 0.025654 reca@70: 0.001746 reca@90: 0.000001
+2019-06-02 18:36:08,342 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:36:08,347 Training INFO: Metrics for task: ['motorcycle', 'bicycle'], saved to: nusc
+2019-06-02 18:36:08,348 Training INFO: epoch: 1 step: 2900 time 0.008377 Loss_all: 1.347345
+2019-06-02 18:36:08,349 Training INFO: epoch: 1 step: 2900 Loss_cls: 0.492997 Loss_loc: 0.746627 Loss_dir: 0.107721
+2019-06-02 18:36:08,349 Training INFO: epoch: 1 step: 2900 Loc_elements x: 0.018302 y: 0.030325 z: 0.112104 w: 0.145954 h: 0.066882 l: 0.085306 vx: 0.062726 vy: 0.074176 angle: 0.150853
+2019-06-02 18:36:08,349 Training INFO: epoch: 1 step: 2900 Cls_elements cls_neg_rt: 0.250682 cls_pos_rt: 0.242314
+2019-06-02 18:36:08,351 Training INFO: epoch: 1 step: 2900 Auxiliraries num_voxels: 160000 num_pos: 12 num_neg: 63484 num_anchors: 63504 lr: 0.004723
+2019-06-02 18:36:08,351 Training INFO: epoch: 1 step: 2900 RpnAcc: 0.999274
+2019-06-02 18:36:08,351 Training INFO: epoch: 1 step: 2900 Prec prec@10: 0.041802 prec@30: 0.040126 prec@50: 0.036641 prec@70: 0.225324 prec@90: 0.000681
+2019-06-02 18:36:08,351 Training INFO: epoch: 1 step: 2900 Reca reca@10: 0.430693 reca@30: 0.116226 reca@50: 0.025655 reca@70: 0.001746 reca@90: 0.000001
+2019-06-02 18:36:08,351 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:36:08,356 Training INFO: Metrics for task: ['pedestrian', 'traffic_cone'], saved to: nusc
+2019-06-02 18:36:08,357 Training INFO: epoch: 1 step: 2900 time 0.008916 Loss_all: 1.721194
+2019-06-02 18:36:08,358 Training INFO: epoch: 1 step: 2900 Loss_cls: 0.515054 Loss_loc: 1.069771 Loss_dir: 0.136369
+2019-06-02 18:36:08,358 Training INFO: epoch: 1 step: 2900 Loc_elements x: 0.068928 y: 0.074721 z: 0.091875 w: 0.121113 h: 0.126747 l: 0.064131 vx: 0.020735 vy: 0.015867 angle: 0.485653
+2019-06-02 18:36:08,358 Training INFO: epoch: 1 step: 2900 Cls_elements cls_neg_rt: 0.204135 cls_pos_rt: 0.310919
+2019-06-02 18:36:08,361 Training INFO: epoch: 1 step: 2900 Auxiliraries num_voxels: 160000 num_pos: 20 num_neg: 63483 num_anchors: 63504 lr: 0.004723
+2019-06-02 18:36:08,361 Training INFO: epoch: 1 step: 2900 RpnAcc: 0.999274
+2019-06-02 18:36:08,361 Training INFO: epoch: 1 step: 2900 Prec prec@10: 0.041804 prec@30: 0.040128 prec@50: 0.036641 prec@70: 0.225324 prec@90: 0.000681
+2019-06-02 18:36:08,361 Training INFO: epoch: 1 step: 2900 Reca reca@10: 0.430704 reca@30: 0.116229 reca@50: 0.025654 reca@70: 0.001745 reca@90: 0.000001
+2019-06-02 18:36:08,361 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:43:11,391 Training INFO: Metrics for task: ['car'], saved to: nusc
+2019-06-02 18:43:11,392 Training INFO: epoch: 1 step: 2950 time 20.718563 Loss_all: 1.247475
+2019-06-02 18:43:11,392 Training INFO: epoch: 1 step: 2950 Loss_cls: 0.493111 Loss_loc: 0.656325 Loss_dir: 0.098039
+2019-06-02 18:43:11,392 Training INFO: epoch: 1 step: 2950 Loc_elements x: 0.018868 y: 0.019357 z: 0.069955 w: 0.027251 h: 0.038994 l: 0.053550 vx: 0.112313 vy: 0.225339 angle: 0.090698
+2019-06-02 18:43:11,392 Training INFO: epoch: 1 step: 2950 Cls_elements cls_neg_rt: 0.120303 cls_pos_rt: 0.372808
+2019-06-02 18:43:11,395 Training INFO: epoch: 1 step: 2950 Auxiliraries num_voxels: 158088 num_pos: 16 num_neg: 31716 num_anchors: 31752 lr: 0.004748
+2019-06-02 18:43:11,395 Training INFO: epoch: 1 step: 2950 RpnAcc: 0.999280
+2019-06-02 18:43:11,395 Training INFO: epoch: 1 step: 2950 Prec prec@10: 0.042432 prec@30: 0.041497 prec@50: 0.038537 prec@70: 0.244714 prec@90: 0.000681
+2019-06-02 18:43:11,395 Training INFO: epoch: 1 step: 2950 Reca reca@10: 0.433861 reca@30: 0.118404 reca@50: 0.026580 reca@70: 0.001912 reca@90: 0.000001
+2019-06-02 18:43:11,395 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:43:11,401 Training INFO: Metrics for task: ['truck', 'construction_vehicle'], saved to: nusc
+2019-06-02 18:43:11,402 Training INFO: epoch: 1 step: 2950 time 0.009904 Loss_all: 1.180371
+2019-06-02 18:43:11,402 Training INFO: epoch: 1 step: 2950 Loss_cls: 0.516041 Loss_loc: 0.526812 Loss_dir: 0.137517
+2019-06-02 18:43:11,402 Training INFO: epoch: 1 step: 2950 Loc_elements x: 0.027858 y: 0.020128 z: 0.055071 w: 0.094851 h: 0.094396 l: 0.082404 vx: 0.003881 vy: 0.018681 angle: 0.129540
+2019-06-02 18:43:11,402 Training INFO: epoch: 1 step: 2950 Cls_elements cls_neg_rt: 0.204908 cls_pos_rt: 0.311133
+2019-06-02 18:43:11,404 Training INFO: epoch: 1 step: 2950 Auxiliraries num_voxels: 158088 num_pos: 36 num_neg: 63346 num_anchors: 63504 lr: 0.004748
+2019-06-02 18:43:11,404 Training INFO: epoch: 1 step: 2950 RpnAcc: 0.999280
+2019-06-02 18:43:11,404 Training INFO: epoch: 1 step: 2950 Prec prec@10: 0.042432 prec@30: 0.041501 prec@50: 0.038540 prec@70: 0.244714 prec@90: 0.000681
+2019-06-02 18:43:11,404 Training INFO: epoch: 1 step: 2950 Reca reca@10: 0.433878 reca@30: 0.118409 reca@50: 0.026580 reca@70: 0.001912 reca@90: 0.000001
+2019-06-02 18:43:11,404 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:43:11,409 Training INFO: Metrics for task: ['bus', 'trailer'], saved to: nusc
+2019-06-02 18:43:11,410 Training INFO: epoch: 1 step: 2950 time 0.008587 Loss_all: 1.389759
+2019-06-02 18:43:11,410 Training INFO: epoch: 1 step: 2950 Loss_cls: 0.496524 Loss_loc: 0.772041 Loss_dir: 0.121194
+2019-06-02 18:43:11,410 Training INFO: epoch: 1 step: 2950 Loc_elements x: 0.015775 y: 0.025347 z: 0.052636 w: 0.076326 h: 0.117344 l: 0.054070 vx: 0.094588 vy: 0.219484 angle: 0.116471
+2019-06-02 18:43:11,410 Training INFO: epoch: 1 step: 2950 Cls_elements cls_neg_rt: 0.181153 cls_pos_rt: 0.315371
+2019-06-02 18:43:11,412 Training INFO: epoch: 1 step: 2950 Auxiliraries num_voxels: 158088 num_pos: 65 num_neg: 63360 num_anchors: 63504 lr: 0.004748
+2019-06-02 18:43:11,412 Training INFO: epoch: 1 step: 2950 RpnAcc: 0.999280
+2019-06-02 18:43:11,412 Training INFO: epoch: 1 step: 2950 Prec prec@10: 0.042435 prec@30: 0.041508 prec@50: 0.038551 prec@70: 0.244714 prec@90: 0.000681
+2019-06-02 18:43:11,412 Training INFO: epoch: 1 step: 2950 Reca reca@10: 0.433893 reca@30: 0.118420 reca@50: 0.026586 reca@70: 0.001911 reca@90: 0.000001
+2019-06-02 18:43:11,412 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:43:11,417 Training INFO: Metrics for task: ['barrier'], saved to: nusc
+2019-06-02 18:43:11,418 Training INFO: epoch: 1 step: 2950 time 0.008210 Loss_all: 1.343900
+2019-06-02 18:43:11,418 Training INFO: epoch: 1 step: 2950 Loss_cls: 0.669204 Loss_loc: 0.552494 Loss_dir: 0.122202
+2019-06-02 18:43:11,418 Training INFO: epoch: 1 step: 2950 Loc_elements x: 0.014521 y: 0.040200 z: 0.256701 w: 0.069846 h: 0.111866 l: 0.034988 vx: 0.000844 vy: 0.002433 angle: 0.021095
+2019-06-02 18:43:11,418 Training INFO: epoch: 1 step: 2950 Cls_elements cls_neg_rt: 0.070487 cls_pos_rt: 0.598718
+2019-06-02 18:43:11,420 Training INFO: epoch: 1 step: 2950 Auxiliraries num_voxels: 158088 num_pos: 2 num_neg: 31750 num_anchors: 31752 lr: 0.004748
+2019-06-02 18:43:11,420 Training INFO: epoch: 1 step: 2950 RpnAcc: 0.999280
+2019-06-02 18:43:11,420 Training INFO: epoch: 1 step: 2950 Prec prec@10: 0.042435 prec@30: 0.041508 prec@50: 0.038551 prec@70: 0.244714 prec@90: 0.000681
+2019-06-02 18:43:11,420 Training INFO: epoch: 1 step: 2950 Reca reca@10: 0.433894 reca@30: 0.118419 reca@50: 0.026585 reca@70: 0.001911 reca@90: 0.000001
+2019-06-02 18:43:11,421 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:43:11,426 Training INFO: Metrics for task: ['motorcycle', 'bicycle'], saved to: nusc
+2019-06-02 18:43:11,427 Training INFO: epoch: 1 step: 2950 time 0.008588 Loss_all: 1.222316
+2019-06-02 18:43:11,427 Training INFO: epoch: 1 step: 2950 Loss_cls: 0.419239 Loss_loc: 0.686608 Loss_dir: 0.116469
+2019-06-02 18:43:11,427 Training INFO: epoch: 1 step: 2950 Loc_elements x: 0.020143 y: 0.023560 z: 0.082209 w: 0.135851 h: 0.068756 l: 0.113660 vx: 0.056595 vy: 0.101074 angle: 0.084761
+2019-06-02 18:43:11,427 Training INFO: epoch: 1 step: 2950 Cls_elements cls_neg_rt: 0.217499 cls_pos_rt: 0.201739
+2019-06-02 18:43:11,429 Training INFO: epoch: 1 step: 2950 Auxiliraries num_voxels: 158088 num_pos: 10 num_neg: 63489 num_anchors: 63504 lr: 0.004748
+2019-06-02 18:43:11,429 Training INFO: epoch: 1 step: 2950 RpnAcc: 0.999280
+2019-06-02 18:43:11,429 Training INFO: epoch: 1 step: 2950 Prec prec@10: 0.042436 prec@30: 0.041510 prec@50: 0.038554 prec@70: 0.244768 prec@90: 0.000681
+2019-06-02 18:43:11,429 Training INFO: epoch: 1 step: 2950 Reca reca@10: 0.433902 reca@30: 0.118423 reca@50: 0.026586 reca@70: 0.001912 reca@90: 0.000001
+2019-06-02 18:43:11,429 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:43:11,435 Training INFO: Metrics for task: ['pedestrian', 'traffic_cone'], saved to: nusc
+2019-06-02 18:43:11,436 Training INFO: epoch: 1 step: 2950 time 0.008826 Loss_all: 2.019513
+2019-06-02 18:43:11,436 Training INFO: epoch: 1 step: 2950 Loss_cls: 0.582057 Loss_loc: 1.297740 Loss_dir: 0.139716
+2019-06-02 18:43:11,436 Training INFO: epoch: 1 step: 2950 Loc_elements x: 0.089374 y: 0.141894 z: 0.120025 w: 0.100968 h: 0.179358 l: 0.078095 vx: 0.046551 vy: 0.006932 angle: 0.534543
+2019-06-02 18:43:11,436 Training INFO: epoch: 1 step: 2950 Cls_elements cls_neg_rt: 0.245361 cls_pos_rt: 0.336696
+2019-06-02 18:43:11,438 Training INFO: epoch: 1 step: 2950 Auxiliraries num_voxels: 158088 num_pos: 13 num_neg: 63491 num_anchors: 63504 lr: 0.004748
+2019-06-02 18:43:11,438 Training INFO: epoch: 1 step: 2950 RpnAcc: 0.999280
+2019-06-02 18:43:11,438 Training INFO: epoch: 1 step: 2950 Prec prec@10: 0.042437 prec@30: 0.041511 prec@50: 0.038554 prec@70: 0.244768 prec@90: 0.000681
+2019-06-02 18:43:11,439 Training INFO: epoch: 1 step: 2950 Reca reca@10: 0.433908 reca@30: 0.118422 reca@50: 0.026586 reca@70: 0.001912 reca@90: 0.000001
+2019-06-02 18:43:11,439 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:49:45,558 Training INFO: Metrics for task: ['car'], saved to: nusc
+2019-06-02 18:49:45,560 Training INFO: epoch: 1 step: 3000 time 0.867635 Loss_all: 1.190409
+2019-06-02 18:49:45,560 Training INFO: epoch: 1 step: 3000 Loss_cls: 0.479368 Loss_loc: 0.609749 Loss_dir: 0.101292
+2019-06-02 18:49:45,560 Training INFO: epoch: 1 step: 3000 Loc_elements x: 0.013059 y: 0.018121 z: 0.108753 w: 0.025072 h: 0.024198 l: 0.064199 vx: 0.123772 vy: 0.145422 angle: 0.087153
+2019-06-02 18:49:45,560 Training INFO: epoch: 1 step: 3000 Cls_elements cls_neg_rt: 0.065228 cls_pos_rt: 0.414140
+2019-06-02 18:49:45,563 Training INFO: epoch: 1 step: 3000 Auxiliraries num_voxels: 152866 num_pos: 9 num_neg: 31728 num_anchors: 31752 lr: 0.004773
+2019-06-02 18:49:45,563 Training INFO: epoch: 1 step: 3000 RpnAcc: 0.999286
+2019-06-02 18:49:45,563 Training INFO: epoch: 1 step: 3000 Prec prec@10: 0.043052 prec@30: 0.042799 prec@50: 0.040271 prec@70: 0.258743 prec@90: 0.001361
+2019-06-02 18:49:45,564 Training INFO: epoch: 1 step: 3000 Reca reca@10: 0.436954 reca@30: 0.120352 reca@50: 0.027371 reca@70: 0.002026 reca@90: 0.000002
+2019-06-02 18:49:45,564 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:49:45,569 Training INFO: Metrics for task: ['truck', 'construction_vehicle'], saved to: nusc
+2019-06-02 18:49:45,570 Training INFO: epoch: 1 step: 3000 time 0.010982 Loss_all: 1.143767
+2019-06-02 18:49:45,570 Training INFO: epoch: 1 step: 3000 Loss_cls: 0.473656 Loss_loc: 0.568202 Loss_dir: 0.101909
+2019-06-02 18:49:45,570 Training INFO: epoch: 1 step: 3000 Loc_elements x: 0.021010 y: 0.017863 z: 0.062984 w: 0.094758 h: 0.100263 l: 0.099453 vx: 0.036601 vy: 0.060847 angle: 0.074423
+2019-06-02 18:49:45,571 Training INFO: epoch: 1 step: 3000 Cls_elements cls_neg_rt: 0.175792 cls_pos_rt: 0.297864
+2019-06-02 18:49:45,573 Training INFO: epoch: 1 step: 3000 Auxiliraries num_voxels: 152866 num_pos: 36 num_neg: 63370 num_anchors: 63504 lr: 0.004773
+2019-06-02 18:49:45,573 Training INFO: epoch: 1 step: 3000 RpnAcc: 0.999286
+2019-06-02 18:49:45,573 Training INFO: epoch: 1 step: 3000 Prec prec@10: 0.043054 prec@30: 0.042804 prec@50: 0.040282 prec@70: 0.258847 prec@90: 0.001361
+2019-06-02 18:49:45,574 Training INFO: epoch: 1 step: 3000 Reca reca@10: 0.436974 reca@30: 0.120358 reca@50: 0.027376 reca@70: 0.002027 reca@90: 0.000002
+2019-06-02 18:49:45,574 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:49:45,579 Training INFO: Metrics for task: ['bus', 'trailer'], saved to: nusc
+2019-06-02 18:49:45,580 Training INFO: epoch: 1 step: 3000 time 0.009808 Loss_all: 1.509088
+2019-06-02 18:49:45,580 Training INFO: epoch: 1 step: 3000 Loss_cls: 0.508110 Loss_loc: 0.872442 Loss_dir: 0.128536
+2019-06-02 18:49:45,580 Training INFO: epoch: 1 step: 3000 Loc_elements x: 0.021879 y: 0.030162 z: 0.099158 w: 0.089541 h: 0.126970 l: 0.062951 vx: 0.143277 vy: 0.260085 angle: 0.038419
+2019-06-02 18:49:45,580 Training INFO: epoch: 1 step: 3000 Cls_elements cls_neg_rt: 0.180387 cls_pos_rt: 0.327724
+2019-06-02 18:49:45,583 Training INFO: epoch: 1 step: 3000 Auxiliraries num_voxels: 152866 num_pos: 20 num_neg: 63451 num_anchors: 63504 lr: 0.004773
+2019-06-02 18:49:45,583 Training INFO: epoch: 1 step: 3000 RpnAcc: 0.999286
+2019-06-02 18:49:45,583 Training INFO: epoch: 1 step: 3000 Prec prec@10: 0.043058 prec@30: 0.042811 prec@50: 0.040289 prec@70: 0.258847 prec@90: 0.001361
+2019-06-02 18:49:45,583 Training INFO: epoch: 1 step: 3000 Reca reca@10: 0.436990 reca@30: 0.120367 reca@50: 0.027378 reca@70: 0.002027 reca@90: 0.000002
+2019-06-02 18:49:45,583 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:49:45,589 Training INFO: Metrics for task: ['barrier'], saved to: nusc
+2019-06-02 18:49:45,590 Training INFO: epoch: 1 step: 3000 time 0.009629 Loss_all: 0.909032
+2019-06-02 18:49:45,590 Training INFO: epoch: 1 step: 3000 Loss_cls: 0.371323 Loss_loc: 0.431614 Loss_dir: 0.106095
+2019-06-02 18:49:45,590 Training INFO: epoch: 1 step: 3000 Loc_elements x: 0.013244 y: 0.031608 z: 0.167415 w: 0.076165 h: 0.069143 l: 0.048101 vx: 0.000161 vy: 0.000098 angle: 0.025680
+2019-06-02 18:49:45,590 Training INFO: epoch: 1 step: 3000 Cls_elements cls_neg_rt: 0.078514 cls_pos_rt: 0.292809
+2019-06-02 18:49:45,592 Training INFO: epoch: 1 step: 3000 Auxiliraries num_voxels: 152866 num_pos: 2 num_neg: 31749 num_anchors: 31752 lr: 0.004773
+2019-06-02 18:49:45,593 Training INFO: epoch: 1 step: 3000 RpnAcc: 0.999286
+2019-06-02 18:49:45,593 Training INFO: epoch: 1 step: 3000 Prec prec@10: 0.043058 prec@30: 0.042811 prec@50: 0.040290 prec@70: 0.258847 prec@90: 0.001361
+2019-06-02 18:49:45,593 Training INFO: epoch: 1 step: 3000 Reca reca@10: 0.436991 reca@30: 0.120368 reca@50: 0.027379 reca@70: 0.002027 reca@90: 0.000002
+2019-06-02 18:49:45,593 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:49:45,598 Training INFO: Metrics for task: ['motorcycle', 'bicycle'], saved to: nusc
+2019-06-02 18:49:45,599 Training INFO: epoch: 1 step: 3000 time 0.009490 Loss_all: 1.240096
+2019-06-02 18:49:45,599 Training INFO: epoch: 1 step: 3000 Loss_cls: 0.386146 Loss_loc: 0.731411 Loss_dir: 0.122539
+2019-06-02 18:49:45,599 Training INFO: epoch: 1 step: 3000 Loc_elements x: 0.023164 y: 0.021188 z: 0.078690 w: 0.134992 h: 0.066937 l: 0.060238 vx: 0.063781 vy: 0.177780 angle: 0.104640
+2019-06-02 18:49:45,599 Training INFO: epoch: 1 step: 3000 Cls_elements cls_neg_rt: 0.202451 cls_pos_rt: 0.183694
+2019-06-02 18:49:45,601 Training INFO: epoch: 1 step: 3000 Auxiliraries num_voxels: 152866 num_pos: 10 num_neg: 63492 num_anchors: 63504 lr: 0.004773
+2019-06-02 18:49:45,602 Training INFO: epoch: 1 step: 3000 RpnAcc: 0.999286
+2019-06-02 18:49:45,602 Training INFO: epoch: 1 step: 3000 Prec prec@10: 0.043059 prec@30: 0.042814 prec@50: 0.040294 prec@70: 0.258847 prec@90: 0.001361
+2019-06-02 18:49:45,602 Training INFO: epoch: 1 step: 3000 Reca reca@10: 0.437000 reca@30: 0.120374 reca@50: 0.027381 reca@70: 0.002027 reca@90: 0.000002
+2019-06-02 18:49:45,602 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:49:45,607 Training INFO: Metrics for task: ['pedestrian', 'traffic_cone'], saved to: nusc
+2019-06-02 18:49:45,608 Training INFO: epoch: 1 step: 3000 time 0.009198 Loss_all: 1.900567
+2019-06-02 18:49:45,609 Training INFO: epoch: 1 step: 3000 Loss_cls: 0.451187 Loss_loc: 1.314723 Loss_dir: 0.134657
+2019-06-02 18:49:45,609 Training INFO: epoch: 1 step: 3000 Loc_elements x: 0.059632 y: 0.144859 z: 0.095630 w: 0.150698 h: 0.257629 l: 0.124961 vx: 0.017379 vy: 0.034016 angle: 0.429919
+2019-06-02 18:49:45,609 Training INFO: epoch: 1 step: 3000 Cls_elements cls_neg_rt: 0.210680 cls_pos_rt: 0.240507
+2019-06-02 18:49:45,611 Training INFO: epoch: 1 step: 3000 Auxiliraries num_voxels: 152866 num_pos: 10 num_neg: 63493 num_anchors: 63504 lr: 0.004773
+2019-06-02 18:49:45,611 Training INFO: epoch: 1 step: 3000 RpnAcc: 0.999286
+2019-06-02 18:49:45,611 Training INFO: epoch: 1 step: 3000 Prec prec@10: 0.043060 prec@30: 0.042817 prec@50: 0.040296 prec@70: 0.258847 prec@90: 0.001361
+2019-06-02 18:49:45,611 Training INFO: epoch: 1 step: 3000 Reca reca@10: 0.437008 reca@30: 0.120378 reca@50: 0.027381 reca@70: 0.002027 reca@90: 0.000002
+2019-06-02 18:49:45,611 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:56:00,145 Training INFO: Metrics for task: ['car'], saved to: nusc
+2019-06-02 18:56:00,146 Training INFO: epoch: 1 step: 3050 time 1.394296 Loss_all: 1.541972
+2019-06-02 18:56:00,146 Training INFO: epoch: 1 step: 3050 Loss_cls: 0.548380 Loss_loc: 0.877354 Loss_dir: 0.116238
+2019-06-02 18:56:00,146 Training INFO: epoch: 1 step: 3050 Loc_elements x: 0.014358 y: 0.026088 z: 0.104845 w: 0.042322 h: 0.055391 l: 0.081060 vx: 0.219605 vy: 0.193872 angle: 0.139812
+2019-06-02 18:56:00,146 Training INFO: epoch: 1 step: 3050 Cls_elements cls_neg_rt: 0.105677 cls_pos_rt: 0.442703
+2019-06-02 18:56:00,149 Training INFO: epoch: 1 step: 3050 Auxiliraries num_voxels: 144347 num_pos: 91 num_neg: 31547 num_anchors: 31752 lr: 0.004799
+2019-06-02 18:56:00,149 Training INFO: epoch: 1 step: 3050 RpnAcc: 0.999292
+2019-06-02 18:56:00,149 Training INFO: epoch: 1 step: 3050 Prec prec@10: 0.043672 prec@30: 0.044203 prec@50: 0.042202 prec@70: 0.277971 prec@90: 0.001361
+2019-06-02 18:56:00,149 Training INFO: epoch: 1 step: 3050 Reca reca@10: 0.440230 reca@30: 0.122526 reca@50: 0.028271 reca@70: 0.002198 reca@90: 0.000002
+2019-06-02 18:56:00,150 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:56:00,155 Training INFO: Metrics for task: ['truck', 'construction_vehicle'], saved to: nusc
+2019-06-02 18:56:00,156 Training INFO: epoch: 1 step: 3050 time 0.010370 Loss_all: 1.219332
+2019-06-02 18:56:00,156 Training INFO: epoch: 1 step: 3050 Loss_cls: 0.448957 Loss_loc: 0.651215 Loss_dir: 0.119160
+2019-06-02 18:56:00,156 Training INFO: epoch: 1 step: 3050 Loc_elements x: 0.033484 y: 0.023533 z: 0.067166 w: 0.087879 h: 0.149686 l: 0.084746 vx: 0.025141 vy: 0.063009 angle: 0.116571
+2019-06-02 18:56:00,156 Training INFO: epoch: 1 step: 3050 Cls_elements cls_neg_rt: 0.188522 cls_pos_rt: 0.260435
+2019-06-02 18:56:00,158 Training INFO: epoch: 1 step: 3050 Auxiliraries num_voxels: 144347 num_pos: 58 num_neg: 63348 num_anchors: 63504 lr: 0.004799
+2019-06-02 18:56:00,158 Training INFO: epoch: 1 step: 3050 RpnAcc: 0.999292
+2019-06-02 18:56:00,159 Training INFO: epoch: 1 step: 3050 Prec prec@10: 0.043676 prec@30: 0.044211 prec@50: 0.042210 prec@70: 0.277971 prec@90: 0.001361
+2019-06-02 18:56:00,159 Training INFO: epoch: 1 step: 3050 Reca reca@10: 0.440251 reca@30: 0.122536 reca@50: 0.028274 reca@70: 0.002198 reca@90: 0.000002
+2019-06-02 18:56:00,159 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:56:00,165 Training INFO: Metrics for task: ['bus', 'trailer'], saved to: nusc
+2019-06-02 18:56:00,166 Training INFO: epoch: 1 step: 3050 time 0.009454 Loss_all: 1.464636
+2019-06-02 18:56:00,166 Training INFO: epoch: 1 step: 3050 Loss_cls: 0.485153 Loss_loc: 0.877398 Loss_dir: 0.102085
+2019-06-02 18:56:00,166 Training INFO: epoch: 1 step: 3050 Loc_elements x: 0.020686 y: 0.028997 z: 0.047965 w: 0.047455 h: 0.079454 l: 0.082366 vx: 0.219298 vy: 0.279291 angle: 0.071886
+2019-06-02 18:56:00,166 Training INFO: epoch: 1 step: 3050 Cls_elements cls_neg_rt: 0.087095 cls_pos_rt: 0.398058
+2019-06-02 18:56:00,168 Training INFO: epoch: 1 step: 3050 Auxiliraries num_voxels: 144347 num_pos: 20 num_neg: 63451 num_anchors: 63504 lr: 0.004799
+2019-06-02 18:56:00,168 Training INFO: epoch: 1 step: 3050 RpnAcc: 0.999292
+2019-06-02 18:56:00,168 Training INFO: epoch: 1 step: 3050 Prec prec@10: 0.043678 prec@30: 0.044218 prec@50: 0.042217 prec@70: 0.277971 prec@90: 0.001361
+2019-06-02 18:56:00,168 Training INFO: epoch: 1 step: 3050 Reca reca@10: 0.440258 reca@30: 0.122543 reca@50: 0.028275 reca@70: 0.002198 reca@90: 0.000002
+2019-06-02 18:56:00,168 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:56:00,174 Training INFO: Metrics for task: ['barrier'], saved to: nusc
+2019-06-02 18:56:00,175 Training INFO: epoch: 1 step: 3050 time 0.009409 Loss_all: 1.480291
+2019-06-02 18:56:00,175 Training INFO: epoch: 1 step: 3050 Loss_cls: 0.583963 Loss_loc: 0.774071 Loss_dir: 0.122258
+2019-06-02 18:56:00,175 Training INFO: epoch: 1 step: 3050 Loc_elements x: 0.020496 y: 0.012760 z: 0.096612 w: 0.090093 h: 0.404718 l: 0.072507 vx: 0.004109 vy: 0.000233 angle: 0.072545
+2019-06-02 18:56:00,175 Training INFO: epoch: 1 step: 3050 Cls_elements cls_neg_rt: 0.084847 cls_pos_rt: 0.499116
+2019-06-02 18:56:00,177 Training INFO: epoch: 1 step: 3050 Auxiliraries num_voxels: 144347 num_pos: 24 num_neg: 31720 num_anchors: 31752 lr: 0.004799
+2019-06-02 18:56:00,177 Training INFO: epoch: 1 step: 3050 RpnAcc: 0.999292
+2019-06-02 18:56:00,177 Training INFO: epoch: 1 step: 3050 Prec prec@10: 0.043679 prec@30: 0.044218 prec@50: 0.042217 prec@70: 0.277971 prec@90: 0.001361
+2019-06-02 18:56:00,177 Training INFO: epoch: 1 step: 3050 Reca reca@10: 0.440257 reca@30: 0.122543 reca@50: 0.028275 reca@70: 0.002198 reca@90: 0.000002
+2019-06-02 18:56:00,178 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:56:00,183 Training INFO: Metrics for task: ['motorcycle', 'bicycle'], saved to: nusc
+2019-06-02 18:56:00,184 Training INFO: epoch: 1 step: 3050 time 0.009314 Loss_all: 1.089813
+2019-06-02 18:56:00,184 Training INFO: epoch: 1 step: 3050 Loss_cls: 0.368780 Loss_loc: 0.588660 Loss_dir: 0.132373
+2019-06-02 18:56:00,184 Training INFO: epoch: 1 step: 3050 Loc_elements x: 0.012849 y: 0.027012 z: 0.051189 w: 0.117617 h: 0.039400 l: 0.052222 vx: 0.101275 vy: 0.070374 angle: 0.116721
+2019-06-02 18:56:00,184 Training INFO: epoch: 1 step: 3050 Cls_elements cls_neg_rt: 0.180437 cls_pos_rt: 0.188343
+2019-06-02 18:56:00,186 Training INFO: epoch: 1 step: 3050 Auxiliraries num_voxels: 144347 num_pos: 11 num_neg: 63484 num_anchors: 63504 lr: 0.004799
+2019-06-02 18:56:00,187 Training INFO: epoch: 1 step: 3050 RpnAcc: 0.999292
+2019-06-02 18:56:00,187 Training INFO: epoch: 1 step: 3050 Prec prec@10: 0.043680 prec@30: 0.044221 prec@50: 0.042219 prec@70: 0.277971 prec@90: 0.001361
+2019-06-02 18:56:00,187 Training INFO: epoch: 1 step: 3050 Reca reca@10: 0.440266 reca@30: 0.122548 reca@50: 0.028276 reca@70: 0.002198 reca@90: 0.000002
+2019-06-02 18:56:00,187 Training INFO: -------------------------------------------------------------------------------------------------------------------
+2019-06-02 18:56:00,193 Training INFO: Metrics for task: ['pedestrian', 'traffic_cone'], saved to: nusc
+2019-06-02 18:56:00,194 Training INFO: epoch: 1 step: 3050 time 0.009387 Loss_all: 1.397211
+2019-06-02 18:56:00,194 Training INFO: epoch: 1 step: 3050 Loss_cls: 0.430592 Loss_loc: 0.828052 Loss_dir: 0.138568
+2019-06-02 18:56:00,194 Training INFO: epoch: 1 step: 3050 Loc_elements x: 0.056733 y: 0.065567 z: 0.093941 w: 0.106314 h: 0.125483 l: 0.032268 vx: 0.021202 vy: 0.017803 angle: 0.308739
+2019-06-02 18:56:00,194 Training INFO: epoch: 1 step: 3050 Cls_elements cls_neg_rt: 0.169987 cls_pos_rt: 0.260605
+2019-06-02 18:56:00,196 Training INFO: epoch: 1 step: 3050 Auxiliraries num_voxels: 144347 num_pos: 28 num_neg: 63474 num_anchors: 63504 lr: 0.004799
+2019-06-02 18:56:00,196 Training INFO: epoch: 1 step: 3050 RpnAcc: 0.999292
+2019-06-02 18:56:00,196 Training INFO: epoch: 1 step: 3050 Prec prec@10: 0.043682 prec@30: 0.044223 prec@50: 0.042220 prec@70: 0.277971 prec@90: 0.001361
+2019-06-02 18:56:00,196 Training INFO: epoch: 1 step: 3050 Reca reca@10: 0.440280 reca@30: 0.122551 reca@50: 0.028276 reca@70: 0.002198 reca@90: 0.000002
+2019-06-02 18:56:00,196 Training INFO: -------------------------------------------------------------------------------------------------------------------
