@@ -1,1 +1,1 @@
-rlaunch --cpu 32 --gpu 8 --memory 102400 -- python -m torch.distributed.launch --nproc_per_node=8 --master_addr="127.0.0.1" --master_port=8667 ./tools/test.py --cfg configs/all_nuscene_fhd.yaml --model_dir /unsullied/sharefs/jiangzhengkai/output/MegDet3D_outputs/NUSC_SECOND__20190529-034159
+python -m torch.distributed.launch --nproc_per_node=8 --master_addr="127.0.0.1" --master_port=8667 ./tools/test.py --cfg configs/nuscenes/all_nuscene_fhd.yaml --model_dir nusc

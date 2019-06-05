@@ -36,5 +36,6 @@ show2.py
 ./output
 nusc/
 nusc_output/
+nusc_sequence/
 ./kitti_output
 ./kitti_output_8batch

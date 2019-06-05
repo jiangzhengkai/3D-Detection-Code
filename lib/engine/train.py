@@ -180,8 +180,8 @@ def train(config, logger=None, model_dir=None, local_rank=None, distributed=Fals
                         "num_anchors": int(num_anchors),
                         "lr": float(optimizer.lr),
                     }
-                    checkpoint.writer.open()
-                    checkpoint.writer.log_metrics(metrics, step)
+                    #checkpoint.writer.open()
+                    #checkpoint.writer.log_metrics(metrics, step)
 
                     logger.info("epoch: %d step: %d Auxiliraries num_voxels: %d num_pos: %d num_neg: %d num_anchors: %d lr: %6f"%(
                                  epoch, step, num_voxel, num_pos, num_neg, num_anchors, lr))
@@ -210,4 +210,4 @@ def train(config, logger=None, model_dir=None, local_rank=None, distributed=Fals
             torch.cuda.empty_cache()
         synchronize()
 
-    checkpoint.writer.close()
+    #checkpoint.writer.close()

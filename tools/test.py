@@ -16,7 +16,7 @@ from lib.engine.test import test
 from lib.utils.checkpoint import Det3DCheckpointer
 
 from apex import parallel
-def test_model(config, logger=None, model_dir=None, distributed=False):
+def test_model(config, logger=None, model_dir=None, local_rank=None, distributed=False):
     logger = setup_logger("Training", model_dir, get_rank())    
 
     ####### dataloader #######
@@ -31,8 +31,8 @@ def test_model(config, logger=None, model_dir=None, distributed=False):
         logger.info("Using SyncBn")
         model = torch.nn.parallel.DistributedDataParallel(
             model.to(device),
-            device_ids=[config.local_rank],
-            output_device=config.local_rank,
+            device_ids=[local_rank],
+            output_device=local_rank,
             broadcast_buffers=False,
         )
         net_module = model.module
@@ -86,7 +86,7 @@ def main():
     with open(args.cfg, "r") as cf:
         config_str = "\n" + cf.read()
         logger.info(config_str)
-    test_model(cfg, logger=logger, model_dir=output_dir, distributed=args.distributed)
+    test_model(cfg, logger=logger, model_dir=output_dir, local_rank=args.local_rank, distributed=args.distributed)
 
 if __name__ == "__main__":
     main()

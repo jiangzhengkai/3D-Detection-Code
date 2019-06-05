@@ -7,12 +7,14 @@ import numpy as np
 from lib.core.bbox import box_np_ops
 from lib.datasets.kitti_dataset import KittiDataset
 from lib.datasets.nuscenes_dataset import NuScenesDataset
+from lib.datasets.nuscenes_sequence_dataset import NuScenesSequenceDataset
 from lib.utils.progress_bar import progress_bar_iter as prog_bar
 
 def get_dataset_class(name):
     return {
         "KittiDataset": KittiDataset,
-        "NuScenesDataset": NuScenesDataset
+        "NuScenesDataset": NuScenesDataset,
+        "NuScenesSequenceDataset": NuScenesSequenceDataset
     }[name]
 
 def create_groundtruth_database(
