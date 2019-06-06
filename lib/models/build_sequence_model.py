@@ -1,6 +1,6 @@
 from lib.core.voxel.voxel_generator import VoxelGenerator
 from lib.core.target.target_assigner import target_assigners_all_classes
-from lib.models.voxelnetsequence import VoxelNetSequence
+from lib.models.voxelnet_sequence import VoxelNetSequence
 
 
 def build_sequence_network(config, logger=None, device=None):

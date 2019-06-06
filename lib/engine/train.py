@@ -26,6 +26,10 @@ from lib.utils.checkpoint import Det3DCheckpointer
 
 from apex import parallel
 def train(config, logger=None, model_dir=None, local_rank=None, distributed=False):
+    model_dir = str(pathlib.Path(model_dir).resolve())
+    model_dir = pathlib.Path(model_dir)
+    model_dir.mkdir(parents=True, exist_ok=True)
+
     logger = setup_logger("Training", model_dir, get_rank())
 
     ####### dataloader #######
@@ -201,9 +205,11 @@ def train(config, logger=None, model_dir=None, local_rank=None, distributed=Fals
             epoch, step, **arguments))
         if epoch % 1 == 0:
             logger.info("Finish epoch %d, start eval ..." %(epoch))
+            save_dir = model_dir / "results" / f"epoch_{epoch}"
+            save_dir.mkdir(parents=True, exist_ok=True)
             test(val_dataloader,
                  model,
-                 save_dir=model_dir,
+                 save_dir=save_dir,
                  device=device,
                  distributed=distributed,
                  logger=logger)

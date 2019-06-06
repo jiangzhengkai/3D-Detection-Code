@@ -338,19 +338,19 @@ class VoxelNetSequence(nn.Module):
                     for nuscenes, sample_token is saved in it.
             }
         """
-        batch_size = example['anchors'][task_id].shape[0]
+        batch_size = example['current_frame']['anchors'][task_id].shape[0]
 
-        if "metadata" not in example or len(example["metadata"]) == 0:
+        if "metadata" not in example or len(example["current_frame"]["metadata"]) == 0:
             meta_list = [None] * batch_size
         else:
-            meta_list = example["metadata"]
+            meta_list = example["current_frame"]["metadata"]
 
-        batch_anchors = example["anchors"][task_id].view(batch_size, -1, self._ndim)
+        batch_anchors = example["current_frame"]["anchors"][task_id].view(batch_size, -1, self._ndim)
 
         if "anchors_mask" not in example:
             batch_anchors_mask = [None] * batch_size
         else:
-            batch_anchors_mask = example["anchors_mask"][task_id].view(
+            batch_anchors_mask = example["current_frame"]["anchors_mask"][task_id].view(
                 batch_size, -1)
 
         t = time.time()

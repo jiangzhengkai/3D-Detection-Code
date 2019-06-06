@@ -29,13 +29,14 @@ nusc_lr_03_output
 # project dirs
 ./ropeproject
 show.py
-show2.py
-./kitti
+show2.py
+./kitti
 ./datasets
 ./models
 ./output
 nusc/
 nusc_output/
 nusc_sequence/
+nusc_second_shot/
 ./kitti_output
 ./kitti_output_8batch

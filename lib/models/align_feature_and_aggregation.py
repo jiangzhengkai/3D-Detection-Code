@@ -9,8 +9,8 @@ class Aggregation(nn.Module):
                  name=''):
         super(Aggregation, self).__init__()
         self.conv1 = nn.Conv2d(num_channel, 64, kernel_size=1)
-        self.conv2 = nn.Conv2d(64, 16, kernel_size=3, stride=1, padding=1)
-        self.conv3 = nn.Conv2d(16, 1, kernel_size=1, stride=1)
+        self.conv2 = nn.Conv2d(64, 32, kernel_size=3, stride=1, padding=1)
+        self.conv3 = nn.Conv2d(32, 1, kernel_size=1, stride=1)
 
     def forward(self, align_feature, feature):
         align_conv1 = self.conv1(align_feature)
@@ -31,12 +31,12 @@ class Aggregation(nn.Module):
 class Align_Feature_and_Aggregation(nn.Module):
     def __init__(self,
                  num_channel,
-                 neighbor=7,
+                 neighbor=9,
                  name=''):
         super(Align_Feature_and_Aggregation, self).__init__()
         self.num_channel = num_channel
-        self.embed_keyframe_conv = nn.Conv2d(num_channel, 16, 1)
-        self.embed_current_conv = nn.Conv2d(num_channel, 16, 1)
+        self.embed_keyframe_conv = nn.Conv2d(num_channel, 64, 1)
+        self.embed_current_conv = nn.Conv2d(num_channel, 64, 1)
         self.align_feature = AlignFeature(neighbor, neighbor)
   
         ##### correlation #############
