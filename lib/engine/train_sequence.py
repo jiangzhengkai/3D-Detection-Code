@@ -20,7 +20,7 @@ from lib.utils.dist_common import get_rank
 from lib.engine.convert_batch_to_device import convert_sequence_batch_to_device, DataPrefetch
 
 #from lib.engine.metrics import get_metrics
-from lib.engine.test import test
+from lib.engine.test import test_sequence
 from lib.utils.dist_common import synchronize
 from lib.utils.checkpoint import Det3DCheckpointer
 
@@ -31,7 +31,6 @@ def train_sequence(config, logger=None, model_dir=None, local_rank=None, distrib
     ####### dataloader #######
     train_dataloader = build_sequence_dataloader(config, training=True, logger=logger)
     val_dataloader = build_sequence_dataloader(config, training=False, logger=logger)
-
     ####### build network ######
     device = torch.device('cuda')
     model = build_sequence_network(config, logger=logger, device=device)
@@ -201,7 +200,7 @@ def train_sequence(config, logger=None, model_dir=None, local_rank=None, distrib
             epoch, step, **arguments))
         if epoch % 1 == 0:
             logger.info("Finish epoch %d, start eval ..." %(epoch))
-            test(val_dataloader,
+            test_sequence(val_dataloader,
                  model,
                  save_dir=model_dir,
                  device=device,

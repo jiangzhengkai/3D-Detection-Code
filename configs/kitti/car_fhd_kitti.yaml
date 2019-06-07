@@ -53,7 +53,7 @@ input:
             info_path: "/data/datasets/KITTI/object/kitti_infos_val.pkl"
             nsweeps: 1
         preprocess:
-            max_num_voxels: 60000
+            max_num_voxels: 40000
             shuffle: False
             num_workers: 3
             anchor_area_threshold: -1
@@ -119,8 +119,8 @@ model:
         use_multi_class_nms: False
         nms_pre_max_size: 1000
         nms_post_max_size: 100
-        nms_score_threshold: 0.4
-        nms_iou_threshold: 0.01
+        nms_score_threshold: 0.3
+        nms_iou_threshold: 0.1
 
     loss:
         loss_scale_factor: -1
