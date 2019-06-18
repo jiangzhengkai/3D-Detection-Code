@@ -649,7 +649,6 @@ class NuScenesDataset(Dataset):
                 mapped_class_names.append(self._name_mapping[n])
             else:
                 mapped_class_names.append(n)
-
         for det in dets:
             annos = []
             boxes = _second_det_to_nusc_box(det)
@@ -1073,6 +1072,7 @@ def _fill_trainval_infos(nusc,
             info["gt_names"] = np.array(
                 [general_to_detection[name] for name in names])
             info["gt_boxes_token"] = tokens
+            info["scene_token"] = sample["scene_token"]
 
         if sample["scene_token"] in train_scenes:
             train_nusc_infos.append(info)

@@ -6,7 +6,7 @@ input:
         max_num_points: 20
     train:
         batch_size: 4
-        num_epochs: 25
+        num_epochs: 100
         dataset:
             type: "NuScenesDataset"
             root_path: "/data/datasets/NuScenes"
@@ -15,7 +15,7 @@ input:
         preprocess:
             max_num_voxels: 40000
             shuffle: False
-            num_workers: 3
+            num_workers: 4
             gt_location_noise: [0, 0, 0]
             gt_rotation_noise: [0, 0]
             global_rotation_noise: [-0.3925, 0.3925]

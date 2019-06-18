@@ -6,7 +6,7 @@ input:
         max_num_points: 20
     train:
         batch_size: 4
-        num_epochs: 25
+        num_epochs: 100
         dataset:
             type: "NuScenesSequenceDataset"
             root_path: "/data/datasets/NuScenes"
@@ -87,7 +87,7 @@ input:
     eval:
         batch_size: 4
         dataset:
-            type: "NuScenesDataset"
+            type: "NuScenesSequenceDataset"
             root_path: "/data/datasets/NuScenes"
             info_path: "/data/datasets/NuScenes/infos_val_10sweeps_withvelo.pkl"
             nsweeps: 10

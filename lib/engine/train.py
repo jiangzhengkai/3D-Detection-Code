@@ -202,7 +202,7 @@ def train(config, logger=None, model_dir=None, local_rank=None, distributed=Fals
         net_module.clear_metrics()
         gc.collect()
         checkpoint.save("model_epoch_{:03d}_step_{:06d}".format(
-            epoch, step, **arguments))
+            epoch, step), **arguments)
         if epoch % 1 == 0:
             logger.info("Finish epoch %d, start eval ..." %(epoch))
             save_dir = model_dir / "results" / f"epoch_{epoch}"

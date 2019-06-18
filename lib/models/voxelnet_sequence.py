@@ -1,5 +1,6 @@
 import torch
 import numpy as np
+import random
 import time
 from torch import nn
 from lib.models import voxel_encoder, pixor_encoder, pillar_encoder
@@ -194,42 +195,63 @@ class VoxelNetSequence(nn.Module):
         return int(self.global_step.cpu().numpy()[0])
 
     def forward(self, example):
-        voxels = example["current_frame"]["voxels"]
-        num_points = example["current_frame"]["num_points"]
-        coordinates = example["current_frame"]["coordinates"]
-        batch_anchors = example["current_frame"]["anchors"]
+        voxels = example["voxels"]
+        num_points = example["num_points"]
+        coordinates = example["coordinates"]
+        batch_anchors = example["anchors"]
         batch_size_dev = batch_anchors[0].shape[0]
-        ################## keyframe ###################### 
-        keyframe_voxels = example["keyframe"]["voxels"]
-        keyframe_num_points = example["keyframe"]["num_points"]
-        keyframe_coordinates = example["keyframe"]["coordinates"]
+        ################## random select frame ######################
+        timestamp_lists = np.arange(0.0, 0.50, 0.05)
+        timestamp = timestamp_lists[random.randint(0,9)]
+        #timestamp = 0.45
+        mask = torch.abs((voxels[:,:,-1] - timestamp)) < 0.1
+        select_voxels = mask.float().unsqueeze(dim=-1) * voxels
+        select_num_points = mask.sum(dim=1)
+        select_coordinates = coordinates
+        sample = select_num_points.nonzero()
+        selected_voxels = select_voxels[sample,:,:].squeeze()
+        selected_num_points = select_num_points[sample].squeeze()
+        selected_coordinates = coordinates[sample,:].squeeze()
+
+        ################## select current frame ######################
+        current_mask = torch.abs((voxels[:,:,-1] - 0)) < 0.1
+        current_voxels = current_mask.float().unsqueeze(dim=-1) * voxels
+        current_num_points = current_mask.sum(dim=1)
+        current_coordinates = coordinates
+        current_sample = current_num_points.nonzero()
+        current_voxels = current_voxels[current_sample,:,:].squeeze()
+        current_num_points = current_num_points[current_sample].squeeze()
+        current_coordinates = coordinates[current_sample,:].squeeze()
 
         if "PIXOR" in self._vfe_class_name:
             voxel_features = self._voxel_feature_extractor(
                 voxels, num_points, coordinates, batch_size_dev)
-
-            keyframe_voxel_features = self._voxel_feature_extractor(
-                keyframe_voxels, keyframe_num_points, keyframe_coordinates, batch_size_dev)
+            selected_voxel_features = self._voxel_feature_extractor(
+                selected_voxels, selected_num_points, selected_coordinates, batch_size_dev)
+            current_voxel_features = self._voxel_feature_extractor(
+                current_voxels, current_num_points, current_coordinates, batch_size_dev)
         else:
             voxel_features = self._voxel_feature_extractor(
                 voxels, num_points, coordinates)
-            keyframe_voxel_features = self._voxel_feature_extractor(
-                keyframe_voxels, keyframe_num_points, keyframe_coordinates)
-
+            selected_voxel_features = self._voxel_feature_extractor(
+                selected_voxels, selected_num_points, selected_coordinates)
+            current_voxel_features = self._voxel_feature_extractor(
+                current_voxels, current_num_points, current_coordinates)
         if "PIXOR" not in self._vfe_class_name:
             spatial_features = self._middle_feature_extractor(
                 voxel_features, coordinates, batch_size_dev)
-
-            keyframe_spatial_features = self._middle_feature_extractor(
-                keyframe_voxel_features, keyframe_coordinates, batch_size_dev)
-
+            selected_spatial_features = self._middle_feature_extractor(
+                selected_voxel_features, selected_coordinates, batch_size_dev)
+            current_spatial_features = self._middle_feature_extractor(
+                current_voxel_features, current_coordinates, batch_size_dev)
         else:
             spatial_features = voxel_features
-            keyframe_spatial_features = keyframe_voxel_features
+            selected_spatial_features = selected_voxel_features
+            current_spatial_features = current_voxel_features
         # (spatial_features.sum(dim=1)[0].detach().cpu().numpy() / 41.0).tofile(open("./bev.bin", "wb"))
         # example['labels'][1][0].detach().cpu().numpy().tofile(open("labels.bin", "wb"))
         # example['gt_boxes'][1][0].tofile(open("gt_boxes.bin", "wb"))
-        align_spatial_features = self.align_and_aggregation_module(keyframe_spatial_features, spatial_features)
+        align_spatial_features = self.align_and_aggregation_module(selected_spatial_features, current_spatial_features, spatial_features)
 
         predict_dicts = self._rpn(align_spatial_features)
         rets = []
@@ -238,8 +260,8 @@ class VoxelNetSequence(nn.Module):
                 box_preds = pred_dict["box_preds"]
                 cls_preds = pred_dict["cls_preds"]
 
-                labels = example["current_frame"]["labels"][task_id]
-                reg_targets = example["current_frame"]["reg_targets"][task_id]
+                labels = example["labels"][task_id]
+                reg_targets = example["reg_targets"][task_id]
 
                 cls_weights, reg_weights, cared = prepare_loss_weights(labels,
                                                                        pos_cls_weight=self._pos_cls_weight,
@@ -274,7 +296,7 @@ class VoxelNetSequence(nn.Module):
                 loss = loc_loss_reduced + cls_loss_reduced
 
                 if self._use_direction_classifier:
-                    dir_targets = get_direction_target(example["current_frame"]["anchors"][task_id],
+                    dir_targets = get_direction_target(example["anchors"][task_id],
                                                        reg_targets,
                                                        dir_offset=self._direction_offset)
                     dir_logits = pred_dict["dir_cls_preds"].view(batch_size_dev, -1, 2)
@@ -338,19 +360,19 @@ class VoxelNetSequence(nn.Module):
                     for nuscenes, sample_token is saved in it.
             }
         """
-        batch_size = example['current_frame']['anchors'][task_id].shape[0]
+        batch_size = example['anchors'][task_id].shape[0]
 
-        if "metadata" not in example or len(example["current_frame"]["metadata"]) == 0:
+        if "metadata" not in example or len(example["metadata"]) == 0:
             meta_list = [None] * batch_size
         else:
-            meta_list = example["current_frame"]["metadata"]
+            meta_list = example["metadata"]
 
-        batch_anchors = example["current_frame"]["anchors"][task_id].view(batch_size, -1, self._ndim)
+        batch_anchors = example["anchors"][task_id].view(batch_size, -1, self._ndim)
 
         if "anchors_mask" not in example:
             batch_anchors_mask = [None] * batch_size
         else:
-            batch_anchors_mask = example["current_frame"]["anchors_mask"][task_id].view(
+            batch_anchors_mask = example["anchors_mask"][task_id].view(
                 batch_size, -1)
 
         t = time.time()

@@ -48,13 +48,13 @@ class Align_Feature_and_Aggregation(nn.Module):
                                        dilation_patch=2)
         self.aggregation = Aggregation(num_channel, name="Aggregation_Module")
 
-    def forward(self, feature_keyframe, feature_current):
-        embed_feature_keyframe = self.embed_keyframe_conv(feature_keyframe)
+    def forward(self, feature_select, feature_current, feature):
+        embed_feature_select = self.embed_keyframe_conv(feature_select)
         embed_feature_current = self.embed_current_conv(feature_current)
 
-        weights = self.correlation(embed_feature_keyframe, embed_feature_current)
+        weights = self.correlation(embed_feature_select, embed_feature_current)
         weights = weights.reshape([weights.shape[0],-1,weights.shape[3],weights.shape[4]])
   
-        align_feature = self.align_feature(feature_keyframe, weights)
-        aggregation = self.aggregation(align_feature, feature_current)
+        align_feature = self.align_feature(feature_select, weights)
+        aggregation = self.aggregation(align_feature, feature)
         return aggregation
