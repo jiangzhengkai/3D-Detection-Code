@@ -85,7 +85,7 @@ def train(config, logger=None, model_dir=None, local_rank=None, distributed=Fals
     t = time.time()
     for epoch in range(arguments["epoch"]+1, num_epochs+1):
         arguments["epoch"] = epoch
-        for i, data_batch in enumerate(DataPrefetch(iter(train_dataloader), max_prefetch=4)):
+        for i, data_batch in enumerate(DataPrefetch(iter(train_dataloader), max_prefetch=2)):
             lr_scheduler.step(net_module.get_global_step())
             arguments["iteration"] += 1
             data_device = convert_batch_to_device(data_batch, device=device)

@@ -395,7 +395,7 @@ class NuScenesSequenceDataset(Dataset):
                 "token": info["token"]
             },
         }
-        
+
         res_keyframe = {
             "lidar": {
                 "type": "lidar",
@@ -465,14 +465,14 @@ class NuScenesSequenceDataset(Dataset):
                 "tokens": info["gt_boxes_token"],
                 "velocities": info["gt_boxes_velocity"].astype(np.float32),
             }
-       
 
-        res_squences = {} 
+
+        res_squences = {}
         res_squences["current_frame"] = res
 
         # for last_keyframe read
-       
-        random_index = random.randint(0,nsweeps-2)
+
+        random_index = random.randint(1,nsweeps-2)
         sweep_keyframe = info["sweeps"][random_index]
         key_points_sweep, key_times_sweep = read_sweep(sweep_keyframe)
         key_times_sweep = key_times_sweep.astype(key_points_sweep.dtype)

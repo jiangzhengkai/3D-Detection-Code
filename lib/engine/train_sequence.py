@@ -9,7 +9,7 @@ import torch
 import gc
 import time
 
-from lib.datasets.loader.build_loader import build_sequence_dataloader
+from lib.datasets.loader.build_sequence_loader import build_sequence_dataloader
 from lib.models.build_sequence_model import build_sequence_network
 from lib.solver.build_optimizer import build_optimizer
 from lib.solver.build_scheduler import build_lr_scheduler
@@ -17,7 +17,7 @@ from lib.core.target.target_assigner import target_assigners_all_classes
 
 from lib.utils.logger import setup_logger
 from lib.utils.dist_common import get_rank
-from lib.engine.convert_batch_to_device import convert_batch_to_device, DataPrefetch
+from lib.engine.convert_batch_to_device import convert_sequence_batch_to_device, DataPrefetch
 
 #from lib.engine.metrics import get_metrics
 from lib.engine.test import test_sequence
@@ -87,13 +87,13 @@ def train_sequence(config, logger=None, model_dir=None, local_rank=None, distrib
         for i, data_batch in enumerate(DataPrefetch(iter(train_dataloader), max_prefetch=4)):
             lr_scheduler.step(net_module.get_global_step())
             arguments["iteration"] += 1
-            data_device = convert_batch_to_device(data_batch, device=device)
+            data_device = convert_sequence_batch_to_device(data_batch, device=device)
 
             optimizer.zero_grad()
 
             losses_dict = model(data_device)
 
-            batch_size = data_device["anchors"][0].shape[0]
+            batch_size = data_device["current_frame"]["anchors"][0].shape[0]
             losses = []
             cls_loss_reduceds, loc_loss_reduceds, dir_loss_reduceds, cls_preds, careds = [], [], [], [], []
             loc_losses, cls_pos_losses, cls_neg_losses = [], [], []
@@ -112,7 +112,7 @@ def train_sequence(config, logger=None, model_dir=None, local_rank=None, distrib
                 loc_loss = loss_dict["loc_loss"]
                 cls_loss = loss_dict["cls_loss"]
                 dir_loss_reduced = loss_dict["dir_loss_reduced"]
-                labels = data_device["labels"]
+                labels = data_device["current_frame"]["labels"]
                 cared = loss_dict["cared"]
 
                 losses.append(loss)
@@ -135,7 +135,7 @@ def train_sequence(config, logger=None, model_dir=None, local_rank=None, distrib
             net_module.update_global_step()
 
             for idx, [cls_loss_reduced, loc_loss_reduced, dir_loss_reduced, cls_pred, labels, cared, loc_loss, cls_pos_loss, cls_neg_loss, loss] in enumerate(
-                zip(cls_loss_reduceds, loc_loss_reduceds, dir_loss_reduceds, cls_preds, data_device["labels"], careds, loc_losses, cls_pos_losses, cls_neg_losses, losses)):
+                zip(cls_loss_reduceds, loc_loss_reduceds, dir_loss_reduceds, cls_preds, data_device["current_frame"]["labels"], careds, loc_losses, cls_pos_losses, cls_neg_losses, losses)):
 
                 net_metrics = net_module.update_metrics(cls_loss_reduced, loc_loss_reduced, cls_pred, labels, cared, idx)
                 #net_metrics = get_metrics(config, cls_loss_reduced, loc_loss_reduced, cls_pred, labels, cared, num_classes[idx])
@@ -143,9 +143,9 @@ def train_sequence(config, logger=None, model_dir=None, local_rank=None, distrib
                 num_pos = int((labels > 0)[0].float().sum().cpu().numpy())
                 num_neg = int((labels == 0)[0].float().sum().cpu().numpy())
                 if "anchor_mask" not in data_device:
-                    num_anchors = data_device["anchors"][idx].shape[1]
+                    num_anchors = data_device["current_frame"]["anchors"][idx].shape[1]
                 else:
-                    num_anchors = int(data_device["anchors_mask"][idx][0].sum())
+                    num_anchors = int(data_device["current_frame"]["anchors_mask"][idx][0].sum())
 
                 step_time = time.time() - t
                 t = time.time()
@@ -171,7 +171,7 @@ def train_sequence(config, logger=None, model_dir=None, local_rank=None, distrib
                                     epoch, step, *(metrics["loc_elem"])))
                     logger.info("epoch: %d step: %d Cls_elements cls_neg_rt: %2f cls_pos_rt: %2f"%(
                                 epoch, step, metrics["cls_neg_rt"], metrics["cls_pos_rt"]))
-                    num_voxel = int(data_device["voxels"].shape[0])
+                    num_voxel = int(data_device["current_frame"]["voxels"].shape[0])
                     num_pos = int(num_pos)
                     num_neg = int(num_neg)
                     num_anchors = int(num_anchors)
@@ -206,7 +206,7 @@ def train_sequence(config, logger=None, model_dir=None, local_rank=None, distrib
             logger.info("Finish epoch %d, start eval ..." %(epoch))
             save_dir = model_dir / "results" / f"epoch_{epoch}"
             save_dir.mkdir(parents=True, exist_ok=True)
-            test(val_dataloader,
+            test_sequence(val_dataloader,
                  model,
                  save_dir=save_dir,
                  device=device,

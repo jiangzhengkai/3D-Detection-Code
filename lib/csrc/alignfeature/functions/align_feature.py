@@ -13,7 +13,6 @@ class AlignFeatureFunction(Function):
 
     def forward(self, data, weight):
         self.save_for_backward(data, weight)
-
         N = data.size(0)
         C = data.size(1)
         H = data.size(2)
@@ -31,13 +30,13 @@ class AlignFeatureFunction(Function):
         Weight_Size = weight.size(1)
         grad_data = data.new_zeros(N, C, H, W)
         grad_weight = weight.new_zeros(N, Weight_Size, H, W)
-   
+
 
         if data.is_cuda:
             align_feature_cuda.backward(grad_output,
                                         data,
                                         weight,
-                                        self.weight_height, 
+                                        self.weight_height,
                                         self.weight_width,
                                         N,
                                         C,
@@ -48,5 +47,5 @@ class AlignFeatureFunction(Function):
                                         grad_weight)
         else:
             raise NotImplementedError
-  
+
         return grad_data, grad_weight

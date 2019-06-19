@@ -16,7 +16,7 @@ class Aggregation(nn.Module):
         align_conv1 = self.conv1(align_feature)
         align_conv2 = self.conv2(align_conv1)
         align_conv3 = self.conv3(align_conv2)
-        
+
         feature_conv1 = self.conv1(feature)
         feature_conv2 = self.conv2(feature_conv1)
         feature_conv3 = self.conv3(feature_conv2)
@@ -38,23 +38,24 @@ class Align_Feature_and_Aggregation(nn.Module):
         self.embed_keyframe_conv = nn.Conv2d(num_channel, 64, 1)
         self.embed_current_conv = nn.Conv2d(num_channel, 64, 1)
         self.align_feature = AlignFeature(neighbor, neighbor)
-  
-        ##### correlation #############
+
+        ######## correlation ########
         self.correlation = Correlation(kernel_size=1,
                                        patch_size=neighbor,
                                        stride=1,
                                        padding=0,
                                        dilation=1,
-                                       dilation_patch=2)
+                                       dilation_patch=1)
+        ######## aggregation ########
         self.aggregation = Aggregation(num_channel, name="Aggregation_Module")
 
-    def forward(self, feature_select, feature_current, feature):
+    def forward(self, feature_select, feature_current):
         embed_feature_select = self.embed_keyframe_conv(feature_select)
         embed_feature_current = self.embed_current_conv(feature_current)
 
-        weights = self.correlation(embed_feature_select, embed_feature_current)
+        weights = self.correlation(embed_feature_current, embed_feature_select)
         weights = weights.reshape([weights.shape[0],-1,weights.shape[3],weights.shape[4]])
-  
+        weights = torch.softmax(weights, dim=1)
         align_feature = self.align_feature(feature_select, weights)
-        aggregation = self.aggregation(align_feature, feature)
+        aggregation = self.aggregation(align_feature, feature_current)
         return aggregation
