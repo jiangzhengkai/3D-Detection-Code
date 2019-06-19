@@ -3,11 +3,9 @@ __pycache__
 _ext
 *.pyc
 *.so
-maskrcnn_benchmark.egg-info/
 build/
 dist/
 
-nusc_lr_03_output
 # pytorch/python/numpy formats
 *.pth
 *.pkl
@@ -15,7 +13,6 @@ nusc_lr_03_output
 
 # ipython/jupyter notebooks
 *.ipynb
-**/.ipynb_checkpoints/
 
 # Editor temporaries
 *.swn
@@ -27,16 +24,3 @@ nusc_lr_03_output
 .idea
 *.bin
 # project dirs
-./ropeproject
-show.py
-show2.py
-./kitti
-./datasets
-./models
-./output
-nusc/
-nusc_output/
-nusc_sequence/
-nusc_second_shot/
-./kitti_output
-./kitti_output_8batch
