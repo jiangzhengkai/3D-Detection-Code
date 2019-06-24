@@ -5,15 +5,15 @@ input:
         point_cloud_range: [-50.4, -50.4, -5.0, 50.4, 50.4, 3.0]
         max_num_points: 20
     train:
-        batch_size: 4
-        num_epochs: 100
+        batch_size: 5
+        num_epochs: 25
         dataset:
             type: "NuScenesDataset"
             root_path: "/data/datasets/NuScenes"
             info_path: "/data/datasets/NuScenes/infos_train_10sweeps_withvelo.pkl"
             nsweeps: 10
         preprocess:
-            max_num_voxels: 40000
+            max_num_voxels: 60000
             shuffle: False
             num_workers: 4
             gt_location_noise: [0, 0, 0]
@@ -85,7 +85,7 @@ input:
                      - 2
                      - 2
     eval:
-        batch_size: 4
+        batch_size: 5
         dataset:
             type: "NuScenesDataset"
             root_path: "/data/datasets/NuScenes"

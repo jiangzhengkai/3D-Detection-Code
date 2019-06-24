@@ -13,7 +13,7 @@ input:
             info_path: "/data/datasets/NuScenes/infos_train_10sweeps_withvelo.pkl"
             nsweeps: 10
         preprocess:
-            max_num_voxels: 40000
+            max_num_voxels: 60000
             shuffle: False
             num_workers: 4
             gt_location_noise: [0, 0, 0]

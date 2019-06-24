@@ -227,10 +227,7 @@ class VoxelNetSequence(nn.Module):
         else:
             spatial_features = voxel_features
             keyframe_spatial_features = keyframe_voxel_features
-        # (spatial_features.sum(dim=1)[0].detach().cpu().numpy() / 41.0).tofile(open("./bev.bin", "wb"))
-        # example['labels'][1][0].detach().cpu().numpy().tofile(open("labels.bin", "wb"))
-        # example['gt_boxes'][1][0].tofile(open("gt_boxes.bin", "wb"))
-        align_spatial_features, aggregation_spatial_features = self.align_and_aggregation_module(keyframe_spatial_features, spatial_features)
+        aggregation_spatial_features = self.align_and_aggregation_module(keyframe_spatial_features, spatial_features)
         predict_dicts = self._rpn(aggregation_spatial_features)
         rets = []
         for task_id, pred_dict in enumerate(predict_dicts):
