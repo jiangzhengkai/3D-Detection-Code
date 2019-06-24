@@ -64,3 +64,10 @@ python create_data.py kitti_data_prep --root_path=KITTI_DATASET_ROOT
 python create_data.py nuscenes_data_prep --root_path=NUSCENES_TRAINVAL_DATASET_ROOT --version="v1.0-trainval" --nsweeps=10
 python create_data.py nuscenes_data_prep --root_path=NUSCENES_TEST_DATASET_ROOT --version="v1.0-test" --nsweeps=10
 ```
+
+
+## Performance
+
+* VoxelNet
+|Name | db_sample| subset | mAP | NDS |
+|VoxelNet | True | True | | |
