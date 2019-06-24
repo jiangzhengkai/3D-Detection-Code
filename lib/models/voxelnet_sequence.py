@@ -181,7 +181,8 @@ class VoxelNetSequence(nn.Module):
         self.rpn_loc_loss = metrics.Scalar()
         self.rpn_total_loss = metrics.Scalar()
         ################ aggregation and align module ##############
-        self.align_and_aggregation_module = Align_Feature_and_Aggregation(128, neighbor=9, name="Align_and_Aggregation_Module")
+        num_channel = config.model.decoder.rpn.downsample_num_filters[0]
+        self.align_and_aggregation_module = Align_Feature_and_Aggregation(num_channel, neighbor=9, name="Align_and_Aggregation_Module")
 
         self.register_buffer("global_step", torch.LongTensor(1).zero_())
     def update_global_step(self):
@@ -229,7 +230,7 @@ class VoxelNetSequence(nn.Module):
         # (spatial_features.sum(dim=1)[0].detach().cpu().numpy() / 41.0).tofile(open("./bev.bin", "wb"))
         # example['labels'][1][0].detach().cpu().numpy().tofile(open("labels.bin", "wb"))
         # example['gt_boxes'][1][0].tofile(open("gt_boxes.bin", "wb"))
-        aggregation_spatial_features = self.align_and_aggregation_module(keyframe_spatial_features, spatial_features)
+        align_spatial_features, aggregation_spatial_features = self.align_and_aggregation_module(keyframe_spatial_features, spatial_features)
         predict_dicts = self._rpn(aggregation_spatial_features)
         rets = []
         for task_id, pred_dict in enumerate(predict_dicts):

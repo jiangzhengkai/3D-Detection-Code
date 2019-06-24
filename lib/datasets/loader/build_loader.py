@@ -7,11 +7,12 @@ from functools import partial
 from lib.core.voxel.voxel_generator import VoxelGenerator
 from lib.core.target.target_assigner import target_assigners_all_classes
 from lib.core.sampler.db_sampler import DBSampler
-from lib.datasets.preprocess import prep_pointcloud
+from lib.datasets.utils.preprocess import prep_pointcloud
 from lib.datasets.loader.sampler import Sampler, DistributedSampler
 from lib.datasets.all_dataset import get_dataset_class
-from lib.datasets.preprocess import collate_batch_fn
+from lib.datasets.utils.preprocess import collate_batch_fn
 from lib.core.bbox import box_np_ops
+from lib.utils.config_tool import get_downsample_factor
 
 def build_dataset(config, training, logger=None):
     ######## voxel generator ########
@@ -31,7 +32,7 @@ def build_dataset(config, training, logger=None):
             logger.info("Enable db sampler: db_sampler")
             db_sampler = DBSampler(config, logger=logger)
 
-    out_size_factor = 8
+    out_size_factor = get_downsample_factor(config)
     grid_size = voxel_generator.grid_size
     feature_map_size = grid_size[:2] // out_size_factor
     feature_map_size = [*feature_map_size, 1][::-1]

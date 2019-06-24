@@ -204,6 +204,7 @@ class VoxelNet(nn.Module):
         else:
             voxel_features = self._voxel_feature_extractor(
                 voxels, num_points, coordinates)
+
         if "PIXOR" not in self._vfe_class_name:
             spatial_features = self._middle_feature_extractor(
                 voxel_features, coordinates, batch_size_dev)
@@ -230,6 +231,7 @@ class VoxelNet(nn.Module):
 
                 cls_targets = labels * cared.type_as(labels)
                 cls_targets = cls_targets.unsqueeze(-1)
+
 
                 loc_loss, cls_loss = create_loss(self._loc_loss_function,
                                                  self._cls_loss_function,

@@ -29,7 +29,7 @@ class Sequential(torch.nn.Module):
                   ('conv2', nn.Conv2d(20,64,5)),
                   ('relu2', nn.ReLU())
                 ]))
-        
+
         # Example of using Sequential with kwargs(python 3.6+)
         model = Sequential(
                   conv1=nn.Conv2d(1,20,5),

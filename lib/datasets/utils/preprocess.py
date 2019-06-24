@@ -1,8 +1,8 @@
 import itertools
 import numpy as np
-from lib.datasets import kitti_common as kitti
+from lib.datasets.kitti import kitti_common as kitti
 from lib.core.bbox import box_np_ops
-from lib.datasets import preprocess as prep
+from lib.datasets.utils import preprocess as prep
 from collections import defaultdict
 from lib.utils import simplevis
 import numba

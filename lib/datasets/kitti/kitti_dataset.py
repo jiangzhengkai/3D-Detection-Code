@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 from torch.utils.data import Dataset
 from lib.core.bbox import box_np_ops
-from lib.datasets import kitti_common as kitti
+from lib.datasets.kitti import kitti_common as kitti
 from lib.utils.eval import get_coco_eval_result, get_official_eval_result
 from lib.utils.progress_bar import progress_bar_iter as prog_bar
 

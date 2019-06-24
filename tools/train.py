@@ -37,5 +37,7 @@ def main():
     train(cfg, logger=logger, model_dir=output_dir, local_rank=args.local_rank, distributed=args.distributed)
 
 if __name__ == "__main__":
+    from trains import Task
+    task = Task.init("VoxelNet", "PointPillar")
     main()
 

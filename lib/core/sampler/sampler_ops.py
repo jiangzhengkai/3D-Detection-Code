@@ -7,7 +7,7 @@ from functools import partial, reduce
 import numpy as np
 
 from lib.core.bbox import box_np_ops
-from lib.datasets import preprocess as prep
+from lib.datasets.utils import preprocess as prep
 from lib.core.sampler import db_sampler
 from lib.utils.check import shape_mergeable
 

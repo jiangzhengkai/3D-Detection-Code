@@ -1,5 +1,4 @@
 import os
-import random
 import os.path as osp
 from functools import reduce
 from pathlib import Path
@@ -11,8 +10,8 @@ import numpy as np
 import json
 import random
 from lib.core.bbox import box_np_ops
-from lib.datasets import preprocess as prep
-from lib.datasets import kitti_common as kitti
+from lib.datasets.utils import preprocess as prep
+from lib.datasets.kitti import kitti_common as kitti
 from torch.utils.data import Dataset
 from lib.utils.eval import get_coco_eval_result, get_official_eval_result
 from lib.utils.progress_bar import progress_bar_iter as prog_bar
@@ -33,6 +32,7 @@ from tqdm import tqdm
 
 
 def eval_main(nusc, eval_version, res_path, eval_set, output_dir):
+    # nusc = NuScenes(version=version, dataroot=str(root_path), verbose=True)
     cfg = config_factory(eval_version)
 
     nusc_eval = NuScenesEval(nusc,
@@ -184,7 +184,7 @@ cls_attr_dist = {
 }
 
 
-class NuScenesSequenceDataset(Dataset):
+class NuScenesDataset(Dataset):
     NumPointFeatures = 5
 
     def __init__(self,
@@ -206,7 +206,7 @@ class NuScenesSequenceDataset(Dataset):
             self.logger = kwargs['logger']
             if self.logger is not None:
                 self.logger.info(
-                    f"{NuScenesSequenceDataset}'s traning with {self.nsweeps} nsweeps")
+                    f"{NuScenesDataset}'s traning with {self.nsweeps} nsweeps")
 
         self._root_path = Path(root_path)
         with open(info_path, 'rb') as f:
@@ -259,10 +259,21 @@ class NuScenesSequenceDataset(Dataset):
         self._name_mapping = general_to_detection
         self._kitti_name_mapping = {}
         for k, v in self._name_mapping.items():
-            if v.lower() in ["car", "pedestrian"]:  # we only eval these classes in kitti
+            if v.lower() in ["car", "pedestrian"
+                             ]:  # we only eval these classes in kitti
                 self._kitti_name_mapping[k] = v
 
         self.version = "v1.0-trainval"
+        # self.version = "v1.0-mini"
+        # self.version = "v1.0-test"
+
+        # self.nusc = NuScenes(version=self.version, dataroot=self._root_path, verbose=True)
+
+        # self.nori_path = "/unsullied/sharefs/_research_detection/GeneralDetection/NuScenes/full_data/samples_10sweeps.nori"
+        # self.nw = nori.open(self.nori_path, "r")
+        # self.nid2token = pickle.load(open(osp.join(self.nori_path, "nid2token.pkl"), "rb"))
+        # self.token2nid = {v:k for k, v in self.nid2token.items()}
+
         self.eval_version = "cvpr_2019"
 
     def reset(self):
@@ -346,9 +357,12 @@ class NuScenesSequenceDataset(Dataset):
         for info in self._nusc_infos:
             gt_names = np.array(info["gt_names"])
             gt_boxes = info["gt_boxes"]
+            # mask = np.array([n in self._kitti_name_mapping for n in gt_names], dtype=np.bool_)
             mask = np.array([n != "ignore" for n in gt_names], dtype=np.bool_)
             gt_names = gt_names[mask]
             gt_boxes = gt_boxes[mask]
+            # gt_names_mapped = [self._kitti_name_mapping[n] for n in gt_names]
+            # det_range = np.array([cls_range_map[n] for n in gt_names_mapped])
             det_range = np.array([cls_range_map[n] for n in gt_names])
             det_range = det_range[..., np.newaxis] @ np.array([[-1, -1, 1, 1]])
             mask = (gt_boxes[:, :2] >= det_range[:, :2]).all(1)
@@ -370,12 +384,19 @@ class NuScenesSequenceDataset(Dataset):
     def __getitem__(self, idx):
         input_dict = self.get_sensor_data(idx, self.nsweeps)
         example = self._prep_func(input_dict=input_dict, logger=self.logger)
-        example["current_frame"]["metadata"] = input_dict["current_frame"]["metadata"]
-        if "anchors_mask" in example["current_frame"]:
-            example["current_frame"]["anchors_mask"] = [
-                am.astype(np.uint8) for am in example["current_frame"]["anchors_mask"]
+        example["metadata"] = input_dict["metadata"]
+        if "anchors_mask" in example:
+            example["anchors_mask"] = [
+                am.astype(np.uint8) for am in example["anchors_mask"]
             ]
         return example
+
+    def get_sensor_datas(self, query, nsweeps):
+        sensor_datas = []
+        for i in range(1, nsweeps + 1):
+            data = self.get_sensor_data(query, i)
+            sensor_datas.append(data)
+        return sensor_datas
 
     def get_sensor_data(self, query, nsweeps=10):
         idx = query
@@ -395,21 +416,20 @@ class NuScenesSequenceDataset(Dataset):
                 "token": info["token"]
             },
         }
-
-        res_keyframe = {
-            "lidar": {
-                "type": "lidar",
-                "points": None,
-            },
-            "metadata": {
-                "token": info["token"]
-            },
-        }
-
-
-        # read for current frame
+        """ offline read """
+        # lidar_path = Path(info['lidar_path'])
+        # points = np.fromfile(
+        #     str(lidar_path), dtype=np.float32, count=-1).reshape([4, -1]).T
+        """ nori read """
+        # token = info["lidar_path"].split("/")[-1].split(".")[0]
+        # nid = self.token2nid[token]
+        # points = np.frombuffer(self.nw.get(nid), dtype=np.float32).reshape(4, -1).T
+        """ online read """
         lidar_path = Path(info['lidar_path'])
+
         points = read_file(str(lidar_path))
+
+        # points[:, 3] /= 255
         sweep_points_list = [points]
         sweep_times_list = [np.zeros((points.shape[0], 1))]
 
@@ -420,6 +440,9 @@ class NuScenesSequenceDataset(Dataset):
             nsweeps, len(info["sweeps"]))
 
         def read_sweep(sweep):
+            # points_sweep = np.fromfile(str(sweep["lidar_path"]),
+            #                            dtype=np.float32).reshape([-1,
+            #                                                       5])[:, :4].T
             points_sweep = read_file(str(sweep["lidar_path"])).T
 
             nbr_points = points_sweep.shape[1]
@@ -427,6 +450,7 @@ class NuScenesSequenceDataset(Dataset):
                 points_sweep[:3, :] = sweep["transform_matrix"].dot(
                     np.vstack(
                         (points_sweep[:3, :], np.ones(nbr_points))))[:3, :]
+            # points_sweep[3, :] /= 255
             points_sweep = self.remove_close(points_sweep, min_distance)
             curr_times = sweep["time_lag"] * np.ones(
                 (1, points_sweep.shape[1]))
@@ -441,6 +465,22 @@ class NuScenesSequenceDataset(Dataset):
 
         points = np.concatenate(sweep_points_list, axis=0)
         times = np.concatenate(sweep_times_list, axis=0).astype(points.dtype)
+        """ multi thread attempt """
+        # if nsweeps-1 > 0:
+        #     with concurrent.futures.ThreadPoolExecutor(nsweeps-1) as executor:
+        #         sweeps = info["sweeps"][:nsweeps-1]
+        #         sweep_iter = executor.map(read_sweep, sweeps)
+        #
+        #     for i in sweep_iter:
+        #         sweep_points_list.append(i)
+
+        # if nsweeps-1 > 0:
+        #     num_cores = multiprocessing.cpu_count()
+        #     results = Parallel(n_jobs=num_cores)(delayed(read_sweep)(sweep) for sweep in info["sweeps"][:nsweeps-1])
+
+        # print(f"one sample read time: {time.time() - ft}, sweeps list length: {len(sweep_points_list)}")
+        # sweep_points_list.extend(results)
+        # print(points.shape)
 
         if read_test_image:
             if Path(info["cam_front_path"]).exists():
@@ -454,6 +494,8 @@ class NuScenesSequenceDataset(Dataset):
                 # "datatype": "jpg",
                 "datatype": Path(info["cam_front_path"]).suffix[1:],
             }
+        # mask = box_np_ops.points_in_rbbox(points, info["gt_boxes"]).any(-1)
+        # points = points[~mask]
         res["lidar"]["points"] = points
         res["lidar"]["times"] = times
         res["lidar"]["combined"] = np.hstack([points, times])
@@ -466,23 +508,7 @@ class NuScenesSequenceDataset(Dataset):
                 "velocities": info["gt_boxes_velocity"].astype(np.float32),
             }
 
-
-        res_squences = {}
-        res_squences["current_frame"] = res
-
-        # for last_keyframe read
-
-        random_index = random.randint(1,nsweeps-2)
-        sweep_keyframe = info["sweeps"][random_index]
-        key_points_sweep, key_times_sweep = read_sweep(sweep_keyframe)
-        key_times_sweep = key_times_sweep.astype(key_points_sweep.dtype)
-
-        res_keyframe["lidar"]["points"] = key_points_sweep
-        res_keyframe["lidar"]["times"] = key_times_sweep
-        res_keyframe["lidar"]["combined"] = np.hstack([key_points_sweep, key_times_sweep])
-        res_squences['keyframe'] = res_keyframe
-
-        return res_squences
+        return res
 
     def evaluation_kitti(self, detections, output_dir):
         """eval by kitti evaluation tool
@@ -492,6 +518,8 @@ class NuScenesSequenceDataset(Dataset):
         if gt_annos is None:
             return None
 
+        # gt_annos = deepcopy(gt_annos)
+        # dets = deepcopy(detections)
         dets = detections
         detections = []
 
@@ -621,7 +649,6 @@ class NuScenesSequenceDataset(Dataset):
                 mapped_class_names.append(self._name_mapping[n])
             else:
                 mapped_class_names.append(n)
-
         for det in dets:
             annos = []
             boxes = _second_det_to_nusc_box(det)
@@ -668,6 +695,11 @@ class NuScenesSequenceDataset(Dataset):
                 annos.append(nusc_anno)
             nusc_annos['results'].update({det["metadata"]["token"]: annos})
 
+        # nusc_annos['meta'] = {
+        #     "version": self.version,
+        #     "eval_version": self.eval_version,
+        #     "eval_set": eval_set_map[self.version],
+        # }
         nusc_annos['meta'] = {
             "use_camera": False,
             "use_lidar": True,
@@ -715,6 +747,7 @@ class NuScenesSequenceDataset(Dataset):
             return None
 
     def evaluation(self, detections, output_dir, testset=False):
+        # res_kitti = self.evaluation_kitti(detections, output_dir)
         res_nusc = self.evaluation_nusc(detections,
                                         output_dir,
                                         testset=testset)
@@ -1039,6 +1072,7 @@ def _fill_trainval_infos(nusc,
             info["gt_names"] = np.array(
                 [general_to_detection[name] for name in names])
             info["gt_boxes_token"] = tokens
+            info["scene_token"] = sample["scene_token"]
 
         if sample["scene_token"] in train_scenes:
             train_nusc_infos.append(info)
