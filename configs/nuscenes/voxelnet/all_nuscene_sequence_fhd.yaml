@@ -6,7 +6,7 @@ input:
         max_num_points: 20
     train:
         batch_size: 4
-        num_epochs: 100
+        num_epochs: 25
         dataset:
             type: "NuScenesSequenceDataset"
             root_path: "/data/datasets/NuScenes"

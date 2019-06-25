@@ -5,7 +5,7 @@ input:
         point_cloud_range: [-50.4, -50.4, -5.0, 50.4, 50.4, 3.0]
         max_num_points: 20
     train:
-        batch_size: 5
+        batch_size: 4
         num_epochs: 25
         dataset:
             type: "NuScenesDataset"
@@ -85,7 +85,7 @@ input:
                      - 2
                      - 2
     eval:
-        batch_size: 5
+        batch_size: 4
         dataset:
             type: "NuScenesDataset"
             root_path: "/data/datasets/NuScenes"
