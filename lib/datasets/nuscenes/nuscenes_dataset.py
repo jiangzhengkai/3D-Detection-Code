@@ -32,7 +32,6 @@ from tqdm import tqdm
 
 
 def eval_main(nusc, eval_version, res_path, eval_set, output_dir):
-    # nusc = NuScenes(version=version, dataroot=str(root_path), verbose=True)
     cfg = config_factory(eval_version)
 
     nusc_eval = NuScenesEval(nusc,
@@ -264,15 +263,6 @@ class NuScenesDataset(Dataset):
                 self._kitti_name_mapping[k] = v
 
         self.version = "v1.0-trainval"
-        # self.version = "v1.0-mini"
-        # self.version = "v1.0-test"
-
-        # self.nusc = NuScenes(version=self.version, dataroot=self._root_path, verbose=True)
-
-        # self.nori_path = "/unsullied/sharefs/_research_detection/GeneralDetection/NuScenes/full_data/samples_10sweeps.nori"
-        # self.nw = nori.open(self.nori_path, "r")
-        # self.nid2token = pickle.load(open(osp.join(self.nori_path, "nid2token.pkl"), "rb"))
-        # self.token2nid = {v:k for k, v in self.nid2token.items()}
 
         self.eval_version = "cvpr_2019"
 
@@ -416,20 +406,11 @@ class NuScenesDataset(Dataset):
                 "token": info["token"]
             },
         }
-        """ offline read """
-        # lidar_path = Path(info['lidar_path'])
-        # points = np.fromfile(
-        #     str(lidar_path), dtype=np.float32, count=-1).reshape([4, -1]).T
-        """ nori read """
-        # token = info["lidar_path"].split("/")[-1].split(".")[0]
-        # nid = self.token2nid[token]
-        # points = np.frombuffer(self.nw.get(nid), dtype=np.float32).reshape(4, -1).T
         """ online read """
         lidar_path = Path(info['lidar_path'])
 
         points = read_file(str(lidar_path))
 
-        # points[:, 3] /= 255
         sweep_points_list = [points]
         sweep_times_list = [np.zeros((points.shape[0], 1))]
 
@@ -440,17 +421,12 @@ class NuScenesDataset(Dataset):
             nsweeps, len(info["sweeps"]))
 
         def read_sweep(sweep):
-            # points_sweep = np.fromfile(str(sweep["lidar_path"]),
-            #                            dtype=np.float32).reshape([-1,
-            #                                                       5])[:, :4].T
             points_sweep = read_file(str(sweep["lidar_path"])).T
-
             nbr_points = points_sweep.shape[1]
             if sweep["transform_matrix"] is not None:
                 points_sweep[:3, :] = sweep["transform_matrix"].dot(
                     np.vstack(
                         (points_sweep[:3, :], np.ones(nbr_points))))[:3, :]
-            # points_sweep[3, :] /= 255
             points_sweep = self.remove_close(points_sweep, min_distance)
             curr_times = sweep["time_lag"] * np.ones(
                 (1, points_sweep.shape[1]))
@@ -465,22 +441,6 @@ class NuScenesDataset(Dataset):
 
         points = np.concatenate(sweep_points_list, axis=0)
         times = np.concatenate(sweep_times_list, axis=0).astype(points.dtype)
-        """ multi thread attempt """
-        # if nsweeps-1 > 0:
-        #     with concurrent.futures.ThreadPoolExecutor(nsweeps-1) as executor:
-        #         sweeps = info["sweeps"][:nsweeps-1]
-        #         sweep_iter = executor.map(read_sweep, sweeps)
-        #
-        #     for i in sweep_iter:
-        #         sweep_points_list.append(i)
-
-        # if nsweeps-1 > 0:
-        #     num_cores = multiprocessing.cpu_count()
-        #     results = Parallel(n_jobs=num_cores)(delayed(read_sweep)(sweep) for sweep in info["sweeps"][:nsweeps-1])
-
-        # print(f"one sample read time: {time.time() - ft}, sweeps list length: {len(sweep_points_list)}")
-        # sweep_points_list.extend(results)
-        # print(points.shape)
 
         if read_test_image:
             if Path(info["cam_front_path"]).exists():
@@ -491,11 +451,8 @@ class NuScenesDataset(Dataset):
             res["cam"] = {
                 "type": "camera",
                 "data": image_str,
-                # "datatype": "jpg",
                 "datatype": Path(info["cam_front_path"]).suffix[1:],
             }
-        # mask = box_np_ops.points_in_rbbox(points, info["gt_boxes"]).any(-1)
-        # points = points[~mask]
         res["lidar"]["points"] = points
         res["lidar"]["times"] = times
         res["lidar"]["combined"] = np.hstack([points, times])
@@ -518,8 +475,6 @@ class NuScenesDataset(Dataset):
         if gt_annos is None:
             return None
 
-        # gt_annos = deepcopy(gt_annos)
-        # dets = deepcopy(detections)
         dets = detections
         detections = []
 
@@ -695,11 +650,6 @@ class NuScenesDataset(Dataset):
                 annos.append(nusc_anno)
             nusc_annos['results'].update({det["metadata"]["token"]: annos})
 
-        # nusc_annos['meta'] = {
-        #     "version": self.version,
-        #     "eval_version": self.eval_version,
-        #     "eval_set": eval_set_map[self.version],
-        # }
         nusc_annos['meta'] = {
             "use_camera": False,
             "use_lidar": True,
@@ -1021,31 +971,6 @@ def _fill_trainval_infos(nusc,
         assert len(
             info["sweeps"]
         ) == nsweeps - 1, f"sweep {curr_sd_rec['token']} only has {len(info['sweeps'])} sweeps, you should duplicate to sweep num {nsweeps-1}"
-        """ read from api """
-        # sd_record = nusc.get('sample_data', sample['data']['LIDAR_TOP'])
-        #
-        # # Get boxes in lidar frame.
-        # lidar_path, boxes, cam_intrinsic = nusc.get_sample_data(
-        #     sample['data']['LIDAR_TOP'])
-        #
-        # # Get aggregated point cloud in lidar frame.
-        # sample_rec = nusc.get('sample', sd_record['sample_token'])
-        # chan = sd_record['channel']
-        # ref_chan = 'LIDAR_TOP'
-        # pc, times = LidarPointCloud.from_file_multisweep(nusc,
-        #                                                  sample_rec,
-        #                                                  chan,
-        #                                                  ref_chan,
-        #                                                  nsweeps=nsweeps)
-        # lidar_path = osp.join(nusc.dataroot, "sample_10sweeps/LIDAR_TOP",
-        #                       sample['data']['LIDAR_TOP'] + ".bin")
-        # pc.points.astype('float32').tofile(open(lidar_path, "wb"))
-        #
-        # info = {
-        #     "lidar_path": lidar_path,
-        #     "token": sample["token"],
-        #     # "timestamp": times,
-        # }
 
         if not test:
             annotations = [
@@ -1055,7 +980,6 @@ def _fill_trainval_infos(nusc,
 
             locs = np.array([b.center for b in ref_boxes]).reshape(-1, 3)
             dims = np.array([b.wlh for b in ref_boxes]).reshape(-1, 3)
-            # rots = np.array([b.orientation.yaw_pitch_roll[0] for b in ref_boxes]).reshape(-1, 1)
             velocity = np.array([b.velocity for b in ref_boxes]).reshape(-1, 3)
             rots = np.array([quaternion_yaw(b.orientation)
                              for b in ref_boxes]).reshape(-1, 1)
@@ -1063,7 +987,6 @@ def _fill_trainval_infos(nusc,
             tokens = np.array([b.token for b in ref_boxes])
             gt_boxes = np.concatenate(
                 [locs, dims, velocity[:, :2], -rots - np.pi / 2], axis=1)
-            # gt_boxes = np.concatenate([locs, dims, rots], axis=1)
 
             assert len(annotations) == len(gt_boxes) == len(velocity)
 

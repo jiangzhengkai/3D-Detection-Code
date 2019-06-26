@@ -13,7 +13,7 @@ from lib.solver.losses import (WeightedSigmoidClassificationLoss,
                                WeightedSmoothL1LocalizationLoss,
                                WeightedSoftmaxClassificationLoss)
 
-from lib.models.align_feature_and_aggregation import Align_Feature_and_Aggregation
+from lib.models.align_feature_and_aggregation import Align_Feature_and_Aggregation, Aggregation
 class VoxelNetSequence(nn.Module):
     def __init__(self,
                  output_shape,
@@ -183,7 +183,7 @@ class VoxelNetSequence(nn.Module):
         ################ aggregation and align module ##############
         num_channel = config.model.decoder.rpn.downsample_num_filters[0]
         self.align_and_aggregation_module = Align_Feature_and_Aggregation(num_channel, neighbor=9, name="Align_and_Aggregation_Module")
-
+        #self.align_and_aggregation_module = Aggregation(num_channel, name="Aggregation_Module")
         self.register_buffer("global_step", torch.LongTensor(1).zero_())
     def update_global_step(self):
         self.global_step += 1
@@ -337,7 +337,7 @@ class VoxelNetSequence(nn.Module):
         """
         batch_size = example['current_frame']['anchors'][task_id].shape[0]
 
-        if "metadata" not in example or len(example["current_frame"]["metadata"]) == 0:
+        if "metadata" not in example["current_frame"] or len(example["current_frame"]["metadata"]) == 0:
             meta_list = [None] * batch_size
         else:
             meta_list = example["current_frame"]["metadata"]

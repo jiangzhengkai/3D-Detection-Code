@@ -433,6 +433,7 @@ class NuScenesSequenceDataset(Dataset):
 
             return points_sweep.T, curr_times.T
 
+        """
         for i in range(nsweeps - 1):
             sweep = info["sweeps"][i]
             points_sweep, times_sweep = read_sweep(sweep)
@@ -441,7 +442,10 @@ class NuScenesSequenceDataset(Dataset):
 
         points = np.concatenate(sweep_points_list, axis=0)
         times = np.concatenate(sweep_times_list, axis=0).astype(points.dtype)
+        """
 
+        sweep = info["sweeps"][0]
+        points, times = read_sweep(sweep)
         if read_test_image:
             if Path(info["cam_front_path"]).exists():
                 with open(str(info["cam_front_path"]), 'rb') as f:

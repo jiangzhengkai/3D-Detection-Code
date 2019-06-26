@@ -5,17 +5,17 @@ input:
         point_cloud_range: [-50.4, -50.4, -5.0, 50.4, 50.4, 3.0]
         max_num_points: 20
     train:
-        batch_size: 4
+        batch_size: 5
         num_epochs: 25
         dataset:
             type: "NuScenesDataset"
-            root_path: "/data/datasets/NuScenes"
-            info_path: "/data/datasets/NuScenes/infos_train_10sweeps_withvelo.pkl"
-            nsweeps: 10
+            root_path: "/data/Datasets/nuScenes"
+            info_path: "/data/Datasets/nuScenes/infos_train_10sweeps_withvelo.pkl"
+            nsweeps: 1
         preprocess:
             max_num_voxels: 60000
             shuffle: False
-            num_workers: 4
+            num_workers: 5
             gt_location_noise: [0, 0, 0]
             gt_rotation_noise: [0, 0]
             global_rotation_noise: [-0.3925, 0.3925]
@@ -30,7 +30,7 @@ input:
             remove_environment: False
             db_sampler:
                 enable: True
-                db_info_path: "/data/datasets/NuScenes/dbinfos_train_10sweeps_withvelo.pkl"
+                db_info_path: "/data/Datasets/nuScenes/dbinfos_train.pkl"
                 db_preprocess_steps:
                     filter_by_min_num_points:
                         type: "filter_by_min_num_points"
@@ -85,12 +85,12 @@ input:
                      - 2
                      - 2
     eval:
-        batch_size: 4
+        batch_size: 5
         dataset:
             type: "NuScenesDataset"
-            root_path: "/data/datasets/NuScenes"
-            info_path: "/data/datasets/NuScenes/infos_val_10sweeps_withvelo.pkl"
-            nsweeps: 10
+            root_path: "/data/Datasets/nuScenes"
+            info_path: "/data/Datasets/nuScenes/infos_val_10sweeps_withvelo.pkl"
+            nsweeps: 1
         preprocess:
             max_num_voxels: 60000
             shuffle: False

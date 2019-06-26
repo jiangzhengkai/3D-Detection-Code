@@ -100,7 +100,7 @@ def build_dataset(config, training, logger=None):
 	    class_names=list(itertools.chain(*class_names)),
 	    prep_func=prep_func,
         nsweeps=config_dataset.nsweeps,
-        subset=True,
+        subset=training,
         logger=logging)
     return dataset
 
