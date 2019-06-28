@@ -123,8 +123,6 @@ def collate_sequence_batch_fn(batch_list):
         else:
             ret_current_frame[key] = np.stack(elems, axis=0)
 
-
-
     ################ key frame ##################
     example_keyframe_merged = defaultdict(list)
     for example in batch_list:
@@ -267,6 +265,13 @@ def prep_pointcloud(config,
             keep_mask = np.logical_not(remove_mask)
             _dict_select(gt_dict, keep_mask)
         gt_dict.pop("difficulty")
+
+        if min_points_in_gt > 0:
+            # points_count_rbbox takes 10ms with 10 sweeps
+            # nuscenes data
+            point_counts = box_np_ops.points_count_rbbox(points, gt_dict["gt_boxes"])
+            mask = point_counts >= min_points_in_gt
+            _dict_select(gt_dict, mask)
         gt_boxes_mask = np.array([n in class_names for n in gt_dict["gt_names"]], dtype=np.bool_)
         if db_sampler is not None:
             group_ids = None
@@ -296,6 +301,15 @@ def prep_pointcloud(config,
                     points = points[np.logical_not(masks.any(-1))]
                 points = np.concatenate([sampled_points, points], axis=0)
         pc_range = voxel_generator.point_cloud_range
+        prep.noise_per_object_v3_(
+            gt_dict["gt_boxes"],
+            points,
+            gt_boxes_mask,
+            rotation_perturb=gt_rotation_noise,
+            center_noise_std=gt_location_noise_std
+            global_random_rot_range=global_random_rot_range,
+            group_ids=group_ids,
+            num_try=100)
 
         _dict_select(gt_dict, gt_boxes_mask)
         gt_classes = np.array([class_names.index(n) + 1 for n in gt_dict["gt_names"]], dtype=np.int32)
@@ -303,7 +317,7 @@ def prep_pointcloud(config,
         gt_dict["gt_boxes"], points = prep.random_flip(gt_dict["gt_boxes"], points)
         gt_dict["gt_boxes"], points = prep.global_rotation(gt_dict["gt_boxes"], points, rotation=global_rotation_noise)
         gt_dict["gt_boxes"], points = prep.global_scaling_v2(gt_dict["gt_boxes"], points, *global_scale_noise)
-        prep.global_translate_(gt_dict["gt_boxes"], points, global_translate_noise_std)
+        #prep.global_translate_(gt_dict["gt_boxes"], points, global_translate_noise_std)
 
         bv_range = voxel_generator.point_cloud_range[[0, 1, 3, 4]]
         mask = prep.filter_gt_box_outside_range(gt_dict["gt_boxes"], bv_range)
@@ -504,6 +518,13 @@ def prep_sequence_pointcloud(config,
             keep_mask = np.logical_not(remove_mask)
             _dict_select(gt_dict, keep_mask)
         gt_dict.pop("difficulty")
+
+        if min_points_in_gt > 0:
+            # points_count_rbbox takes 10ms with 10 sweeps nuscenes data
+            point_counts = box_np_ops.points_count_rbbox(points, gt_dict["gt_boxes"])
+            mask = point_counts >= min_points_in_gt
+            _dict_select(gt_dict, mask)
+
         gt_boxes_mask = np.array([n in class_names for n in gt_dict["gt_names"]], dtype=np.bool_)
         if db_sampler is not None:
             group_ids = None
@@ -534,20 +555,32 @@ def prep_sequence_pointcloud(config,
                 points = np.concatenate([sampled_points, points], axis=0)
         pc_range = voxel_generator.point_cloud_range
 
+        prep.noise_per_object_v3_(
+            gt_dict["gt_boxes"],
+            points,
+            gt_boxes_mask,
+            rotation_perturb=gt_rotation_noise,
+            center_noise_std=gt_location_noise_std,
+            global_random_rot_range=global_random_rot_range,
+            group_ids=group_ids,
+            num_try=100)
+
         _dict_select(gt_dict, gt_boxes_mask)
         gt_classes = np.array([class_names.index(n) + 1 for n in gt_dict["gt_names"]], dtype=np.int32)
         gt_dict["gt_classes"] = gt_classes
+
+        ######## current_frame and keyframe data concatenate
+        num_points_current = points.shape[0]
+        points = np.concatenate((points, keyframe_points), axis=0)
+
+
         gt_dict["gt_boxes"], points = prep.random_flip(gt_dict["gt_boxes"], points)
         gt_dict["gt_boxes"], points = prep.global_rotation(gt_dict["gt_boxes"], points, rotation=global_rotation_noise)
         gt_dict["gt_boxes"], points = prep.global_scaling_v2(gt_dict["gt_boxes"], points, *global_scale_noise)
-
-        ########################## data aug for keyframe #############################################
-        keyframe_gt_boxes = np.zeros((1,4),dtype=np.float32)
-        keyframe_gt_boxes, keyframe_points = prep.random_flip(keyframe_gt_boxes, keyframe_points)
-        keyframe_gt_boxes, keyframe_points = prep.global_rotation(keyframe_gt_boxes, keyframe_points, rotation=global_rotation_noise)
-        keyframe_gt_boxes, keyframe_points = prep.global_scaling_v2(keyframe_gt_boxes, keyframe_points, *global_scale_noise)
-
-        prep.global_translate_(keyframe_gt_boxes, keyframe_points, global_translate_noise_std)
+        #prep.global_translate_(gt_dict["gt_boxes"], points, global_translate_noise_std)
+        ######## slice augumented data ########
+        points_keyframe = points[num_points_current:, :]
+        points = points[:num_points_current, :]
 
         bv_range = voxel_generator.point_cloud_range[[0, 1, 3, 4]]
         mask = prep.filter_gt_box_outside_range(gt_dict["gt_boxes"], bv_range)
@@ -579,8 +612,8 @@ def prep_sequence_pointcloud(config,
         for task_box in task_boxes:
             # limit rad to [-pi, pi]
             task_box[:, -1] = box_np_ops.limit_period(task_box[:, -1],
-                                                          offset=0.5,
-                                                           period=2 * np.pi)
+                                                      offset=0.5,
+                                                      period=2 * np.pi)
         gt_dict["gt_classes"] = task_classes
         gt_dict["gt_names"] = task_names
         gt_dict["gt_boxes"] = task_boxes

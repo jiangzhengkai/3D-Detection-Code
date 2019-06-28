@@ -1,5 +1,5 @@
 # compilation and distribution
-__pycache__
+__pycache__/
 _ext
 *.pyc
 *.so
