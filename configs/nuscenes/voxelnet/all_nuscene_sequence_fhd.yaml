@@ -15,7 +15,7 @@ input:
         preprocess:
             max_num_voxels: 60000
             shuffle: False
-            num_workers: 4
+            num_workers: 0
             gt_location_noise: [0, 0, 0]
             gt_rotation_noise: [0, 0]
             global_rotation_noise: [-0.3925, 0.3925]
@@ -94,7 +94,7 @@ input:
         preprocess:
             max_num_voxels: 60000
             shuffle: False
-            num_workers: 5
+            num_workers: 0
             anchor_area_threshold: -1
             remove_environment: False
 
@@ -221,7 +221,8 @@ model:
             downsample_layer_strides: [1, 2]
             downsample_num_filters: [128, 256]
             upsample_layer_strides: [1, 2]
-            upsample_num_filters: [128, 256]
+            upsample_num_filters: [256, 128]
+            use_norm: True
             group_norm: False
             num_groups: 32
             num_input_features: 128

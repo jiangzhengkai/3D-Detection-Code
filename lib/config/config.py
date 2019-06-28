@@ -138,6 +138,7 @@ _C.model.decoder.rpn.downsample_layer_strides = [1, 2]
 _C.model.decoder.rpn.downsample_num_filters = [128, 256]
 _C.model.decoder.rpn.upsample_layer_strides = [1, 2]
 _C.model.decoder.rpn.upsample_num_filters = [128, 256]
+_C.model.decoder.rpn.use_norm = False
 _C.model.decoder.rpn.group_norm = False
 _C.model.decoder.rpn.num_groups = 32
 _C.model.decoder.rpn.num_input_features = 128

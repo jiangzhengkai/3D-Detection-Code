@@ -221,7 +221,8 @@ model:
             downsample_layer_strides: [1, 2]
             downsample_num_filters: [128, 256]
             upsample_layer_strides: [1, 2]
-            upsample_num_filters: [128, 256]
+            upsample_num_filters: [256, 128]
+            use_norm: True
             group_norm: False
             num_groups: 32
             num_input_features: 128

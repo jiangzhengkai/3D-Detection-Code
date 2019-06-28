@@ -306,7 +306,7 @@ def prep_pointcloud(config,
             points,
             gt_boxes_mask,
             rotation_perturb=gt_rotation_noise,
-            center_noise_std=gt_location_noise_std
+            center_noise_std=gt_location_noise_std,
             global_random_rot_range=global_random_rot_range,
             group_ids=group_ids,
             num_try=100)

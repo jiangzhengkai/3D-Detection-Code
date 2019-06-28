@@ -133,7 +133,7 @@ class VoxelNet(nn.Module):
         rpn_num_filters = config.model.decoder.rpn.downsample_num_filters
         rpn_upsample_strides = config.model.decoder.rpn.upsample_layer_strides
         rpn_num_upsample_filters = config.model.decoder.rpn.upsample_num_filters
-
+        use_norm = config.model.decoder.rpn.use_norm
         num_groups = config.model.decoder.rpn.num_groups
         use_groupnorm = config.model.decoder.rpn.group_norm
 
@@ -142,7 +142,7 @@ class VoxelNet(nn.Module):
         logger.info("RPN class name: {}".format(self._rpn_class_name))
 
         self._rpn = rpn_class(
-            use_norm=True,
+            use_norm=use_norm,
             num_classes=num_classes,
             layer_nums=rpn_layer_nums,
             layer_strides=rpn_layer_strides,
