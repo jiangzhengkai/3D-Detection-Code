@@ -624,7 +624,6 @@ def prep_sequence_pointcloud(config,
     voxels, coordinates, num_points = voxel_generator.generate(points, max_num_voxels)
     num_voxels = np.array([voxels.shape[0]], dtype=np.int64)
 
-
     ################################keyframe voxels #################################
     keyframe_voxels, keyframe_coordinates, keyframe_num_points = voxel_generator.generate(keyframe_points, max_num_voxels)
     keyframe_num_voxels = np.array([keyframe_voxels.shape[0]], dtype=np.int64)

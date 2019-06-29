@@ -231,8 +231,7 @@ class NuScenesDataset(Dataset):
             frac = 1. / len(class_names)
             ratios = [frac / v for v in self._cls_dist.values()]
 
-            for cls_infos, ratio in zip(list(self._cls_infos.values()),
-                                        ratios):
+            for cls_infos, ratio in zip(list(self._cls_infos.values()), ratios):
                 self._nusc_infos += np.random.choice(
                     cls_infos, int(len(cls_infos) * ratio)).tolist()
 
