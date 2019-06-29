@@ -875,3 +875,302 @@ def filter_gt_box_outside_range(gt_boxes, limit_range):
         gt_boxes_bv.reshape(-1, 2), bounding_box)
     return np.any(ret.reshape(-1, 4), axis=1)
 
+def set_group_noise_same_(loc_noise, rot_noise, group_ids):
+    gid_to_index_dict = {}
+    for i, gid in enumerate(group_ids):
+        if gid not in gid_to_index_dict:
+            gid_to_index_dict[gid] = i
+    for i in range(loc_noise.shape[0]):
+        loc_noise[i] = loc_noise[gid_to_index_dict[group_ids[i]]]
+        rot_noise[i] = rot_noise[gid_to_index_dict[group_ids[i]]]
+
+
+def set_group_noise_same_v2_(loc_noise, rot_noise, grot_noise, group_ids):
+    gid_to_index_dict = {}
+    for i, gid in enumerate(group_ids):
+        if gid not in gid_to_index_dict:
+            gid_to_index_dict[gid] = i
+    for i in range(loc_noise.shape[0]):
+        loc_noise[i] = loc_noise[gid_to_index_dict[group_ids[i]]]
+        rot_noise[i] = rot_noise[gid_to_index_dict[group_ids[i]]]
+        grot_noise[i] = grot_noise[gid_to_index_dict[group_ids[i]]]
+	
+def get_group_center(locs, group_ids):
+    num_groups = 0
+    group_centers = np.zeros_like(locs)
+    group_centers_ret = np.zeros_like(locs)
+    group_id_dict = {}
+    group_id_num_dict = OrderedDict()
+    for i, gid in enumerate(group_ids):
+        if gid >= 0:
+            if gid in group_id_dict:
+                group_centers[group_id_dict[gid]] += locs[i]
+                group_id_num_dict[gid] += 1
+            else:
+                group_id_dict[gid] = num_groups
+                num_groups += 1
+                group_id_num_dict[gid] = 1
+                group_centers[group_id_dict[gid]] = locs[i]
+    for i, gid in enumerate(group_ids):
+        group_centers_ret[i] = group_centers[
+            group_id_dict[gid]] / group_id_num_dict[gid]
+    return group_centers_ret, group_id_num_dict
+
+@numba.njit
+def group_transform_(loc_noise, rot_noise, locs, rots, group_center,
+                     valid_mask):
+    # loc_noise: [N, M, 3], locs: [N, 3]
+    # rot_noise: [N, M]
+    # group_center: [N, 3]
+    num_try = loc_noise.shape[1]
+    r = 0.0
+    x = 0.0
+    y = 0.0
+    rot_center = 0.0
+    for i in range(loc_noise.shape[0]):
+        if valid_mask[i]:
+            x = locs[i, 0] - group_center[i, 0]
+            y = locs[i, 1] - group_center[i, 1]
+            r = np.sqrt(x**2 + y**2)
+            # calculate rots related to group center
+            rot_center = np.arctan2(x, y)
+            for j in range(num_try):
+                loc_noise[i, j, 0] += r * (
+                    np.sin(rot_center + rot_noise[i, j]) - np.sin(rot_center))
+                loc_noise[i, j, 1] += r * (
+                    np.cos(rot_center + rot_noise[i, j]) - np.cos(rot_center))
+
+
+@numba.njit
+def group_transform_v2_(loc_noise, rot_noise, locs, rots, group_center,
+                        grot_noise, valid_mask):
+    # loc_noise: [N, M, 3], locs: [N, 3]
+    # rot_noise: [N, M]
+    # group_center: [N, 3]
+    num_try = loc_noise.shape[1]
+    r = 0.0
+    x = 0.0
+    y = 0.0
+    rot_center = 0.0
+    for i in range(loc_noise.shape[0]):
+        if valid_mask[i]:
+            x = locs[i, 0] - group_center[i, 0]
+            y = locs[i, 1] - group_center[i, 1]
+            r = np.sqrt(x**2 + y**2)
+            # calculate rots related to group center
+            rot_center = np.arctan2(x, y)
+            for j in range(num_try):
+                loc_noise[i, j, 0] += r * (
+                    np.sin(rot_center + rot_noise[i, j] + grot_noise[i, j]) -
+                    np.sin(rot_center + grot_noise[i, j]))
+                loc_noise[i, j, 1] += r * (
+                    np.cos(rot_center + rot_noise[i, j] + grot_noise[i, j]) -
+                    np.cos(rot_center + grot_noise[i, j]))
+
+@numba.njit
+def noise_per_box_group_v2_(boxes, valid_mask, loc_noises, rot_noises,
+                            group_nums, global_rot_noises):
+    # WARNING: this function need boxes to be sorted by group id.
+    # boxes: [N, 5]
+    # valid_mask: [N]
+    # loc_noises: [N, M, 3]
+    # rot_noises: [N, M]
+    num_boxes = boxes.shape[0]
+    num_tests = loc_noises.shape[1]
+    box_corners = box_np_ops.box2d_to_corner_jit(boxes)
+    max_group_num = group_nums.max()
+    current_box = np.zeros((1, 5), dtype=boxes.dtype)
+    current_corners = np.zeros((max_group_num, 4, 2), dtype=boxes.dtype)
+    dst_pos = np.zeros((max_group_num, 2), dtype=boxes.dtype)
+
+    current_grot = np.zeros((max_group_num, ), dtype=boxes.dtype)
+    dst_grot = np.zeros((max_group_num, ), dtype=boxes.dtype)
+
+    rot_mat_T = np.zeros((2, 2), dtype=boxes.dtype)
+    success_mask = -np.ones((num_boxes, ), dtype=np.int64)
+    corners_norm = np.zeros((4, 2), dtype=boxes.dtype)
+    corners_norm[1, 1] = 1.0
+    corners_norm[2] = 1.0
+    corners_norm[3, 0] = 1.0
+    corners_norm -= np.array([0.5, 0.5], dtype=boxes.dtype)
+    corners_norm = corners_norm.reshape(4, 2)
+
+    # print(valid_mask)
+    idx = 0
+    for num in group_nums:
+        if valid_mask[idx]:
+            for j in range(num_tests):
+                for i in range(num):
+                    current_box[0, :] = boxes[i + idx]
+                    current_radius = np.sqrt(current_box[0, 0]**2 +
+                                             current_box[0, 1]**2)
+                    current_grot[i] = np.arctan2(current_box[0, 0],
+                                                 current_box[0, 1])
+                    dst_grot[i] = current_grot[i] + global_rot_noises[idx +
+                                                                      i, j]
+                    dst_pos[i, 0] = current_radius * np.sin(dst_grot[i])
+                    dst_pos[i, 1] = current_radius * np.cos(dst_grot[i])
+                    current_box[0, :2] = dst_pos[i]
+                    current_box[0, -1] += (dst_grot[i] - current_grot[i])
+
+                    rot_sin = np.sin(current_box[0, -1])
+                    rot_cos = np.cos(current_box[0, -1])
+                    rot_mat_T[0, 0] = rot_cos
+                    rot_mat_T[0, 1] = -rot_sin
+                    rot_mat_T[1, 0] = rot_sin
+                    rot_mat_T[1, 1] = rot_cos
+                    current_corners[i] = current_box[
+                        0, 2:4] * corners_norm @ rot_mat_T + current_box[0, :2]
+                    current_corners[i] -= current_box[0, :2]
+
+                    _rotation_box2d_jit_(current_corners[i],
+                                         rot_noises[idx + i, j], rot_mat_T)
+                    current_corners[
+                        i] += current_box[0, :2] + loc_noises[i + idx, j, :2]
+                coll_mat = box_collision_test(
+                    current_corners[:num].reshape(num, 4, 2), box_corners)
+                for i in range(num):  # remove self-coll
+                    coll_mat[i, idx:idx + num] = False
+                if not coll_mat.any():
+                    for i in range(num):
+                        success_mask[i + idx] = j
+                        box_corners[i + idx] = current_corners[i]
+                        loc_noises[i + idx, j, :2] += (
+                            dst_pos[i] - boxes[i + idx, :2])
+                        rot_noises[i + idx, j] += (
+                            dst_grot[i] - current_grot[i])
+                    break
+        idx += num
+    return success_mask
+
+@numba.njit
+def box3d_transform_(boxes, loc_transform, rot_transform, valid_mask):
+    num_box = boxes.shape[0]
+    for i in range(num_box):
+        if valid_mask[i]:
+            boxes[i, :3] += loc_transform[i]
+            boxes[i, 6] += rot_transform[i]
+
+
+def _select_transform(transform, indices):
+    result = np.zeros((transform.shape[0], *transform.shape[2:]),
+                      dtype=transform.dtype)
+    for i in range(transform.shape[0]):
+        if indices[i] != -1:
+            result[i] = transform[i, indices[i]]
+    return result
+
+@numba.njit
+def points_transform_(points, centers, point_masks, loc_transform,
+                      rot_transform, valid_mask):
+    num_box = centers.shape[0]
+    num_points = points.shape[0]
+    rot_mat_T = np.zeros((num_box, 3, 3), dtype=points.dtype)
+    for i in range(num_box):
+        _rotation_matrix_3d_(rot_mat_T[i], rot_transform[i], 2)
+    for i in range(num_points):
+        for j in range(num_box):
+            if valid_mask[j]:
+                if point_masks[i, j] == 1:
+                    points[i, :3] -= centers[j, :3]
+                    points[i:i + 1, :3] = points[i:i + 1, :3] @ rot_mat_T[j]
+                    points[i, :3] += centers[j, :3]
+                    points[i, :3] += loc_transform[j]
+                    break  # only apply first box's transform
+
+
+def noise_per_object_v3_(gt_boxes,
+                         points=None,
+                         valid_mask=None,
+                         rotation_perturb=np.pi / 4,
+                         center_noise_std=1.0,
+                         global_random_rot_range=np.pi / 4,
+                         num_try=5,
+                         group_ids=None):
+    """random rotate or remove each groundtrutn independently.
+    use kitti viewer to test this function points_transform_
+
+    Args:
+        gt_boxes: [N, 7], gt box in lidar.points_transform_
+        points: [M, 4], point cloud in lidar.
+    """
+    num_boxes = gt_boxes.shape[0]
+    if not isinstance(rotation_perturb, (list, tuple, np.ndarray)):
+        rotation_perturb = [-rotation_perturb, rotation_perturb]
+    if not isinstance(global_random_rot_range, (list, tuple, np.ndarray)):
+        global_random_rot_range = [
+            -global_random_rot_range, global_random_rot_range
+        ]
+    enable_grot = np.abs(global_random_rot_range[0] -
+                         global_random_rot_range[1]) >= 1e-3
+    if not isinstance(center_noise_std, (list, tuple, np.ndarray)):
+        center_noise_std = [
+            center_noise_std, center_noise_std, center_noise_std
+        ]
+    if valid_mask is None:
+        valid_mask = np.ones((num_boxes, ), dtype=np.bool_)
+    center_noise_std = np.array(center_noise_std, dtype=gt_boxes.dtype)
+    loc_noises = np.random.normal(
+        scale=center_noise_std, size=[num_boxes, num_try, 3])
+    rot_noises = np.random.uniform(
+        rotation_perturb[0], rotation_perturb[1], size=[num_boxes, num_try])
+    gt_grots = np.arctan2(gt_boxes[:, 0], gt_boxes[:, 1])
+    grot_lowers = global_random_rot_range[0] - gt_grots
+    grot_uppers = global_random_rot_range[1] - gt_grots
+    global_rot_noises = np.random.uniform(
+        grot_lowers[..., np.newaxis],
+        grot_uppers[..., np.newaxis],
+        size=[num_boxes, num_try])
+    if group_ids is not None:
+        if enable_grot:
+            set_group_noise_same_v2_(loc_noises, rot_noises, global_rot_noises,
+                                     group_ids)
+        else:
+            set_group_noise_same_(loc_noises, rot_noises, group_ids)
+        group_centers, group_id_num_dict = get_group_center(
+            gt_boxes[:, :3], group_ids)
+        if enable_grot:
+            group_transform_v2_(loc_noises, rot_noises, gt_boxes[:, :3],
+                                gt_boxes[:, 6], group_centers,
+                                global_rot_noises, valid_mask)
+        else:
+            group_transform_(loc_noises, rot_noises, gt_boxes[:, :3],
+                             gt_boxes[:, 6], group_centers, valid_mask)
+        group_nums = np.array(list(group_id_num_dict.values()), dtype=np.int64)
+
+    origin = [0.5, 0.5, 0.5]
+    gt_box_corners = box_np_ops.center_to_corner_box3d(
+        gt_boxes[:, :3],
+        gt_boxes[:, 3:6],
+        gt_boxes[:, 6],
+        origin=origin,
+        axis=2)
+    if group_ids is not None:
+        if not enable_grot:
+            selected_noise = noise_per_box_group(gt_boxes[:, [0, 1, 3, 4, 6]],
+                                                 valid_mask, loc_noises,
+                                                 rot_noises, group_nums)
+        else:
+            selected_noise = noise_per_box_group_v2_(
+                gt_boxes[:, [0, 1, 3, 4, 6]], valid_mask, loc_noises,
+                rot_noises, group_nums, global_rot_noises)
+    else:
+        if not enable_grot:
+            selected_noise = noise_per_box(gt_boxes[:, [0, 1, 3, 4, 6]],
+                                           valid_mask, loc_noises, rot_noises)
+        else:
+            selected_noise = noise_per_box_v2_(gt_boxes[:, [0, 1, 3, 4, 6]],
+                                               valid_mask, loc_noises,
+                                               rot_noises, global_rot_noises)
+    loc_transforms = _select_transform(loc_noises, selected_noise)
+    rot_transforms = _select_transform(rot_noises, selected_noise)
+    surfaces = box_np_ops.corner_to_surfaces_3d_jit(gt_box_corners)
+    if points is not None:
+        point_masks = points_in_convex_polygon_3d_jit(points[:, :3], surfaces)
+        points_transform_(points, gt_boxes[:, :3], point_masks, loc_transforms,
+                          rot_transforms, valid_mask)
+
+    box3d_transform_(gt_boxes, loc_transforms, rot_transforms, valid_mask)
+
+
+
