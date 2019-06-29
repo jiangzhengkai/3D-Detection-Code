@@ -72,5 +72,5 @@ python create_data.py nuscenes_data_prep --root_path=NUSCENES_TEST_DATASET_ROOT 
 
 |Name | db_sample| subset | mAP | NDS |
 |------|:------:|:------:|:------:|:------:|
-|VoxelNet | True | True | 45.19 | 58.05 |
+|VoxelNet | True | True | 45.33 | 58.12 |
 |SequenceVoxelNet | True | True | | |
