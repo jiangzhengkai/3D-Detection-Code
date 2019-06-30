@@ -405,6 +405,7 @@ class NuScenesSequenceDataset(Dataset):
                 "token": info["token"]
             },
         }
+<<<<<<< HEAD
 
         lidar_path = Path(info['lidar_path'])
         points = read_file(str(lidar_path))
@@ -412,6 +413,14 @@ class NuScenesSequenceDataset(Dataset):
         sweep_points_list = [points]
         sweep_times_list = [np.zeros((points.shape[0], 1))]
 
+=======
+        """ online read """
+        lidar_path = Path(info['lidar_path'])
+        points = read_file(str(lidar_path))
+        sweep_points_list = [points]
+        sweep_times_list = [np.zeros((points.shape[0], 1))]
+        
+>>>>>>> c93f599542013493b9929cc256f375f322060423
         min_distance = 1.0
         assert (nsweeps - 1) <= len(
             info["sweeps"]
