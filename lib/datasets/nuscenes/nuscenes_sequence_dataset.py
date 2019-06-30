@@ -406,6 +406,12 @@ class NuScenesSequenceDataset(Dataset):
             },
         }
 
+        lidar_path = Path(info['lidar_path'])
+        points = read_file(str(lidar_path))
+
+        sweep_points_list = [points]
+        sweep_times_list = [np.zeros((points.shape[0], 1))]
+
         min_distance = 1.0
         assert (nsweeps - 1) <= len(
             info["sweeps"]
@@ -438,8 +444,8 @@ class NuScenesSequenceDataset(Dataset):
         times = np.concatenate(sweep_times_list, axis=0).astype(points.dtype)
 
         #### for one sweep ####
-        #sweep = info["sweeps"][0]
-        #points, times = read_sweep(sweep)
+        #points = np.concatenate(sweep_points_list, axis=0)
+        #times = np.concatenate(sweep_times_list, axis=0).astype(points.dtype)
         if read_test_image:
             if Path(info["cam_front_path"]).exists():
                 with open(str(info["cam_front_path"]), 'rb') as f:

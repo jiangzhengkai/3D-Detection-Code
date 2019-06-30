@@ -718,6 +718,17 @@ def prep_sequence_pointcloud(config,
     return example_sequences
 
 
+@numba.njit
+def _rotation_box2d_jit_(corners, angle, rot_mat_T):
+    rot_sin = np.sin(angle)
+    rot_cos = np.cos(angle)
+    rot_mat_T[0, 0] = rot_cos
+    rot_mat_T[0, 1] = -rot_sin
+    rot_mat_T[1, 0] = rot_sin
+    rot_mat_T[1, 1] = rot_cos
+    corners[:] = corners @ rot_mat_T
+
+
 @numba.jit(nopython=True)
 def box_collision_test(boxes, qboxes, clockwise=True):
     N = boxes.shape[0]
@@ -894,7 +905,7 @@ def set_group_noise_same_v2_(loc_noise, rot_noise, grot_noise, group_ids):
         loc_noise[i] = loc_noise[gid_to_index_dict[group_ids[i]]]
         rot_noise[i] = rot_noise[gid_to_index_dict[group_ids[i]]]
         grot_noise[i] = grot_noise[gid_to_index_dict[group_ids[i]]]
-	
+
 def get_group_center(locs, group_ids):
     num_groups = 0
     group_centers = np.zeros_like(locs)
@@ -1005,7 +1016,7 @@ def noise_per_box_group(boxes, valid_mask, loc_noises, rot_noises, group_nums):
                     break
         idx += num
     return success_mask
-		
+
 @numba.njit
 def noise_per_box_group_v2_(boxes, valid_mask, loc_noises, rot_noises,
                             group_nums, global_rot_noises):
@@ -1098,6 +1109,27 @@ def _select_transform(transform, indices):
         if indices[i] != -1:
             result[i] = transform[i, indices[i]]
     return result
+@numba.njit
+def _rotation_matrix_3d_(rot_mat_T, angle, axis):
+    rot_sin = np.sin(angle)
+    rot_cos = np.cos(angle)
+    rot_mat_T[:] = np.eye(3)
+    if axis == 1:
+        rot_mat_T[0, 0] = rot_cos
+        rot_mat_T[0, 2] = -rot_sin
+        rot_mat_T[2, 0] = rot_sin
+        rot_mat_T[2, 2] = rot_cos
+    elif axis == 2 or axis == -1:
+        rot_mat_T[0, 0] = rot_cos
+        rot_mat_T[0, 1] = -rot_sin
+        rot_mat_T[1, 0] = rot_sin
+        rot_mat_T[1, 1] = rot_cos
+    elif axis == 0:
+        rot_mat_T[1, 1] = rot_cos
+        rot_mat_T[1, 2] = -rot_sin
+        rot_mat_T[2, 1] = rot_sin
+        rot_mat_T[2, 2] = rot_cos
+
 
 @numba.njit
 def points_transform_(points, centers, point_masks, loc_transform,
