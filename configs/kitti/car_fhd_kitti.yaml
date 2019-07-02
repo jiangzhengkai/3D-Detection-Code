@@ -5,17 +5,17 @@ input:
         point_cloud_range: [0, -40.0, -3.0, 70.4, 40.0, 1.0]
         max_num_points: 5
     train:
-        batch_size: 5
+        batch_size: 8
         num_epochs: 100
         dataset:
             type: "KittiDataset"
-            root_path: "/data/datasets/KITTI/object"
-            info_path: "/data/datasets/KITTI/object/kitti_infos_train.pkl"
+            root_path: "/data/Datasets/KITTI/object"
+            info_path: "/data/Datasets/KITTI/object/kitti_infos_train.pkl"
             nsweeps: 1
         preprocess:
             max_num_voxels: 40000
             shuffle: False
-            num_workers: 3
+            num_workers: 5
             gt_location_noise: [1.0, 1.0, 0.5]
             gt_rotation_noise: [-0.78539816, 0.78539816]
             global_rotation_noise: [-0.78539816, 0.78539816]
@@ -23,14 +23,14 @@ input:
             global_rotation_per_object_range: [0, 0]
             global_translation_noise: [0, 0, 0]
             anchor_area_threshold: -1
-            remove_points_after_sample: False
+            remove_points_after_sample: True
             gt_drop_percentage: 0.0
             gt_drop_max_keep_points: 15
             remove_unknow_examples: False
             remove_environment: False
             db_sampler:
                 enable: True
-                db_info_path: "/data/datasets/KITTI/object/dbinfos_train.pkl"
+                db_info_path: "/data/Datasets/KITTI/object/dbinfos_train.pkl"
                 db_preprocess_steps:
                     filter_by_min_num_points:
                         type: "filter_by_min_num_points"
@@ -46,16 +46,16 @@ input:
                      values: [15, ]
 
     eval:
-        batch_size: 6
+        batch_size: 8
         dataset:
             type: "KittiDataset"
-            root_path: "/data/datasets/KITTI/object"
-            info_path: "/data/datasets/KITTI/object/kitti_infos_val.pkl"
+            root_path: "/data/Datasets/KITTI/object"
+            info_path: "/data/Datasets/KITTI/object/kitti_infos_val.pkl"
             nsweeps: 1
         preprocess:
             max_num_voxels: 40000
             shuffle: False
-            num_workers: 3
+            num_workers: 5
             anchor_area_threshold: -1
             remove_environment: False
 
