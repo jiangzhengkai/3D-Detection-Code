@@ -1,0 +1,6 @@
+[submodule "lib/deps/nuscenes"]
+	path = lib/deps/nuscenes
+	url = https://github.com/poodarchu/nuscenes.git
+[submodule "lib/deps/spconv"]
+	path = lib/deps/spconv
+	url = https://github.com/traveller59/spconv.git
