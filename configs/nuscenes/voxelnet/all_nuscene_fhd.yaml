@@ -1,11 +1,11 @@
 input:
     num_point_features: 5
     voxel:
-        voxel_size: [0.1, 0.1, 0.2]
-        point_cloud_range: [-50.4, -51.2, -5.0, 50.4, 51.2, 3.0]
+        voxel_size: [0.1, 0.1, 0.15]
+        point_cloud_range: [-50.4, -51.2, -4.0, 50.4, 51.2, 2.0]
         max_num_points: 10
     train:
-        batch_size: 5
+        batch_size: 4
         num_epochs: 25
         dataset:
             type: "NuScenesDataset"
@@ -85,7 +85,7 @@ input:
                      - 2
                      - 2
     eval:
-        batch_size: 5
+        batch_size: 4
         dataset:
             type: "NuSc`enesDataset"
             root_path: "/data/Datasets/nuScenes"

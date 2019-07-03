@@ -5,7 +5,7 @@ input:
         point_cloud_range: [-50.4, -50.4, -4.0, 50.4, 50.4, 2.0]
         max_num_points: 10
     train:
-        batch_size: 4
+        batch_size: 3
         num_epochs: 25
         dataset:
             type: "NuScenesSequenceDataset"
@@ -85,7 +85,7 @@ input:
                      - 2
                      - 2
     eval:
-        batch_size: 4
+        batch_size: 3
         dataset:
             type: "NuScenesSequenceDataset"
             root_path: "/data/Datasets/nuScenes"
@@ -291,7 +291,7 @@ optimizer:
         lr:
             type: "one_cycle"
             value: 
-                lr_max: 0.01
+                lr_max: 0.04
                 moms: [0.95, 0.85]
                 div_factor: 10.0
                 pct_start: 0.4

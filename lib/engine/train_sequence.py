@@ -39,7 +39,7 @@ def train_sequence(config, logger=None, model_dir=None, local_rank=None, distrib
     device = torch.device('cuda')
     model = build_sequence_network(config, logger=logger, device=device)
     if distributed:
-        model = parallel.convert_syncbn_model(model)
+        #model = parallel.convert_syncbn_model(model)
         logger.info("Using SyncBn")
         model = torch.nn.parallel.DistributedDataParallel(
             model.to(device),

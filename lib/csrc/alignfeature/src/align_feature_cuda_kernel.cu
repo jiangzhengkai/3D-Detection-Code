@@ -160,5 +160,6 @@ int align_feature_cuda_backward_launcher(at::Tensor top_grad,
                size, grads, bottom_data, bottom_weight, weight_height, weight_width,
                N, C, Size_Weight, H, W, data_grad, weight_grad);
         }));
+    THCudaCheck(cudaGetLastError());
     return 1;
 }

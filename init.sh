@@ -16,17 +16,17 @@ rm -rf build dist *.egg*
 popd
 
 popd
-pushd lib/core/csrc/rroi_align
+pushd lib/csrc/rroi_align
 python setup.py install
 rm -rf build dist *.egg*
 popd
 
-pushd lib/core/csrc/iou3d
+pushd lib/csrc/iou3d
 python setup.py install
 rm -rf build dist *.egg*
 popd
 
-pushd lib/core/csrc/roipool3d
+pushd lib/csrc/roipool3d
 python setup.py install
 rm -rf build dist *.egg*
 popd
