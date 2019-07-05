@@ -183,7 +183,6 @@ class VoxelNetSequence(nn.Module):
         ################ aggregation and align module ##############
         num_channel = config.model.decoder.rpn.downsample_num_filters[0]
         self.align_and_aggregation_module = Align_Feature_and_Aggregation(num_channel, neighbor=9, name="Align_and_Aggregation_Module")
-        #self.align_and_aggregation_module = Aggregation(num_channel, name="Aggregation_Module")
         self.register_buffer("global_step", torch.LongTensor(1).zero_())
     def update_global_step(self):
         self.global_step += 1
@@ -195,6 +194,7 @@ class VoxelNetSequence(nn.Module):
         return int(self.global_step.cpu().numpy()[0])
 
     def forward(self, example):
+        import pdb; pdb.set_trace()
         voxels = example["current_frame"]["voxels"]
         num_points = example["current_frame"]["num_points"]
         coordinates = example["current_frame"]["coordinates"]
@@ -223,10 +223,11 @@ class VoxelNetSequence(nn.Module):
 
             keyframe_spatial_features = self._middle_feature_extractor(
                 keyframe_voxel_features, keyframe_coordinates, batch_size_dev)
-
         else:
             spatial_features = voxel_features
             keyframe_spatial_features = keyframe_voxel_features
+
+        import pdb;pdb.set_trace()
         aggregation_spatial_features = self.align_and_aggregation_module(keyframe_spatial_features, spatial_features)
         predict_dicts = self._rpn(aggregation_spatial_features)
         rets = []

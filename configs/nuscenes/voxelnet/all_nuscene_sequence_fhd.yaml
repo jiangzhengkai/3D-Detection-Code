@@ -5,7 +5,7 @@ input:
         point_cloud_range: [-50.4, -50.4, -4.0, 50.4, 50.4, 2.0]
         max_num_points: 10
     train:
-        batch_size: 3
+        batch_size: 4
         num_epochs: 25
         dataset:
             type: "NuScenesSequenceDataset"
@@ -15,7 +15,7 @@ input:
         preprocess:
             max_num_voxels: 60000
             shuffle: False
-            num_workers: 5
+            num_workers: 0
             gt_location_noise: [0, 0, 0]
             gt_rotation_noise: [0, 0]
             global_rotation_noise: [-0.3925, 0.3925]
@@ -85,7 +85,7 @@ input:
                      - 2
                      - 2
     eval:
-        batch_size: 3
+        batch_size: 4
         dataset:
             type: "NuScenesSequenceDataset"
             root_path: "/data/Datasets/nuScenes"
@@ -94,7 +94,7 @@ input:
         preprocess:
             max_num_voxels: 60000
             shuffle: False
-            num_workers: 5
+            num_workers: 0
             anchor_area_threshold: -1
             remove_environment: False
 

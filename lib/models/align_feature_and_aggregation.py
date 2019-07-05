@@ -44,6 +44,7 @@ class Align_Feature_and_Aggregation(nn.Module):
         self.num_channel = num_channel
         self.embed_conv1 = nn.Conv2d(num_channel, 64, 1)
         self.embed_conv2 = nn.Conv2d(64, 64, 3, 1, 1)
+        import pdb;pdb.set_trace()
         self.align_feature = AlignFeature(neighbor, neighbor)
         self.relu = nn.ReLU()
         ######## correlation ########
@@ -58,7 +59,7 @@ class Align_Feature_and_Aggregation(nn.Module):
 
     def forward(self, feature_select, feature_current):
         feature_concat = torch.cat([feature_select, feature_current], dim=0)
-
+        import pdb;pdb.set_trace()
         embed_feature_concat_conv1 = self.embed_conv1(feature_concat)
         embed_feature_concat_relu1 = self.relu(embed_feature_concat_conv1)
 

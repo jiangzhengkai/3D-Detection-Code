@@ -431,12 +431,31 @@ class NuScenesDataset(Dataset):
                 (1, points_sweep.shape[1]))
 
             return points_sweep.T, curr_times.T
-
+        ######## for 10 sweeps ########
+        """
         for i in range(nsweeps - 1):
             sweep = info["sweeps"][i]
             points_sweep, times_sweep = read_sweep(sweep)
             sweep_points_list.append(points_sweep)
             sweep_times_list.append(times_sweep)
+
+        points = np.concatenate(sweep_points_list, axis=0)
+        times = np.concatenate(sweep_times_list, axis=0).astype(points.dtype)
+        """
+        ######## for three sweep ########
+        index_1 = random.randint(0, nsweeps-2)
+        sweep_index_1 = info["sweeps"][index_1]
+        points_sweep_index_1, times_sweep_index_1 = read_sweep(sweep_index_1)
+        sweep_points_list.append(points_sweep_index_1)
+        sweep_times_list.append(times_sweep_index_1)
+        index_2 = random.randint(0, nsweeps-2)
+        while index_2 == index_1:
+            index_2 = random.randint(0, nsweeps-2)
+
+        sweep_index_2 = info["sweeps"][index_2]
+        points_sweep_index_2, times_sweep_index_2 = read_sweep(sweep_index_2)
+        sweep_points_list.append(points_sweep_index_2)
+        sweep_times_list.append(times_sweep_index_2)
 
         points = np.concatenate(sweep_points_list, axis=0)
         times = np.concatenate(sweep_times_list, axis=0).astype(points.dtype)
