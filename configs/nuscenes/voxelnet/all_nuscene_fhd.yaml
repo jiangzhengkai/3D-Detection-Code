@@ -87,7 +87,7 @@ input:
     eval:
         batch_size: 4
         dataset:
-            type: "NuSc`enesDataset"
+            type: "NuScenesDataset"
             root_path: "/data/Datasets/nuScenes"
             info_path: "/data/Datasets/nuScenes/infos_val_10sweeps_withvelo.pkl"
             nsweeps: 10
