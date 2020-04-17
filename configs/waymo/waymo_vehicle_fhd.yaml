@@ -1,0 +1,176 @@
+input:
+    num_point_features: 8
+    voxel:
+        voxel_size: [0.1, 0.1, 0.15]
+        point_cloud_range: [-50.4, -51.2, -4.0, 50.4, 51.2, 2.0]
+        max_num_points: 10
+    train:
+        batch_size: 8
+        num_epochs: 25
+        dataset:
+            type: "WaymoDataset"
+            root_path: "/media/users/zhengkai/data/waymo/lmdb_detection/train_lmdb/"
+            info_path: "/home/zhengkai/data/waymo/lmdb_detection/train_lmdb/lmdb"
+            dataset_list_path: "/home/zhengkai/data/waymo/lmdb_detection/train_lmdb/train_subset.txt"
+        preprocess:
+            max_num_voxels: 60000
+            shuffle: False
+            num_workers: 5
+            gt_location_noise: [0, 0, 0]
+            gt_rotation_noise: [0, 0]
+            global_rotation_noise: [-0.3925, 0.3925]
+            global_scale_noise: [0.95, 1.05]
+            global_rotation_per_object_range: [0, 0]
+            global_translation_noise: [0.2, 0.2, 0.2]
+            anchor_area_threshold: -1
+            remove_points_after_sample: False
+            gt_drop_percentage: 0.0
+            gt_drop_max_keep_points: 15
+            remove_unknow_examples: False
+            remove_environment: False
+            db_sampler:
+                enable: True
+                db_info_path: "/data/Datasets/nuScenes/dbinfos_train.pkl"
+                db_preprocess_steps:
+                    filter_by_min_num_points:
+                        type: "filter_by_min_num_points"
+                        classes: 
+                        - "vehicle"
+                        values:
+                        - 5
+                    filter_by_difficulty:
+                        type: "filter_by_difficulty"
+                        value: [-1,]
+                global_random_rotation_range_per_object: [0, 0]
+                rate: 1.0
+                sample_groups:
+                     classes:
+                     - "vehicle"
+                     values: 
+                     - 2
+    eval:
+        batch_size: 4
+        dataset:
+            type: "WaymoDataset"
+            root_path: "/media/users/zhengkai/data/waymo/lmdb_detection/val_lmdb/"
+            info_path: "/home/zhengkai/data/waymo/lmdb_detection/val_lmdb/lmdb"
+            dataset_list_path: "/home/zhengkai/data/waymo/lmdb_detection/val_lmdb/val_subset.txt"
+        preprocess:
+            max_num_voxels: 60000
+            shuffle: False
+            num_workers: 3
+            anchor_area_threshold: -1
+            remove_environment: False
+
+box_coder:
+    type: "ground_box3d_coder"
+    value:
+        n_dim: 7
+        linear_dim: False
+        encode_angle_vector: False
+
+target_assigner:
+    anchor_generators:
+        anchor_types:
+        - "anchor_generator_range"
+        anchor_dims: [7,]
+        anchor_sizes:
+        - [1.97, 4.63, 1.74]
+        anchor_ranges:
+        - [-50.4, -50.4, -0.95, 50.4, 50.4, -0.95]
+        anchor_rotations:
+        - [0, 1.57]
+        anchor_matched_thresholds: 
+        - 0.6
+        anchor_unmatched_thresholds: 
+        - 0.45
+        anchor_class_names: 
+        - "car"
+        sample_positive_fraction: -1
+        sample_size: 512
+        region_similarity_calculator: 
+            type: "nearest_iou_similarity"
+            value: 0
+model:
+    encoder:
+        vfe:
+            type: "VoxelFeatureExtractorV3" # "PillarFeatureNet" # "VoxelFeatureExtractorV3" #"PIXORFeatureLayer"
+            num_filters: [16,]
+            with_distance: False
+            num_input_features: 8
+        middle:
+            type: "SpMiddleFHD" #"PointPillarsScatter" # "SpMiddleFHD"
+            num_filters_down1: []
+            num_filters_down2: []
+            downsample_factor: 8
+            num_input_features: 8
+    decoder:
+        rpn:
+            type: "RPNV2"
+            layer_nums: [5, 5]
+            downsample_layer_strides: [1, 2]
+            downsample_num_filters: [128, 256]
+            upsample_layer_strides: [1, 2]
+            upsample_num_filters: [256, 128]
+            use_norm: True
+            group_norm: False
+            num_groups: 32
+            num_input_features: 128
+        head:
+            tasks:
+                num_classes: 
+                - 1
+                class_names: 
+                - ["vehicle"]
+            weights:
+            - 1.0 #0.7
+        auxiliary:
+            use_direction_classifier: True
+            direction_offset: 0.785
+    post_process:
+        post_center_limit_range: [-61.2, -61.2, -10.0, 61.2, 61.2, 10.0]
+        use_rotate_nms: True
+        use_multi_class_nms: False
+        nms_pre_max_size: 1000
+        nms_post_max_size: 80
+        nms_score_threshold: 0.1
+        nms_iou_threshold: 0.2
+
+    loss:
+        loss_scale_factor: -1
+        loss_norm_type: "NormByNumPositives"
+        pos_class_weight: 1.0
+        neg_class_weight: 2.0
+        use_sigmoid_score: True
+        encode_background_as_zeros: True
+        encode_rad_error_by_sin: True
+        classification_loss:
+            type: "weighted_sigmoid_focal"
+            value: 
+                alpha: 0.25
+                gamma: 2.0
+                anchorwise_output: True
+        localization_loss:
+            type: "weighted_smooth_l1"
+            value: 
+                sigma: 3.0
+                code_weight: [1.0,]
+        classification_loss_weight: 1.0
+        localization_loss_weight: 1.0
+        direction_loss_weight: 0.2
+        rpn_thresholds: [0.7,]
+
+optimizer:
+    type: "adam"
+    value: 
+        lr:
+            type: "one_cycle"
+            value: 
+                lr_max: 0.04
+                moms: [0.95, 0.85]
+                div_factor: 10.0
+                pct_start: 0.4
+        amsgrad: 0.0
+        wd: 0.01
+    fixed_wd: True
+    moving_average: False
